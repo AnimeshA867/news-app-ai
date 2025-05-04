@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  bio           String?
+  role          Role      @default(AUTHOR)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  articles      Article[]
+  comments      Comment[]
+  sessions      Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  sessionId String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expires   DateTime
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  articles    Article[]
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[]
+}
+
+model Article {
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  excerpt        String?
+  content        String
+  status         Status    @default(DRAFT)
+  featuredImage  String?
+  readTime       Int?
+  viewCount      Int       @default(0)
+  publishedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  authorId       String
+  categoryId     String
+  author         User      @relation(fields: [authorId], references: [id])
+  category       Category  @relation(fields: [categoryId], references: [id])
+  tags           Tag[]
+  comments       Comment[]
+  isBreakingNews Boolean   @default(false)
+  isFeatured     Boolean   @default(false)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  articleId String
+  userId    String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  type      String
+  size      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  id                    String  @id @default(cuid())
+  siteName              String
+  tagline               String?
+  description           String?
+  logoUrl               String?
+  faviconUrl            String?
+  senderEmail           String?
+  senderName            String?
+  smtpHost              String?
+  smtpPort              String?
+  smtpUsername          String?
+  smtpPassword          String?
+  enableComments        Boolean @default(true)
+  enableNewsletter      Boolean @default(true)
+  enableSearch          Boolean @default(true)
+  enableSocialSharing   Boolean @default(true)
+  enableRelatedArticles Boolean @default(true)
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  AUTHOR
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+}
