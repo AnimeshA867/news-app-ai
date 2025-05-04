@@ -16,7 +16,6 @@ export function BreakingNewsBar() {
   const [breakingNews, setBreakingNews] = useState<BreakingNewsArticle[]>([]);
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const { theme } = useTheme();
 
   useEffect(() => {
     async function fetchBreakingNews() {
@@ -29,7 +28,7 @@ export function BreakingNewsBar() {
 
         if (data.articles && data.articles.length > 0) {
           setBreakingNews(
-            data.articles.map((article: any) => ({
+            data.articles.map((article: BreakingNewsArticle) => ({
               id: article.id,
               title: article.title,
               slug: article.slug,

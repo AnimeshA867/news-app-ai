@@ -5,10 +5,8 @@ export default function NotFound() {
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>404 - Page Not Found</h1>
       <p>Sorry, the page you are looking for does not exist.</p>
-      <Link href="/">
-        <a style={{ color: "blue", textDecoration: "underline" }}>
-          Go back to Home
-        </a>
+      <Link href="/" className="text-blue-500 underline">
+        Go back to Home
       </Link>
     </div>
   );

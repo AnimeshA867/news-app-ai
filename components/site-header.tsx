@@ -4,24 +4,22 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { cn } from "@/lib/utils";
+import React from "react";
 
-const categories = [
-  { name: "Politics", href: "/category/politics" },
-  { name: "World", href: "/category/world" },
-  { name: "Business", href: "/category/business" },
-  { name: "Technology", href: "/category/technology" },
-  { name: "Entertainment", href: "/category/entertainment" },
-  { name: "Sports", href: "/category/sports" },
-  { name: "Health", href: "/category/health" },
-];
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -32,6 +30,17 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Fetch categories from the API
+
+  const categories = [
+    { id: "1", name: "Politics", slug: "politics" },
+    { id: "2", name: "World", slug: "world" },
+    { id: "3", name: "Business", slug: "business" },
+    { id: "4", name: "Technology", slug: "technology" },
+    { id: "5", name: "Entertainment", slug: "entertainment" },
+    { id: "6", name: "Sports", slug: "sports" },
+    { id: "7", name: "Health", slug: "health" },
+  ];
   return (
     <header
       className={cn(
@@ -62,26 +71,42 @@ export function SiteHeader() {
             </motion.span>
           </Link>
           <nav className="hidden md:flex md:gap-6 items-center">
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                href={category.href}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  pathname === category.href
-                    ? "text-primary"
-                    : "text-foreground/70"
-                )}
-              >
-                {category.name}
-              </Link>
-            ))}
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/search">
-                <Search className="h-4 w-4" />
-                <span className="sr-only">Search</span>
-              </Link>
-            </Button>
+            {isLoading ? (
+              // Show loading placeholders for categories
+              <>
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div
+                    key={i}
+                    className="h-4 w-16 rounded animate-pulse bg-muted"
+                  />
+                ))}
+                <div className="h-8 w-8 rounded-full animate-pulse bg-muted" />
+              </>
+            ) : (
+              // Show fetched categories
+              <>
+                {categories.map((category) => (
+                  <Link
+                    key={category.id}
+                    href={`/category/${category.slug}`}
+                    className={cn(
+                      "text-sm font-medium transition-colors hover:text-primary",
+                      pathname === `/category/${category.slug}`
+                        ? "text-primary"
+                        : "text-foreground/70"
+                    )}
+                  >
+                    {category.name}
+                  </Link>
+                ))}
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="/search">
+                    <Search className="h-4 w-4" />
+                    <span className="sr-only">Search</span>
+                  </Link>
+                </Button>
+              </>
+            )}
           </nav>
         </div>
         <div className="flex items-center gap-2">
@@ -95,12 +120,7 @@ export function SiteHeader() {
             <Menu className="h-5 w-5" />
             <span className="sr-only">Menu</span>
           </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            className="hidden md:inline-flex"
-            asChild
-          >
+          <Button size="sm" className="hidden md:inline-flex" asChild>
             <Link href="/subscribe">Subscribe</Link>
           </Button>
         </div>
@@ -126,30 +146,40 @@ export function SiteHeader() {
               </Button>
             </div>
             <nav className="flex flex-col space-y-4 p-6">
-              {categories.map((category) => (
-                <Link
-                  key={category.name}
-                  href={category.href}
-                  className="text-lg font-medium"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {category.name}
-                </Link>
-              ))}
-              <Link
-                href="/search"
-                className="text-lg font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Search
-              </Link>
-              <Link
-                href="/subscribe"
-                className="text-lg font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Subscribe
-              </Link>
+              {isLoading ? (
+                // Mobile menu loading state
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : (
+                // Mobile menu categories
+                <>
+                  {categories.map((category) => (
+                    <Link
+                      key={category.id}
+                      href={`/category/${category.slug}`}
+                      className="text-lg font-medium"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
+                  <Link
+                    href="/search"
+                    className="text-lg font-medium"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Search
+                  </Link>
+                  <Link
+                    href="/subscribe"
+                    className="text-lg font-medium"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Subscribe
+                  </Link>
+                </>
+              )}
             </nav>
           </motion.div>
         )}

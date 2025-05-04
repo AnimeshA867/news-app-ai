@@ -80,10 +80,11 @@ export default function SignupPage() {
 
       // Redirect to login page
       router.push("/admin/login");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Sign up failed",
-        description: error.message || "An error occurred during sign up",
+        description:
+          (error as Error).message || "An error occurred during sign up",
         variant: "destructive",
       });
     } finally {
@@ -134,19 +135,6 @@ export default function SignupPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="••••••••" {...field} />
                   </FormControl>

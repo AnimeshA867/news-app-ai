@@ -1,104 +1,61 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Save } from "lucide-react";
-
+import { z } from "zod";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Tag } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { useSWRConfig } from "swr";
 
-const tagSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  slug: z.string().min(1, "Slug is required"),
-});
+import { tagSchema } from "@/lib/validation/tag"; // Adjust the import path as needed
 
-type TagFormValues = z.infer<typeof tagSchema>;
+const schema = tagSchema;
 
-export default function TagPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const isNew = id === "new";
+type FormData = z.infer<typeof schema>;
+
+export default function EditTagPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFetching, setIsFetching] = useState(!isNew);
+  const { data: session } = useSession();
+  const { mutate } = useSWRConfig();
+  const [tag, setTag] = useState<Tag | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const form = useForm<TagFormValues>({
-    resolver: zodResolver(tagSchema),
-    defaultValues: {
-      name: "",
-      slug: "",
-    },
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
   });
 
-  useEffect(() => {
-    if (!isNew) {
-      const fetchTag = async () => {
-        try {
-          const res = await fetch(`/api/tags/${id}`);
-          if (!res.ok) throw new Error("Failed to fetch tag");
-          const data = await res.json();
-          form.reset({
-            name: data.name,
-            slug: data.slug,
-          });
-        } catch (error) {
-          toast({
-            title: "Error",
-            description: "Failed to load tag data",
-            variant: "destructive",
-          });
-          router.push("/admin/tags");
-        } finally {
-          setIsFetching(false);
-        }
-      };
-      fetchTag();
-    }
-  }, [id, isNew, form, router, toast]);
-
-  const onSubmit = async (values: TagFormValues) => {
+  const fetchTag = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const url = isNew ? "/api/tags" : `/api/tags/${id}`;
-      const method = isNew ? "POST" : "PUT";
-
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Failed to save tag");
-      }
-
-      toast({
-        title: "Success",
-        description: isNew
-          ? "Tag created successfully"
-          : "Tag updated successfully",
-      });
-      router.push("/admin/tags");
-    } catch (error: any) {
+      const response = await fetch(`/api/tags/${id}`);
+      const data = await response.json();
+      setTag(data.tag);
+      reset(data.tag);
+    } catch (error) {
+      console.error("Error fetching tag:", error);
       toast({
         title: "Error",
-        description: error.message || "An error occurred",
+        description: "Failed to load tag. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -106,95 +63,177 @@ export default function TagPage({ params }: { params: { id: string } }) {
     }
   };
 
-  // Helper function to generate slug from name
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[^\w\s]/g, "")
-      .replace(/\s+/g, "-");
+  useEffect(() => {
+    fetchTag();
+  }, [id]);
+
+  const onSubmit = async (data: FormData) => {
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/tags/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save tag");
+      }
+
+      toast({
+        title: "Success",
+        description: "Tag saved successfully.",
+      });
+
+      mutate(`/api/tags/${id}`);
+      router.push("/admin/tags");
+    } catch (error) {
+      console.error("Error saving tag:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save tag. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  if (isFetching) {
-    return (
-      <div className="flex h-[400px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this tag?")) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/tags/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete tag");
+      }
+
+      toast({
+        title: "Success",
+        description: "Tag deleted successfully.",
+      });
+
+      router.push("/admin/tags");
+    } catch (error) {
+      console.error("Error deleting tag:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete tag. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <h1 className="text-3xl font-bold">
-        {isNew ? "Create New Tag" : "Edit Tag"}
-      </h1>
+    <div className="space-y-6 container">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold tracking-tight">Edit Tag</h1>
+        <Button
+          variant="destructive"
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
+          {isDeleting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Trash2 className="mr-2 h-4 w-4" />
+          )}
+          Delete Tag
+        </Button>
+      </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Tag name"
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      if (isNew) {
-                        form.setValue("slug", generateSlug(e.target.value));
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormDescription>The display name of the tag.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Slug</FormLabel>
-                <FormControl>
-                  <Input placeholder="tag-slug" {...field} />
-                </FormControl>
-                <FormDescription>
-                  URL-friendly version of the name. Used in URLs.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex items-center gap-2">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Tag
-                </>
-              )}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/admin/tags")}
+      {isLoading ? (
+        <div className="flex h-[300px] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
             >
-              Cancel
+              Name
+            </label>
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="name" placeholder="Tag name" />
+              )}
+            />
+            {errors.name && (
+              <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="slug"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Slug
+            </label>
+            <Controller
+              name="slug"
+              control={control}
+              render={({ field }) => (
+                <Input {...field} id="slug" placeholder="Tag slug" />
+              )}
+            />
+            {errors.slug && (
+              <p className="mt-2 text-sm text-red-600">{errors.slug.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Description
+            </label>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  id="description"
+                  placeholder="Tag description"
+                  value={field.value || ""}
+                />
+              )}
+            />
+            {errors.description && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
+
+          <div className="flex justify-end">
+            <Button type="submit" disabled={isSaving}>
+              {isSaving ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Plus className="mr-2 h-4 w-4" />
+              )}
+              Save Tag
             </Button>
           </div>
         </form>
-      </Form>
+      )}
     </div>
   );
 }

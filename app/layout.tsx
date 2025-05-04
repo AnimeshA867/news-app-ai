@@ -2,13 +2,10 @@ import type React from "react";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SiteFooter } from "@/components/site-footer";
-import { CookieConsent } from "@/components/cookie-consent";
 import { Toaster } from "@/components/ui/toaster";
 import { Suspense } from "react";
 
 import "./globals.css";
-// import "./styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 

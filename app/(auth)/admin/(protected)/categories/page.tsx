@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Plus, Edit, Trash, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -37,13 +36,10 @@ export default function CategoriesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    return () => {
-      fetchCategories();
-    };
+    fetchCategories();
   }, []);
 
   async function fetchCategories() {

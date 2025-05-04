@@ -1,30 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import {
-  Loader2,
-  Save,
-  User,
-  ImageIcon,
-  X,
-  Upload,
-  Search,
-} from "lucide-react";
-
+import { z } from "zod";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -32,631 +16,392 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import {
-  editAuthorSchema,
-  AuthorFormValues,
-} from "@/lib/schemas/author-schema";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { articleSchema } from "@/lib/validations/article";
+// import { formatDate } from "@/lib/utils";
+import { Article, Category, Tag } from "@prisma/client";
+import { useSWRConfig } from "swr";
 import Image from "next/image";
 
-interface Author {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  image: string | null;
-  bio: string | null;
-  _count?: {
-    articles: number;
-  };
-}
+const schema = articleSchema.extend({
+  categoryId: z.string().nonempty("Category is required"),
+  tagIds: z.array(z.string()).optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "SCHEDULED"]),
+  isBreakingNews: z.boolean(),
+  isFeatured: z.boolean(),
+});
 
-interface MediaItem {
-  id: string;
-  name: string;
-  url: string;
-  type: string;
-  size: number;
-  createdAt: string;
-}
+type FormData = z.infer<typeof schema>;
 
-export default function EditAuthorPage({ params }: { params: { id: string } }) {
-  const [author, setAuthor] = useState<Author | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
-  const [isLoadingMedia, setIsLoadingMedia] = useState(false);
-  const [mediaSearchQuery, setMediaSearchQuery] = useState("");
-  const [showMediaDialog, setShowMediaDialog] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export default function EditArticlePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
   const { toast } = useToast();
+  const { mutate } = useSWRConfig();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [article, setArticle] = useState<Article | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const form = useForm<AuthorFormValues>({
-    resolver: zodResolver(editAuthorSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      role: "AUTHOR",
-      image: "",
-      bio: "",
-    },
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
   });
 
+  const fetchCategoriesAndTags = async () => {
+    try {
+      const [categoriesRes, tagsRes] = await Promise.all([
+        fetch("/api/categories"),
+        fetch("/api/tags"),
+      ]);
+
+      const [categoriesData, tagsData] = await Promise.all([
+        categoriesRes.json(),
+        tagsRes.json(),
+      ]);
+
+      setCategories(categoriesData.categories);
+      setTags(tagsData.tags);
+    } catch (error) {
+      console.error("Error fetching categories and tags:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load categories and tags. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchArticle = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/articles/${id}`);
+      const data = await response.json();
+      setArticle(data.article);
+      reset({
+        ...data.article,
+        categoryId: data.article.categoryId || "",
+        tagIds: data.article.tags.map((tag: Tag) => tag.id) || [],
+      });
+    } catch (error) {
+      console.error("Error fetching article:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load article. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAuthor = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`/api/authors/${params.id}`);
+    fetchCategoriesAndTags();
+    fetchArticle();
+  }, [id]);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch author");
-        }
-
-        const data = await response.json();
-        setAuthor(data);
-
-        // Set form values
-        form.reset({
-          name: data.name || "",
-          email: data.email || "",
-          password: "",
-          role: data.role || "AUTHOR",
-          image: data.image || "",
-          bio: data.bio || "",
-        });
-      } catch (error) {
-        console.error("Error fetching author:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load author data",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    return () => {
-      fetchAuthor();
-    };
-  }, [params.id, toast, form]);
-
-  const fetchMediaItems = async () => {
+  const onSubmit = async (data: FormData) => {
+    setIsSaving(true);
     try {
-      setIsLoadingMedia(true);
-      const response = await fetch("/api/media");
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch media");
-      }
-
-      const data = await response.json();
-      setMediaItems(data);
-    } catch (error) {
-      console.error("Error fetching media:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load media files",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoadingMedia(false);
-    }
-  };
-
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    const formData = new FormData();
-    formData.append("files", files[0]);
-
-    try {
-      setIsUploading(true);
-      const response = await fetch("/api/media", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload file");
-      }
-
-      const data = await response.json();
-      if (data && data.length > 0) {
-        form.setValue("image", data[0].url);
-        // Refresh media list
-        fetchMediaItems();
-      }
-
-      toast({
-        title: "Success",
-        description: "Profile image uploaded successfully",
-      });
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      toast({
-        title: "Error",
-        description: "Failed to upload profile image",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
-      // Clear the file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
-  };
-
-  const onSubmit = async (values: AuthorFormValues) => {
-    try {
-      setIsSubmitting(true);
-
-      // Remove empty password from submission if not changed
-      const submissionValues = { ...values };
-      if (!submissionValues.password) {
-        delete submissionValues.password;
-      }
-
-      const response = await fetch(`/api/authors/${params.id}`, {
+      const response = await fetch(`/api/articles/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(submissionValues),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to update author");
+        throw new Error("Failed to save article");
       }
 
       toast({
         title: "Success",
-        description: "Author updated successfully",
+        description: "Article saved successfully.",
       });
 
-      router.push("/admin/authors");
-      router.refresh();
+      mutate(`/api/articles/${id}`);
+      router.push("/admin/articles");
     } catch (error) {
-      console.error("Error updating author:", error);
+      console.error("Error saving article:", error);
       toast({
         title: "Error",
-        description:
-          error instanceof Error ? error.message : "Failed to update author",
+        description: "Failed to save article. Please try again.",
         variant: "destructive",
       });
     } finally {
-      setIsSubmitting(false);
+      setIsSaving(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="max-w-2xl mx-auto space-y-6">
-        <Skeleton className="h-10 w-1/3" />
-        <Skeleton className="h-4 w-1/2" />
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-6 w-1/4" />
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center gap-4">
-              <Skeleton className="h-20 w-20 rounded-full" />
-              <div className="space-y-2">
-                <Skeleton className="h-5 w-40" />
-                <Skeleton className="h-4 w-32" />
-              </div>
-            </div>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="space-y-2">
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-3 w-1/2" />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this article?")) {
+      return;
+    }
 
-  if (!author) {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Author Not Found</h1>
-        <p className="text-muted-foreground mb-6">
-          The author you are trying to edit could not be found.
-        </p>
-        <Button onClick={() => router.push("/admin/authors")}>
-          Return to Authors
-        </Button>
-      </div>
-    );
-  }
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/articles/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete article");
+      }
+
+      toast({
+        title: "Success",
+        description: "Article deleted successfully.",
+      });
+
+      router.push("/admin/articles");
+    } catch (error) {
+      console.error("Error deleting article:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete article. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Edit Author</h1>
-        <p className="text-muted-foreground">Update author information</p>
+    <div className="space-y-6 container">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold tracking-tight">Edit Article</h1>
+        <Button
+          variant="destructive"
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
+          {isDeleting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Trash2 className="mr-2 h-4 w-4" />
+          )}
+          Delete Article
+        </Button>
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-4 mb-6">
-                <Avatar
-                  className="h-20 w-20 cursor-pointer"
-                  onClick={() => setShowMediaDialog(true)}
-                >
-                  <AvatarImage src={form.watch("image") || undefined} />
-                  <AvatarFallback className="text-lg">
-                    <User className="h-10 w-10" />
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="font-medium">
-                    {form.watch("name") || author.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {form.watch("email") || author.email}
-                  </p>
-                  {author._count && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {author._count.articles} articles published
-                    </p>
-                  )}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="mt-2"
-                    onClick={() => setShowMediaDialog(true)}
-                  >
-                    <ImageIcon className="mr-2 h-4 w-4" />
-                    Change Avatar
-                  </Button>
-                </div>
-              </div>
-
-              <FormField
-                control={form.control}
-                name="name"
+      {isLoading ? (
+        <div className="flex h-[300px] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Title
+              </label>
+              <Controller
+                name="title"
+                control={control}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      The author's full name as it will appear on articles.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+                  <Input {...field} id="title" placeholder="Article title" />
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="john@example.com"
-                        type="email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      The email address used for login and notifications.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Leave blank to keep current password"
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Leave blank to keep the current password.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="ADMIN">Admin</SelectItem>
-                        <SelectItem value="EDITOR">Editor</SelectItem>
-                        <SelectItem value="AUTHOR">Author</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      This determines what permissions the user will have.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profile Image</FormLabel>
-                    <div className="flex gap-2">
-                      <FormControl>
-                        <Input
-                          placeholder="https://example.com/avatar.jpg"
-                          {...field}
-                        />
-                      </FormControl>
-                      <Dialog
-                        open={showMediaDialog}
-                        onOpenChange={setShowMediaDialog}
-                      >
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            type="button"
-                            onClick={() => {
-                              if (mediaItems.length === 0) {
-                                fetchMediaItems();
-                              }
-                            }}
-                          >
-                            <ImageIcon className="h-4 w-4 mr-2" /> Browse
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-3xl">
-                          <DialogHeader>
-                            <DialogTitle>Select Profile Image</DialogTitle>
-                          </DialogHeader>
-
-                          <div className="flex items-center gap-2 mb-4">
-                            <div className="relative flex-1">
-                              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                type="search"
-                                placeholder="Search media..."
-                                className="pl-8"
-                                value={mediaSearchQuery}
-                                onChange={(e) =>
-                                  setMediaSearchQuery(e.target.value)
-                                }
-                              />
-                            </div>
-                            <Button
-                              type="button"
-                              onClick={handleUploadClick}
-                              disabled={isUploading}
-                            >
-                              {isUploading ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-                                  Uploading...
-                                </>
-                              ) : (
-                                <>
-                                  <Upload className="mr-2 h-4 w-4" /> Upload New
-                                </>
-                              )}
-                            </Button>
-                            <input
-                              type="file"
-                              ref={fileInputRef}
-                              className="hidden"
-                              onChange={handleFileChange}
-                              accept="image/*"
-                            />
-                          </div>
-
-                          <div className="h-[60vh] overflow-y-auto">
-                            {isLoadingMedia ? (
-                              <div className="grid grid-cols-3 gap-4">
-                                {[1, 2, 3, 4, 5, 6].map((i) => (
-                                  <div
-                                    key={i}
-                                    className="aspect-square bg-muted animate-pulse rounded-md"
-                                  />
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="grid grid-cols-3 gap-4">
-                                {mediaItems
-                                  .filter(
-                                    (item) =>
-                                      item.type.startsWith("image/") &&
-                                      (mediaSearchQuery
-                                        ? item.name
-                                            .toLowerCase()
-                                            .includes(
-                                              mediaSearchQuery.toLowerCase()
-                                            )
-                                        : true)
-                                  )
-                                  .map((item) => (
-                                    <div
-                                      key={item.id}
-                                      className={`relative aspect-square rounded-md cursor-pointer overflow-hidden border-2 ${
-                                        field.value === item.url
-                                          ? "border-primary"
-                                          : "border-transparent hover:border-muted"
-                                      }`}
-                                      onClick={() => {
-                                        field.onChange(item.url);
-                                        setShowMediaDialog(false);
-                                      }}
-                                    >
-                                      <Image
-                                        src={item.url}
-                                        alt={item.name}
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 33vw"
-                                        className="object-cover"
-                                      />
-                                    </div>
-                                  ))}
-                              </div>
-                            )}
-
-                            {!isLoadingMedia &&
-                              mediaItems.filter((item) =>
-                                item.type.startsWith("image/")
-                              ).length === 0 && (
-                                <div className="text-center py-12">
-                                  <ImageIcon className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
-                                  <p className="text-muted-foreground mb-4">
-                                    No images found. Upload some images first.
-                                  </p>
-                                  <Button
-                                    onClick={handleUploadClick}
-                                    disabled={isUploading}
-                                  >
-                                    {isUploading ? (
-                                      <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-                                        Uploading...
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Upload className="mr-2 h-4 w-4" />{" "}
-                                        Upload Image
-                                      </>
-                                    )}
-                                  </Button>
-                                </div>
-                              )}
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                    {field.value && (
-                      <div className="mt-2 relative h-40 w-40">
-                        <Image
-                          src={field.value}
-                          alt="Profile preview"
-                          fill
-                          className="object-cover rounded-md"
-                        />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="absolute top-2 right-2 h-6 w-6"
-                          onClick={() => field.onChange("")}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
-                    <FormDescription>
-                      Upload or select an image for the author's profile
-                      picture.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Biography</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Write a short bio about the author..."
-                        className="min-h-[100px]"
-                        value={field.value || ""}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      A brief description about the author's background.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/admin/authors")}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" /> Update Author
-                </>
+              {errors.title && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.title.message}
+                </p>
               )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="categoryId"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Category
+              </label>
+              <Controller
+                name="categoryId"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value?.[0] || undefined} // Use the first tag ID or undefined
+                    onValueChange={(value: string) => field.onChange([value])} // Wrap the selected value in an array
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.categoryId && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.categoryId.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="excerpt"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Excerpt
+            </label>
+            <Controller
+              name="excerpt"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  id="excerpt"
+                  placeholder="Article excerpt"
+                />
+              )}
+            />
+            {errors.excerpt && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.excerpt.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="content"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Content
+            </label>
+            <Controller
+              name="content"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  id="content"
+                  placeholder="Article content"
+                  rows={10}
+                />
+              )}
+            />
+            {errors.content && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.content.message}
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label
+                htmlFor="tagIds"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Tags
+              </label>
+              <Controller
+                name="tagIds"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value?.[0] || undefined}
+                    onValueChange={(value: string) => {
+                      const newValue = field.value?.includes(value)
+                        ? field.value.filter((id) => id !== value)
+                        : [...(field.value || []), value];
+                      field.onChange(newValue);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select tags" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {tags.map((tag) => (
+                        <SelectItem key={tag.id} value={tag.id}>
+                          {tag.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.tagIds && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.tagIds.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="featuredImage"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Featured Image
+              </label>
+              <Controller
+                name="featuredImage"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="featuredImage"
+                    placeholder="Image URL"
+                    value={field.value ?? ""}
+                  />
+                )}
+              />
+              {errors.featuredImage && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.featuredImage.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {article?.featuredImage && (
+            <div className="mt-4">
+              <Image
+                src={article.featuredImage}
+                alt="Featured Image"
+                width={600}
+                height={300}
+                className="rounded-md"
+              />
+            </div>
+          )}
+
+          <div className="flex justify-end">
+            <Button type="submit" disabled={isSaving}>
+              {isSaving ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Plus className="mr-2 h-4 w-4" />
+              )}
+              Save Article
             </Button>
           </div>
         </form>
-      </Form>
+      )}
     </div>
   );
 }

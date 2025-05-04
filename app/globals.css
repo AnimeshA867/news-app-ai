@@ -4,6 +4,7 @@
 /* @import "tailwindcss/typography"; */
 
 @custom-variant dark (&:is(.dark *));
+
 /* @import "/app/uploadthing.css"; */
 
 @theme inline {

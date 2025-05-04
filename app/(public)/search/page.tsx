@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, Clock, Filter } from "lucide-react";
+import { Search, Clock, Filter, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,172 +15,133 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { formatDate } from "@/lib/utils";
+import React from "react";
 
-// Mock data - would be fetched from API in production
-const allArticles = [
-  {
-    id: 1,
-    title:
-      "Global Leaders Gather for Climate Summit as Protests Erupt Worldwide",
-    excerpt:
-      "World leaders convene in Geneva to address climate crisis amid growing public pressure for immediate action.",
-    category: "Politics",
-    image: "/placeholder.svg?height=200&width=300",
-    author: "Sarah Johnson",
-    date: "2023-05-15",
-    readTime: 8,
-    slug: "global-leaders-climate-summit",
-  },
-  {
-    id: 2,
-    title:
-      "Tech Giant Unveils Revolutionary AI System That Can Predict Market Trends",
-    excerpt:
-      "New artificial intelligence platform claims to forecast economic shifts with unprecedented accuracy.",
-    category: "Technology",
-    image: "/placeholder.svg?height=200&width=300",
-    author: "Michael Chen",
-    date: "2023-05-14",
-    readTime: 6,
-    slug: "tech-giant-ai-market-prediction",
-  },
-  {
-    id: 3,
-    title: "Historic Peace Agreement Signed After Decades of Regional Conflict",
-    excerpt:
-      "Landmark treaty brings hope for stability in region plagued by generations of unrest and violence.",
-    category: "World",
-    image: "/placeholder.svg?height=200&width=300",
-    author: "Omar Al-Farsi",
-    date: "2023-05-13",
-    readTime: 7,
-    slug: "historic-peace-agreement-signed",
-  },
-  {
-    id: 4,
-    title:
-      "Breakthrough Medical Research Offers New Hope for Chronic Disease Patients",
-    excerpt:
-      "Scientists announce promising results from clinical trials of innovative treatment approach.",
-    category: "Health",
-    image: "/placeholder.svg?height=200&width=300",
-    author: "Dr. Elena Rodriguez",
-    date: "2023-05-12",
-    readTime: 5,
-    slug: "breakthrough-medical-research-chronic-disease",
-  },
-  {
-    id: 5,
-    title: "Major Sports League Announces Expansion to International Markets",
-    excerpt:
-      "Popular sports franchise reveals ambitious plans to establish teams across three continents.",
-    category: "Sports",
-    image: "/placeholder.svg?height=200&width=300",
-    author: "James Wilson",
-    date: "2023-05-11",
-    readTime: 4,
-    slug: "sports-league-international-expansion",
-  },
-  {
-    id: 6,
-    title: "Cryptocurrency Market Surges as Regulatory Clarity Emerges",
-    excerpt:
-      "Digital currency values climb following announcement of new government oversight framework.",
-    category: "Business",
-    image: "/placeholder.svg?height=200&width=300",
-    author: "Jennifer Lee",
-    date: "2023-05-10",
-    readTime: 6,
-    slug: "cryptocurrency-market-surges",
-  },
-  {
-    id: 7,
-    title: "New Study Reveals Surprising Benefits of Intermittent Fasting",
-    excerpt:
-      "Research findings challenge conventional wisdom about optimal eating patterns for health and longevity.",
-    category: "Health",
-    image: "/placeholder.svg?height=200&width=300",
-    author: "Dr. Marcus Johnson",
-    date: "2023-05-09",
-    readTime: 7,
-    slug: "benefits-intermittent-fasting",
-  },
-  {
-    id: 8,
-    title: "Major Film Studio Announces Slate of Upcoming Superhero Movies",
-    excerpt:
-      "Entertainment giant unveils ambitious five-year plan for popular comic book franchise adaptations.",
-    category: "Entertainment",
-    image: "/placeholder.svg?height=200&width=300",
-    author: "Rebecca Martinez",
-    date: "2023-05-08",
-    readTime: 5,
-    slug: "film-studio-superhero-movies",
-  },
-];
-
-const categories = [
-  "All Categories",
-  "Politics",
-  "World",
-  "Business",
-  "Technology",
-  "Entertainment",
-  "Sports",
-  "Health",
-];
+interface Article {
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  featuredImage: string | null;
+  publishedAt: string;
+  category: {
+    name: string;
+    slug: string;
+  } | null;
+  author: {
+    name: string | null;
+    image: string | null;
+  } | null;
+  viewCount: number;
+  readTime?: number;
+}
 
 export default function SearchPage() {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
+  const [categories, setCategories] = useState<
+    { id: string; name: string; slug: string }[]
+  >([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [sortBy, setSortBy] = useState("relevance");
-  const [filteredArticles, setFilteredArticles] = useState(allArticles);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
+  const [totalResults, setTotalResults] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  // Fetch categories on mount
   useEffect(() => {
-    setIsLoading(true);
+    async function fetchCategories() {
+      try {
+        const response = await fetch("/api/categories");
+        if (!response.ok) throw new Error("Failed to fetch categories");
 
-    // Simulate API call delay
-    const timer = setTimeout(() => {
-      let results = [...allArticles];
+        const data = await response.json();
+        if (data.categories && Array.isArray(data.categories)) {
+          setCategories(data.categories);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
 
-      // Filter by search query
+    fetchCategories();
+  }, []);
+
+  // Fetch articles with debounce
+  const fetchArticles = useCallback(async () => {
+    setIsSearching(true);
+    try {
+      let url = `/api/articles?page=${currentPage}&limit=10`;
+
       if (searchQuery) {
-        results = results.filter(
-          (article) =>
-            article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            article.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        url += `&query=${encodeURIComponent(searchQuery)}`;
       }
 
-      // Filter by category
-      if (selectedCategory !== "All Categories") {
-        results = results.filter(
-          (article) => article.category === selectedCategory
-        );
+      // Only add the category parameter if it's not "all"
+      if (selectedCategory && selectedCategory !== "all") {
+        url += `&category=${encodeURIComponent(selectedCategory)}`;
       }
 
-      // Sort results
       if (sortBy === "newest") {
-        results.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-        );
+        url += "&sort=desc";
       } else if (sortBy === "oldest") {
-        results.sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
+        url += "&sort=asc";
       }
-      // For "relevance", we keep the original order (assuming it's already sorted by relevance)
 
-      setFilteredArticles(results);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch articles");
+      }
+
+      const data = await response.json();
+
+      if (data.articles && Array.isArray(data.articles)) {
+        setArticles(data.articles);
+        setFilteredArticles(data.articles);
+        setTotalResults(data.meta?.total || data.articles.length);
+        setTotalPages(data.meta?.pages || 1);
+      }
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    } finally {
       setIsLoading(false);
-    }, 500);
+      setIsSearching(false);
+    }
+  }, [searchQuery, selectedCategory, sortBy, currentPage]);
+
+  // Debounce search input
+  useEffect(() => {
+    setCurrentPage(1); // Reset to first page on new search
+    const timer = setTimeout(() => {
+      fetchArticles();
+    }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, selectedCategory, sortBy]);
+  }, [searchQuery, selectedCategory, sortBy, fetchArticles]);
+
+  // Load initial articles
+  useEffect(() => {
+    fetchArticles();
+  }, [currentPage, fetchArticles]);
+
+  // Calculate estimated read time (if not provided by API)
+  const getReadTime = (article: Article) => {
+    if (article.readTime) return article.readTime;
+
+    // Estimate based on title + excerpt length (avg reading speed: 200 words/min)
+    const wordCount = (article.title + " " + article.excerpt).split(
+      /\s+/
+    ).length;
+    return Math.max(1, Math.ceil(wordCount / 200));
+  };
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container py-8">
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-6 text-3xl font-bold md:text-4xl">Search Articles</h1>
 
@@ -205,12 +166,13 @@ export default function SearchPage() {
                 onValueChange={setSelectedCategory}
               >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Category" />
+                  <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
+                    <SelectItem key={category.id} value={category.slug}>
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -224,9 +186,9 @@ export default function SearchPage() {
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="relevance">Relevance</SelectItem>
                   <SelectItem value="newest">Newest</SelectItem>
                   <SelectItem value="oldest">Oldest</SelectItem>
+                  <SelectItem value="relevant">Most Relevant</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -235,18 +197,16 @@ export default function SearchPage() {
 
         <div className="mb-4">
           <p className="text-muted-foreground">
-            {isLoading
+            {isLoading || isSearching
               ? "Searching..."
               : filteredArticles.length === 0
               ? "No results found"
-              : `Found ${filteredArticles.length} result${
-                  filteredArticles.length === 1 ? "" : "s"
-                }`}
+              : `Found ${totalResults} result${totalResults === 1 ? "" : "s"}`}
           </p>
         </div>
 
         <div className="space-y-6">
-          {isLoading ? (
+          {isLoading || isSearching ? (
             // Loading skeleton
             Array.from({ length: 3 }).map((_, index) => (
               <div
@@ -266,57 +226,93 @@ export default function SearchPage() {
             <div className="rounded-lg border p-8 text-center">
               <h2 className="mb-2 text-xl font-medium">No results found</h2>
               <p className="mb-4 text-muted-foreground">
-                Try adjusting your search or filter to find what you're looking
-                for.
+                Try adjusting your search or filter to find what you&apos;re
+                looking for.
               </p>
               <Button
                 onClick={() => {
                   setSearchQuery("");
-                  setSelectedCategory("All Categories");
-                  setSortBy("relevance");
+                  setSelectedCategory("all");
+                  setSortBy("newest");
                 }}
               >
                 Clear filters
               </Button>
             </div>
           ) : (
-            filteredArticles.map((article, index) => (
-              <motion.div
-                key={article.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
-                <Link
-                  href={`/article/${article.slug}`}
-                  className="flex gap-4 rounded-lg border p-4 transition-colors hover:bg-muted/50"
+            <>
+              {filteredArticles.map((article, index) => (
+                <motion.div
+                  key={article.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-md">
-                    <Image
-                      src={article.image || "/placeholder.svg"}
-                      alt={article.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <Badge className="mb-2">{article.category}</Badge>
-                    <h2 className="mb-1 font-bold">{article.title}</h2>
-                    <p className="mb-2 line-clamp-2 text-sm text-muted-foreground">
-                      {article.excerpt}
-                    </p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>{article.author}</span>
-                      <span>{new Date(article.date).toLocaleDateString()}</span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> {article.readTime} min
-                        read
-                      </span>
+                  <Link
+                    href={`/article/${article.slug}`}
+                    className="flex gap-4 rounded-lg border p-4 transition-colors hover:bg-muted/50"
+                  >
+                    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-md">
+                      <Image
+                        src={article.featuredImage || "/placeholder.svg"}
+                        alt={article.title}
+                        fill
+                        sizes="(max-width: 768px) 96px, 96px"
+                        className="object-cover"
+                      />
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))
+                    <div className="flex-1">
+                      {article.category && (
+                        <Badge className="mb-2">{article.category.name}</Badge>
+                      )}
+                      <h2 className="mb-1 font-bold">{article.title}</h2>
+                      <p className="mb-2 line-clamp-2 text-sm text-muted-foreground">
+                        {article.excerpt}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                        <span>{article.author?.name || "Anonymous"}</span>
+                        <span>{formatDate(article.publishedAt)}</span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" /> {getReadTime(article)}{" "}
+                          min read
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-8 flex justify-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage <= 1}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                  >
+                    Previous
+                  </Button>
+
+                  <span className="flex items-center px-2 text-sm">
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage >= totalPages}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -5,13 +5,24 @@ import { AdminStats } from "@/components/admin/admin-stats";
 import { AdminRecentArticles } from "@/components/admin/admin-recent-articles";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<any>(null);
+  interface Stats {
+    counts: {
+      articles: number;
+      publishedArticles: number;
+      categories: number;
+      tags: number;
+      users: number;
+    };
+    recentActivity: { id: string; name: string; email: string; role: string }[];
+    articleStatusCounts: { status: string; count: number }[];
+    categoryStats: { name: string; count: number }[];
+  }
+
+  const [stats, setStats] = useState<Stats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
@@ -74,7 +85,7 @@ export default function AdminDashboardPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {stats?.recentActivity.slice(0, 5).map((user: any) => (
+                {stats?.recentActivity.slice(0, 5).map((user) => (
                   <div
                     key={user.id}
                     className="flex items-center justify-between border-b pb-2"
@@ -103,7 +114,7 @@ export default function AdminDashboardPage() {
             ) : (
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-4">
-                  {stats?.articleStatusCounts.map((statusCount: any) => (
+                  {stats?.articleStatusCounts.map((statusCount) => (
                     <Card key={statusCount.status}>
                       <CardContent className="p-4">
                         <div className="text-2xl font-bold">
@@ -117,7 +128,7 @@ export default function AdminDashboardPage() {
                   ))}
                 </div>
                 <div className="space-y-2">
-                  {stats?.categoryStats.slice(0, 5).map((category: any) => (
+                  {stats?.categoryStats.slice(0, 5).map((category) => (
                     <div
                       key={category.name}
                       className="flex items-center justify-between"
