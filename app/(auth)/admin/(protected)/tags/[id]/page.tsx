@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { tagSchema } from "@/lib/validations/tag";
 import { Tag } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSWRConfig } from "swr";
+
+import { tagSchema } from "@/lib/validation/tag"; // Adjust the import path as needed
 
 const schema = tagSchema;
 
@@ -132,7 +133,11 @@ export default function EditTagPage({ params }: { params: { id: string } }) {
     <div className="space-y-6 container">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold tracking-tight">Edit Tag</h1>
-        <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+        <Button
+          variant="destructive"
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
           {isDeleting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -149,7 +154,10 @@ export default function EditTagPage({ params }: { params: { id: string } }) {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
               Name
             </label>
             <Controller
@@ -165,7 +173,10 @@ export default function EditTagPage({ params }: { params: { id: string } }) {
           </div>
 
           <div>
-            <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="slug"
+              className="block text-sm font-medium text-gray-700"
+            >
               Slug
             </label>
             <Controller
@@ -181,18 +192,28 @@ export default function EditTagPage({ params }: { params: { id: string } }) {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
               Description
             </label>
             <Controller
               name="description"
               control={control}
               render={({ field }) => (
-                <Textarea {...field} id="description" placeholder="Tag description" />
+                <Textarea
+                  {...field}
+                  id="description"
+                  placeholder="Tag description"
+                  value={field.value || ""}
+                />
               )}
             />
             {errors.description && (
-              <p className="mt-2 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-2 text-sm text-red-600">
+                {errors.description.message}
+              </p>
             )}
           </div>
 

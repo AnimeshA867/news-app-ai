@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,14 +9,18 @@ import { Loader2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { categorySchema } from "@/lib/validations/category";
-import { formatDate } from "@/lib/utils";
 import { Category } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSWRConfig } from "swr";
-import Image from "next/image";
 
 const schema = categorySchema.extend({
   parentId: z.string().optional(),
@@ -24,10 +28,14 @@ const schema = categorySchema.extend({
 
 type FormData = z.infer<typeof schema>;
 
-export default function EditCategoryPage({ params }: { params: { id: string } }) {
+export default function EditCategoryPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
   const { toast } = useToast();
-  const { data: session } = useSession();
   const { mutate } = useSWRConfig();
   const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState<Category | null>(null);
@@ -62,7 +70,7 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
   const fetchCategory = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/categories/${params.id}`);
+      const response = await fetch(`/api/categories/${id}`);
       const data = await response.json();
       setCategory(data.category);
       reset({
@@ -84,12 +92,12 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
   useEffect(() => {
     fetchCategories();
     fetchCategory();
-  }, [params.id]);
+  }, [id]);
 
   const onSubmit = async (data: FormData) => {
     setIsSaving(true);
     try {
-      const response = await fetch(`/api/categories/${params.id}`, {
+      const response = await fetch(`/api/categories/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +114,7 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
         description: "Category saved successfully.",
       });
 
-      mutate(`/api/categories/${params.id}`);
+      mutate(`/api/categories/${id}`);
       router.push("/admin/categories");
     } catch (error) {
       console.error("Error saving category:", error);
@@ -127,7 +135,7 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
 
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/categories/${params.id}`, {
+      const response = await fetch(`/api/categories/${id}`, {
         method: "DELETE",
       });
 
@@ -157,7 +165,11 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
     <div className="space-y-6 container">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold tracking-tight">Edit Category</h1>
-        <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+        <Button
+          variant="destructive"
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
           {isDeleting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -175,7 +187,10 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Name
               </label>
               <Controller
@@ -186,19 +201,24 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
                 )}
               />
               {errors.name && (
-                <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.name.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="parentId" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="parentId"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Parent Category
               </label>
               <Controller
                 name="parentId"
                 control={control}
                 render={({ field }) => (
-                  <Select {...field} id="parentId">
+                  <Select {...field}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a parent category" />
                     </SelectTrigger>
@@ -214,24 +234,36 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
                 )}
               />
               {errors.parentId && (
-                <p className="mt-2 text-sm text-red-600">{errors.parentId.message}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.parentId.message}
+                </p>
               )}
             </div>
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
               Description
             </label>
             <Controller
               name="description"
               control={control}
               render={({ field }) => (
-                <Textarea {...field} id="description" placeholder="Category description" />
+                <Textarea
+                  {...field}
+                  id="description"
+                  placeholder="Category description"
+                  value={field.value || ""}
+                />
               )}
             />
             {errors.description && (
-              <p className="mt-2 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-2 text-sm text-red-600">
+                {errors.description.message}
+              </p>
             )}
           </div>
 

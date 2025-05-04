@@ -83,7 +83,8 @@ export default function SignupPage() {
     } catch (error: unknown) {
       toast({
         title: "Sign up failed",
-        description: (error as Error).message || "An error occurred during sign up",
+        description:
+          (error as Error).message || "An error occurred during sign up",
         variant: "destructive",
       });
     } finally {

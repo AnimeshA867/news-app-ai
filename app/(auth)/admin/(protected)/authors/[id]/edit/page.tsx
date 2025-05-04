@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,26 +9,38 @@ import { Loader2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { articleSchema } from "@/lib/validations/article";
-import { formatDate } from "@/lib/utils";
+// import { formatDate } from "@/lib/utils";
 import { Article, Category, Tag } from "@prisma/client";
-import { useSession } from "next-auth/react";
 import { useSWRConfig } from "swr";
 import Image from "next/image";
 
 const schema = articleSchema.extend({
   categoryId: z.string().nonempty("Category is required"),
   tagIds: z.array(z.string()).optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "SCHEDULED"]),
+  isBreakingNews: z.boolean(),
+  isFeatured: z.boolean(),
 });
 
 type FormData = z.infer<typeof schema>;
 
-export default function EditArticlePage({ params }: { params: { id: string } }) {
+export default function EditArticlePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
   const { toast } = useToast();
-  const { data: session } = useSession();
   const { mutate } = useSWRConfig();
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
@@ -73,7 +85,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const fetchArticle = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/articles/${params.id}`);
+      const response = await fetch(`/api/articles/${id}`);
       const data = await response.json();
       setArticle(data.article);
       reset({
@@ -96,12 +108,12 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   useEffect(() => {
     fetchCategoriesAndTags();
     fetchArticle();
-  }, [params.id]);
+  }, [id]);
 
   const onSubmit = async (data: FormData) => {
     setIsSaving(true);
     try {
-      const response = await fetch(`/api/articles/${params.id}`, {
+      const response = await fetch(`/api/articles/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -118,7 +130,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
         description: "Article saved successfully.",
       });
 
-      mutate(`/api/articles/${params.id}`);
+      mutate(`/api/articles/${id}`);
       router.push("/admin/articles");
     } catch (error) {
       console.error("Error saving article:", error);
@@ -139,7 +151,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
 
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/articles/${params.id}`, {
+      const response = await fetch(`/api/articles/${id}`, {
         method: "DELETE",
       });
 
@@ -169,7 +181,11 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     <div className="space-y-6 container">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold tracking-tight">Edit Article</h1>
-        <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+        <Button
+          variant="destructive"
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
           {isDeleting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -187,7 +203,10 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Title
               </label>
               <Controller
@@ -198,19 +217,27 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                 )}
               />
               {errors.title && (
-                <p className="mt-2 text-sm text-red-600">{errors.title.message}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="categoryId"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Category
               </label>
               <Controller
                 name="categoryId"
                 control={control}
                 render={({ field }) => (
-                  <Select {...field} id="categoryId">
+                  <Select
+                    value={field.value?.[0] || undefined} // Use the first tag ID or undefined
+                    onValueChange={(value: string) => field.onChange([value])} // Wrap the selected value in an array
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
@@ -225,53 +252,85 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                 )}
               />
               {errors.categoryId && (
-                <p className="mt-2 text-sm text-red-600">{errors.categoryId.message}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.categoryId.message}
+                </p>
               )}
             </div>
           </div>
 
           <div>
-            <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="excerpt"
+              className="block text-sm font-medium text-gray-700"
+            >
               Excerpt
             </label>
             <Controller
               name="excerpt"
               control={control}
               render={({ field }) => (
-                <Textarea {...field} id="excerpt" placeholder="Article excerpt" />
+                <Textarea
+                  {...field}
+                  id="excerpt"
+                  placeholder="Article excerpt"
+                />
               )}
             />
             {errors.excerpt && (
-              <p className="mt-2 text-sm text-red-600">{errors.excerpt.message}</p>
+              <p className="mt-2 text-sm text-red-600">
+                {errors.excerpt.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="content"
+              className="block text-sm font-medium text-gray-700"
+            >
               Content
             </label>
             <Controller
               name="content"
               control={control}
               render={({ field }) => (
-                <Textarea {...field} id="content" placeholder="Article content" rows={10} />
+                <Textarea
+                  {...field}
+                  id="content"
+                  placeholder="Article content"
+                  rows={10}
+                />
               )}
             />
             {errors.content && (
-              <p className="mt-2 text-sm text-red-600">{errors.content.message}</p>
+              <p className="mt-2 text-sm text-red-600">
+                {errors.content.message}
+              </p>
             )}
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <label htmlFor="tagIds" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="tagIds"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Tags
               </label>
               <Controller
                 name="tagIds"
                 control={control}
                 render={({ field }) => (
-                  <Select {...field} id="tagIds" multiple>
+                  <Select
+                    value={field.value?.[0] || undefined}
+                    onValueChange={(value: string) => {
+                      const newValue = field.value?.includes(value)
+                        ? field.value.filter((id) => id !== value)
+                        : [...(field.value || []), value];
+                      field.onChange(newValue);
+                    }}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select tags" />
                     </SelectTrigger>
@@ -286,23 +345,35 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
                 )}
               />
               {errors.tagIds && (
-                <p className="mt-2 text-sm text-red-600">{errors.tagIds.message}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.tagIds.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="featuredImage" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="featuredImage"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Featured Image
               </label>
               <Controller
                 name="featuredImage"
                 control={control}
                 render={({ field }) => (
-                  <Input {...field} id="featuredImage" placeholder="Image URL" />
+                  <Input
+                    {...field}
+                    id="featuredImage"
+                    placeholder="Image URL"
+                    value={field.value ?? ""}
+                  />
                 )}
               />
               {errors.featuredImage && (
-                <p className="mt-2 text-sm text-red-600">{errors.featuredImage.message}</p>
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.featuredImage.message}
+                </p>
               )}
             </div>
           </div>

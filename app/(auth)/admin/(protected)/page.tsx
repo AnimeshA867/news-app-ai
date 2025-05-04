@@ -9,7 +9,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState(null);
+  interface Stats {
+    counts: {
+      articles: number;
+      publishedArticles: number;
+      categories: number;
+      tags: number;
+      users: number;
+    };
+    recentActivity: { id: string; name: string; email: string; role: string }[];
+    articleStatusCounts: { status: string; count: number }[];
+    categoryStats: { name: string; count: number }[];
+  }
+
+  const [stats, setStats] = useState<Stats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 

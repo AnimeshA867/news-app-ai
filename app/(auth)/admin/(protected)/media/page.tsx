@@ -29,6 +29,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { formatBytes } from "@/lib/utils";
+import { Card, CardFooter } from "@/components/ui/card";
 
 interface MediaItem {
   id: string;
