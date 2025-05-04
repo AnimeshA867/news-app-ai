@@ -89,7 +89,7 @@ export default function TagsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 container">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Tags</h1>
         <Button asChild>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, X, ImageIcon, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -28,7 +28,15 @@ import {
 import { TipTapEditor } from "@/components/editor/tiptap-editor";
 import { useToast } from "@/hooks/use-toast";
 import { MultiSelect } from "@/components/ui/multi-select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import React from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const articleSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -39,9 +47,19 @@ const articleSchema = z.object({
   tagIds: z.array(z.string()).optional(),
   featuredImage: z.string().optional(),
   status: z.enum(["DRAFT", "PUBLISHED", "SCHEDULED"]),
+  isBreakingNews: z.boolean().optional(),
 });
 
 type ArticleFormValues = z.infer<typeof articleSchema>;
+
+interface MediaItem {
+  id: string;
+  name: string;
+  url: string;
+  type: string;
+  size: number;
+  createdAt: string;
+}
 
 export default function EditArticlePage({
   params,
@@ -60,6 +78,10 @@ export default function EditArticlePage({
     []
   );
   const [tags, setTags] = useState<{ id: string; name: string }[]>([]);
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [isLoadingMedia, setIsLoadingMedia] = useState(false);
+  const [mediaSearchQuery, setMediaSearchQuery] = useState("");
+  const [showMediaDialog, setShowMediaDialog] = useState(false);
 
   const form = useForm<ArticleFormValues>({
     resolver: zodResolver(articleSchema),
@@ -72,6 +94,7 @@ export default function EditArticlePage({
       tagIds: [],
       featuredImage: "",
       status: "DRAFT",
+      isBreakingNews: false,
     },
   });
 
@@ -102,6 +125,7 @@ export default function EditArticlePage({
             tagIds: articleData.tags.map((tag: any) => tag.id),
             featuredImage: articleData.featuredImage || "",
             status: articleData.status,
+            isBreakingNews: articleData.isBreakingNews || false,
           });
         }
       } catch (error) {
@@ -115,9 +139,33 @@ export default function EditArticlePage({
         setIsFetching(false);
       }
     };
-
-    fetchData();
+    return () => {
+      fetchData();
+    };
   }, [id, form, toast]);
+
+  const fetchMediaItems = async () => {
+    try {
+      setIsLoadingMedia(true);
+      const response = await fetch("/api/media");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch media");
+      }
+
+      const data = await response.json();
+      setMediaItems(data);
+    } catch (error) {
+      console.error("Error fetching media:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load media files",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingMedia(false);
+    }
+  };
 
   const onSubmit = async (data: ArticleFormValues) => {
     setIsLoading(true);
@@ -183,7 +231,7 @@ export default function EditArticlePage({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 container">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">
           {id === "new" ? "Create Article" : "Edit Article"}
@@ -268,6 +316,54 @@ export default function EditArticlePage({
                   <FormDescription>
                     URL to the main image for this article.
                   </FormDescription>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={fetchMediaItems}
+                      >
+                        <ImageIcon className="mr-2 h-4 w-4" /> Select Media
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Select Media</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <Input
+                          placeholder="Search media..."
+                          value={mediaSearchQuery}
+                          onChange={(e) => setMediaSearchQuery(e.target.value)}
+                        />
+                        <div className="grid grid-cols-3 gap-4">
+                          {mediaItems
+                            .filter((item) =>
+                              item.name
+                                .toLowerCase()
+                                .includes(mediaSearchQuery.toLowerCase())
+                            )
+                            .map((item) => (
+                              <div
+                                key={item.id}
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  form.setValue("featuredImage", item.url);
+                                  setShowMediaDialog(false);
+                                }}
+                              >
+                                <img
+                                  src={item.url}
+                                  alt={item.name}
+                                  className="w-full h-auto"
+                                />
+                                <p className="text-sm">{item.name}</p>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                   <FormMessage />
                 </FormItem>
               )}
@@ -348,6 +444,28 @@ export default function EditArticlePage({
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="isBreakingNews"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Breaking News</FormLabel>
+                    <FormDescription>
+                      Mark this article as breaking news to display it in the
+                      breaking news bar.
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />

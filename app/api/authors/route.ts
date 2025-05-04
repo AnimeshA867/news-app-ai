@@ -20,6 +20,9 @@ export async function GET() {
         image: true,
         role: true,
         createdAt: true,
+        _count: {
+          select: { articles: true },
+        },
       },
       orderBy: {
         name: "asc",
@@ -45,7 +48,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, email, password, role, image } = await req.json();
+    const { name, email, password, role, image, bio } = await req.json();
 
     // Check if author with email already exists
     const existingAuthor = await prisma.user.findUnique({
@@ -67,8 +70,9 @@ export async function POST(req: Request) {
         name,
         email,
         password: hashedPassword,
-        role,
+        role: role || "AUTHOR",
         image,
+        bio,
       },
       select: {
         id: true,
@@ -76,6 +80,7 @@ export async function POST(req: Request) {
         email: true,
         role: true,
         image: true,
+        bio: true,
         createdAt: true,
       },
     });

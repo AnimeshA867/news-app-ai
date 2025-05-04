@@ -23,7 +23,11 @@ export async function GET(
         email: true,
         role: true,
         image: true,
+        bio: true,
         createdAt: true,
+        _count: {
+          select: { articles: true },
+        },
       },
     });
 
@@ -56,7 +60,7 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, email, password, role, image } = await req.json();
+    const { name, email, password, role, image, bio } = await req.json();
 
     // Only admins can change roles
     if (role && session.user.role !== "ADMIN") {
@@ -89,6 +93,7 @@ export async function PUT(
     if (email) updateData.email = email;
     if (role && session.user.role === "ADMIN") updateData.role = role;
     if (image) updateData.image = image;
+    if (bio !== undefined) updateData.bio = bio;
 
     // Handle password update if provided
     if (password) {
@@ -104,6 +109,7 @@ export async function PUT(
         email: true,
         role: true,
         image: true,
+        bio: true,
         createdAt: true,
       },
     });
@@ -128,6 +134,29 @@ export async function DELETE(
 
     if (!session?.user || session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Check if author has articles
+    const authorWithArticles = await prisma.user.findUnique({
+      where: { id: params.id },
+      select: {
+        _count: {
+          select: { articles: true },
+        },
+      },
+    });
+
+    if (
+      authorWithArticles?._count.articles &&
+      authorWithArticles._count.articles > 0
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Cannot delete author with articles. Reassign or delete their articles first.",
+        },
+        { status: 400 }
+      );
     }
 
     // Prevent deleting the last admin

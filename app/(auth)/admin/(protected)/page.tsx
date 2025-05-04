@@ -38,7 +38,6 @@ export default function AdminDashboardPage() {
         setIsLoading(false);
       }
     };
-
     fetchStats();
   }, [toast]);
 

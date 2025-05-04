@@ -5,17 +5,28 @@ import { prisma } from "@/lib/prisma";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const page = Number.parseInt(searchParams.get("page") || "1");
-    const limit = Number.parseInt(searchParams.get("limit") || "10");
-    const category = searchParams.get("category");
-    const tag = searchParams.get("tag");
-    const search = searchParams.get("search");
-    const status = searchParams.get("status");
 
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "10", 10);
     const skip = (page - 1) * limit;
 
-    // Build the where clause based on query parameters
-    const where: any = {};
+    const query = searchParams.get("query") || "";
+    const category = searchParams.get("category") || "";
+    const tag = searchParams.get("tag") || "";
+    const author = searchParams.get("author") || "";
+    const breaking = searchParams.get("breaking") === "true";
+    const featured = searchParams.get("featured") === "true";
+
+    // Build where conditions
+    const where: any = { status: "PUBLISHED" };
+
+    if (query) {
+      where.OR = [
+        { title: { contains: query, mode: "insensitive" } },
+        { excerpt: { contains: query, mode: "insensitive" } },
+        { content: { contains: query, mode: "insensitive" } },
+      ];
+    }
 
     if (category) {
       where.category = {
@@ -31,33 +42,46 @@ export async function GET(req: NextRequest) {
       };
     }
 
-    if (search) {
-      where.OR = [
-        { title: { contains: search, mode: "insensitive" } },
-        { excerpt: { contains: search, mode: "insensitive" } },
-        { content: { contains: search, mode: "insensitive" } },
-      ];
+    if (author) {
+      where.author = {
+        id: author,
+      };
     }
 
-    if (status) {
-      where.status = status;
-    } else {
-      // By default, only show published articles
-      where.status = "PUBLISHED";
+    if (breaking) {
+      where.isBreakingNews = true;
     }
 
+    if (featured) {
+      where.isFeatured = true;
+    }
+
+    // Get total count
+    const totalCount = await prisma.article.count({ where });
+
+    // Get articles
     const articles = await prisma.article.findMany({
       where,
       include: {
+        category: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
         author: {
           select: {
-            id: true,
             name: true,
             image: true,
           },
         },
-        category: true,
-        tags: true,
+        tags: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
       },
       orderBy: {
         publishedAt: "desc",
@@ -66,15 +90,15 @@ export async function GET(req: NextRequest) {
       take: limit,
     });
 
-    const total = await prisma.article.count({ where });
+    const totalPages = Math.ceil(totalCount / limit);
 
     return NextResponse.json({
       articles,
       meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
+        total: totalCount,
+        pages: totalPages,
+        page: page,
+        limit: limit,
       },
     });
   } catch (error) {

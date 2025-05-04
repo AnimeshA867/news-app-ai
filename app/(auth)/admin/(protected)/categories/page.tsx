@@ -41,7 +41,9 @@ export default function CategoriesPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchCategories();
+    return () => {
+      fetchCategories();
+    };
   }, []);
 
   async function fetchCategories() {
@@ -90,7 +92,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 container">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Categories</h1>
         <Button asChild>

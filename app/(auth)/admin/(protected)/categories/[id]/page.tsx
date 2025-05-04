@@ -70,7 +70,10 @@ export default function CategoryPage({ params }: { params: { id: string } }) {
           setIsFetching(false);
         }
       };
-      fetchCategory();
+
+      return () => {
+        fetchCategory();
+      };
     }
   }, [id, isNew, form, router, toast]);
 
