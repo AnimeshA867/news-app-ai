@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     });
 
     // Return success without exposing password
-    const { password: _, ...userWithoutPassword } = user;
+    const { password, ...userWithoutPassword } = user;
     return NextResponse.json(
       { message: "User created successfully", user: userWithoutPassword },
       { status: 201 }

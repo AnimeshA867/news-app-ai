@@ -2,111 +2,78 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Save } from "lucide-react";
-
+import { z } from "zod";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import React from "react";
+import { categorySchema } from "@/lib/validations/category";
+import { formatDate } from "@/lib/utils";
+import { Category } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { useSWRConfig } from "swr";
+import Image from "next/image";
 
-const categorySchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  slug: z.string().min(1, "Slug is required"),
-  description: z.string().optional(),
+const schema = categorySchema.extend({
+  parentId: z.string().optional(),
 });
 
-type CategoryFormValues = z.infer<typeof categorySchema>;
+type FormData = z.infer<typeof schema>;
 
-export default function CategoryPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const isNew = id === "new";
+export default function EditCategoryPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFetching, setIsFetching] = useState(!isNew);
+  const { data: session } = useSession();
+  const { mutate } = useSWRConfig();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [category, setCategory] = useState<Category | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(categorySchema),
-    defaultValues: {
-      name: "",
-      slug: "",
-      description: "",
-    },
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
   });
 
-  useEffect(() => {
-    if (!isNew) {
-      const fetchCategory = async () => {
-        try {
-          const res = await fetch(`/api/categories/${id}`);
-          if (!res.ok) throw new Error("Failed to fetch category");
-          const data = await res.json();
-          form.reset({
-            name: data.name,
-            slug: data.slug,
-            description: data.description || "",
-          });
-        } catch (error) {
-          toast({
-            title: "Error",
-            description: "Failed to load category data",
-            variant: "destructive",
-          });
-          router.push("/admin/categories");
-        } finally {
-          setIsFetching(false);
-        }
-      };
-
-      return () => {
-        fetchCategory();
-      };
-    }
-  }, [id, isNew, form, router, toast]);
-
-  const onSubmit = async (values: CategoryFormValues) => {
+  const fetchCategories = async () => {
     try {
-      setIsLoading(true);
-      const url = isNew ? "/api/categories" : `/api/categories/${id}`;
-      const method = isNew ? "POST" : "PUT";
-
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Failed to save category");
-      }
-
-      toast({
-        title: "Success",
-        description: isNew
-          ? "Category created successfully"
-          : "Category updated successfully",
-      });
-      router.push("/admin/categories");
-    } catch (error: any) {
+      const response = await fetch("/api/categories");
+      const data = await response.json();
+      setCategories(data.categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
       toast({
         title: "Error",
-        description: error.message || "An error occurred",
+        description: "Failed to load categories. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchCategory = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/categories/${params.id}`);
+      const data = await response.json();
+      setCategory(data.category);
+      reset({
+        ...data.category,
+        parentId: data.category.parentId || "",
+      });
+    } catch (error) {
+      console.error("Error fetching category:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load category. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -114,118 +81,172 @@ export default function CategoryPage({ params }: { params: { id: string } }) {
     }
   };
 
-  // Helper function to generate slug from name
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[^\w\s]/g, "")
-      .replace(/\s+/g, "-");
+  useEffect(() => {
+    fetchCategories();
+    fetchCategory();
+  }, [params.id]);
+
+  const onSubmit = async (data: FormData) => {
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/categories/${params.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save category");
+      }
+
+      toast({
+        title: "Success",
+        description: "Category saved successfully.",
+      });
+
+      mutate(`/api/categories/${params.id}`);
+      router.push("/admin/categories");
+    } catch (error) {
+      console.error("Error saving category:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save category. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  if (isFetching) {
-    return (
-      <div className="flex h-[400px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this category?")) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/categories/${params.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete category");
+      }
+
+      toast({
+        title: "Success",
+        description: "Category deleted successfully.",
+      });
+
+      router.push("/admin/categories");
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete category. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <h1 className="text-3xl font-bold">
-        {isNew ? "Create New Category" : "Edit Category"}
-      </h1>
+    <div className="space-y-6 container">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold tracking-tight">Edit Category</h1>
+        <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+          {isDeleting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Trash2 className="mr-2 h-4 w-4" />
+          )}
+          Delete Category
+        </Button>
+      </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Category name"
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      if (isNew) {
-                        form.setValue("slug", generateSlug(e.target.value));
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormDescription>
-                  The display name of the category.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Slug</FormLabel>
-                <FormControl>
-                  <Input placeholder="category-slug" {...field} />
-                </FormControl>
-                <FormDescription>
-                  URL-friendly version of the name. Used in URLs.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Describe the category"
-                    {...field}
-                    rows={4}
-                  />
-                </FormControl>
-                <FormDescription>
-                  An optional description of the category.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex items-center gap-2">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Category
-                </>
+      {isLoading ? (
+        <div className="flex h-[300px] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Name
+              </label>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <Input {...field} id="name" placeholder="Category name" />
+                )}
+              />
+              {errors.name && (
+                <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>
               )}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/admin/categories")}
-            >
-              Cancel
+            </div>
+
+            <div>
+              <label htmlFor="parentId" className="block text-sm font-medium text-gray-700">
+                Parent Category
+              </label>
+              <Controller
+                name="parentId"
+                control={control}
+                render={({ field }) => (
+                  <Select {...field} id="parentId">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a parent category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">None</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.parentId && (
+                <p className="mt-2 text-sm text-red-600">{errors.parentId.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Textarea {...field} id="description" placeholder="Category description" />
+              )}
+            />
+            {errors.description && (
+              <p className="mt-2 text-sm text-red-600">{errors.description.message}</p>
+            )}
+          </div>
+
+          <div className="flex justify-end">
+            <Button type="submit" disabled={isSaving}>
+              {isSaving ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Plus className="mr-2 h-4 w-4" />
+              )}
+              Save Category
             </Button>
           </div>
         </form>
-      </Form>
+      )}
     </div>
   );
 }

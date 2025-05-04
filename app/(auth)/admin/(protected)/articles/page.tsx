@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Loader2,
   Plus,
@@ -60,7 +59,6 @@ interface Article {
 }
 
 export default function ArticlesPage() {
-  const router = useRouter();
   const { toast } = useToast();
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -101,7 +99,7 @@ export default function ArticlesPage() {
 
   useEffect(() => {
     fetchArticles();
-  }, [currentPage, searchQuery, statusFilter]);
+  }, [currentPage, searchQuery, statusFilter, fetchArticles]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this article?")) {

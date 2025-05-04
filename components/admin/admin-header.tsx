@@ -83,7 +83,7 @@ export function AdminHeader() {
             <DropdownMenuLabel>Notifications</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              New comment on "Global Climate Summit"
+              New comment on &quot;Global Climate Summit&quot;
             </DropdownMenuItem>
             <DropdownMenuItem>
               New user registration: john.doe@example.com

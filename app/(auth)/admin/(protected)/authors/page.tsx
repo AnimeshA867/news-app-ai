@@ -7,7 +7,6 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
-  Eye,
   Loader2,
   Search,
   UserPlus,

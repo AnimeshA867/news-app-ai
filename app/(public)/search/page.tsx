@@ -266,7 +266,7 @@ export default function SearchPage() {
             <div className="rounded-lg border p-8 text-center">
               <h2 className="mb-2 text-xl font-medium">No results found</h2>
               <p className="mb-4 text-muted-foreground">
-                Try adjusting your search or filter to find what you're looking
+                Try adjusting your search or filter to find what you&apos;re looking
                 for.
               </p>
               <Button

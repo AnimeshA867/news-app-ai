@@ -6,7 +6,7 @@ import path from "path";
 import { existsSync } from "fs";
 
 // GET all media
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const session = await getAuthSession();
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -59,7 +59,6 @@ export default function NewAuthorPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
-  const [isLoadingMedia, setIsLoadingMedia] = useState(false);
   const [mediaSearchQuery, setMediaSearchQuery] = useState("");
   const [showMediaDialog, setShowMediaDialog] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -80,7 +79,6 @@ export default function NewAuthorPage() {
 
   const fetchMediaItems = async () => {
     try {
-      setIsLoadingMedia(true);
       const response = await fetch("/api/media");
 
       if (!response.ok) {
@@ -96,8 +94,6 @@ export default function NewAuthorPage() {
         description: "Failed to load media files",
         variant: "destructive",
       });
-    } finally {
-      setIsLoadingMedia(false);
     }
   };
 
@@ -240,7 +236,7 @@ export default function NewAuthorPage() {
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>
                     <FormDescription>
-                      The author's full name as it will appear on articles.
+                      The author&apos;s full name as it will appear on articles.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -392,14 +388,28 @@ export default function NewAuthorPage() {
                           </div>
 
                           <div className="h-[60vh] overflow-y-auto">
-                            {isLoadingMedia ? (
-                              <div className="grid grid-cols-3 gap-4">
-                                {[1, 2, 3, 4, 5, 6].map((i) => (
-                                  <div
-                                    key={i}
-                                    className="aspect-square bg-muted animate-pulse rounded-md"
-                                  />
-                                ))}
+                            {mediaItems.length === 0 ? (
+                              <div className="text-center py-12">
+                                <ImageIcon className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
+                                <p className="text-muted-foreground mb-4">
+                                  No images found. Upload some images first.
+                                </p>
+                                <Button
+                                  onClick={handleUploadClick}
+                                  disabled={isUploading}
+                                >
+                                  {isUploading ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                                      Uploading...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Upload className="mr-2 h-4 w-4" /> Upload
+                                      Image
+                                    </>
+                                  )}
+                                </Button>
                               </div>
                             ) : (
                               <div className="grid grid-cols-3 gap-4">
@@ -439,34 +449,6 @@ export default function NewAuthorPage() {
                                   ))}
                               </div>
                             )}
-
-                            {!isLoadingMedia &&
-                              mediaItems.filter((item) =>
-                                item.type.startsWith("image/")
-                              ).length === 0 && (
-                                <div className="text-center py-12">
-                                  <ImageIcon className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
-                                  <p className="text-muted-foreground mb-4">
-                                    No images found. Upload some images first.
-                                  </p>
-                                  <Button
-                                    onClick={handleUploadClick}
-                                    disabled={isUploading}
-                                  >
-                                    {isUploading ? (
-                                      <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-                                        Uploading...
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Upload className="mr-2 h-4 w-4" />{" "}
-                                        Upload Image
-                                      </>
-                                    )}
-                                  </Button>
-                                </div>
-                              )}
                           </div>
                         </DialogContent>
                       </Dialog>
@@ -491,7 +473,7 @@ export default function NewAuthorPage() {
                       </div>
                     )}
                     <FormDescription>
-                      Upload or select an image for the author's profile
+                      Upload or select an image for the author&apos;s profile
                       picture.
                     </FormDescription>
                     <FormMessage />
@@ -513,7 +495,7 @@ export default function NewAuthorPage() {
                       />
                     </FormControl>
                     <FormDescription>
-                      A brief description about the author's background.
+                      A brief description about the author&apos;s background.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

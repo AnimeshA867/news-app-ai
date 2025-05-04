@@ -3,11 +3,8 @@ import { getAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
 
-// GET single author
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+// GET author by ID
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getAuthSession();
 
@@ -21,8 +18,8 @@ export async function GET(
         id: true,
         name: true,
         email: true,
-        role: true,
         image: true,
+        role: true,
         bio: true,
         createdAt: true,
         _count: {
@@ -45,64 +42,45 @@ export async function GET(
   }
 }
 
-// PUT (update) author
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+// PUT update author by ID
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getAuthSession();
 
-    if (
-      !session?.user ||
-      (session.user.role !== "ADMIN" && session.user.id !== params.id)
-    ) {
+    if (!session?.user || session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, email, password, role, image, bio } = await req.json();
+    const data = await req.json();
 
-    // Only admins can change roles
-    if (role && session.user.role !== "ADMIN") {
+    // Check if author with email already exists
+    const existingAuthor = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingAuthor && existingAuthor.id !== params.id) {
       return NextResponse.json(
-        { error: "Unauthorized to change role" },
-        { status: 403 }
+        { error: "A user with this email already exists" },
+        { status: 400 }
       );
     }
 
-    // Check if email is already taken by a different user
-    if (email) {
-      const existingUser = await prisma.user.findFirst({
-        where: {
-          email,
-          NOT: { id: params.id },
-        },
-      });
-
-      if (existingUser) {
-        return NextResponse.json(
-          { error: "A user with this email already exists" },
-          { status: 400 }
-        );
-      }
+    // Hash password if provided
+    let hashedPassword;
+    if (data.password) {
+      hashedPassword = await hash(data.password, 12);
     }
 
-    // Prepare update data
-    const updateData: any = {};
-    if (name) updateData.name = name;
-    if (email) updateData.email = email;
-    if (role && session.user.role === "ADMIN") updateData.role = role;
-    if (image) updateData.image = image;
-    if (bio !== undefined) updateData.bio = bio;
-
-    // Handle password update if provided
-    if (password) {
-      updateData.password = await hash(password, 12);
-    }
-
-    const author = await prisma.user.update({
+    const updatedAuthor = await prisma.user.update({
       where: { id: params.id },
-      data: updateData,
+      data: {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword || undefined,
+        role: data.role,
+        image: data.image,
+        bio: data.bio,
+      },
       select: {
         id: true,
         name: true,
@@ -114,7 +92,7 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json(author);
+    return NextResponse.json(updatedAuthor);
   } catch (error) {
     console.error("Error updating author:", error);
     return NextResponse.json(
@@ -124,11 +102,8 @@ export async function PUT(
   }
 }
 
-// DELETE author
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+// DELETE author by ID
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getAuthSession();
 
@@ -136,48 +111,11 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if author has articles
-    const authorWithArticles = await prisma.user.findUnique({
-      where: { id: params.id },
-      select: {
-        _count: {
-          select: { articles: true },
-        },
-      },
-    });
-
-    if (
-      authorWithArticles?._count.articles &&
-      authorWithArticles._count.articles > 0
-    ) {
-      return NextResponse.json(
-        {
-          error:
-            "Cannot delete author with articles. Reassign or delete their articles first.",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Prevent deleting the last admin
-    if (params.id === session.user.id) {
-      const adminCount = await prisma.user.count({
-        where: { role: "ADMIN" },
-      });
-
-      if (adminCount <= 1) {
-        return NextResponse.json(
-          { error: "Cannot delete the last admin user" },
-          { status: 400 }
-        );
-      }
-    }
-
     await prisma.user.delete({
       where: { id: params.id },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ message: "Author deleted successfully" });
   } catch (error) {
     console.error("Error deleting author:", error);
     return NextResponse.json(
