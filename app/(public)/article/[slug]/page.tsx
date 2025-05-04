@@ -18,9 +18,9 @@ import { formatDate, calculateReadTime } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 
 interface ArticlePageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({

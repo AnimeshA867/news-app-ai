@@ -2,19 +2,20 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import { ChevronRight, Clock } from "lucide-react";
+// Removed unused import
+import { ChevronRight } from "lucide-react"; // Removed unused 'Clock'
 
 import { prisma } from "@/lib/prisma";
-import { formatDate } from "@/lib/utils";
+// Removed unused import
 import { ArticleCard } from "@/components/article-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// Fix the interface definition
 interface CategoryPageProps {
-  params: Promise<{
+  params: {
     slug: string;
-  }>;
+  };
   searchParams: {
     page?: string;
   };
@@ -23,7 +24,7 @@ interface CategoryPageProps {
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params; // Removed unnecessary 'await'
 
   const category = await prisma.category.findUnique({
     where: { slug },
@@ -47,9 +48,10 @@ export default async function CategoryPage({
   params,
   searchParams,
 }: CategoryPageProps) {
-  const { page: search } = await searchParams;
-  const { slug } = await params;
-  const page = Number(search) || 1;
+  // Remove await from these lines
+  const { page: pageParam } = searchParams;
+  const { slug } = params; // Removed unnecessary 'await'
+  const page = Number(pageParam) || 1;
   const pageSize = 9;
 
   // Fetch category and its articles

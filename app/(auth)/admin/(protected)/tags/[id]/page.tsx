@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,7 +20,12 @@ const schema = tagSchema;
 
 type FormData = z.infer<typeof schema>;
 
-export default function EditTagPage({ params }: { params: { id: string } }) {
+export default function EditTagPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const router = useRouter();
   const { toast } = useToast();
   const { data: session } = useSession();
@@ -42,7 +47,7 @@ export default function EditTagPage({ params }: { params: { id: string } }) {
   const fetchTag = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/tags/${params.id}`);
+      const response = await fetch(`/api/tags/${id}`);
       const data = await response.json();
       setTag(data.tag);
       reset(data.tag);
@@ -60,12 +65,12 @@ export default function EditTagPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     fetchTag();
-  }, [params.id]);
+  }, [id]);
 
   const onSubmit = async (data: FormData) => {
     setIsSaving(true);
     try {
-      const response = await fetch(`/api/tags/${params.id}`, {
+      const response = await fetch(`/api/tags/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +87,7 @@ export default function EditTagPage({ params }: { params: { id: string } }) {
         description: "Tag saved successfully.",
       });
 
-      mutate(`/api/tags/${params.id}`);
+      mutate(`/api/tags/${id}`);
       router.push("/admin/tags");
     } catch (error) {
       console.error("Error saving tag:", error);
@@ -103,7 +108,7 @@ export default function EditTagPage({ params }: { params: { id: string } }) {
 
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/tags/${params.id}`, {
+      const response = await fetch(`/api/tags/${id}`, {
         method: "DELETE",
       });
 
