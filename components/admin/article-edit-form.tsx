@@ -679,14 +679,15 @@ export default function ArticleEditForm({
           <div
             className={`mt-1 border-2 border-dashed rounded-lg p-4 text-center ${
               dragActive ? "border-primary bg-primary/10" : "border-gray-300"
-            }`}
+            } cursor-pointer`}
             onDragEnter={handleDrag}
             onDragOver={handleDrag}
             onDragLeave={handleDrag}
             onDrop={handleDrop}
+            onClick={() => document.getElementById("file-upload")?.click()}
           >
             {featuredImageUrl ? (
-              <div className="space-y-4">
+              <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
                 <div className="relative aspect-video w-full max-w-2xl mx-auto rounded-md overflow-hidden">
                   <Image
                     src={featuredImageUrl}
@@ -699,7 +700,8 @@ export default function ArticleEditForm({
                     variant="destructive"
                     size="icon"
                     className="absolute top-2 right-2 h-8 w-8"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setValue("featuredImage", "");
                     }}
                   >
@@ -723,6 +725,7 @@ export default function ArticleEditForm({
                         id="featuredImageAlt"
                         placeholder="Describe the image for screen readers and SEO"
                         value={field.value || ""}
+                        onClick={(e) => e.stopPropagation()}
                       />
                     )}
                   />
@@ -742,28 +745,23 @@ export default function ArticleEditForm({
             ) : (
               <div className="py-8">
                 <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer rounded-md bg-white font-semibold text-primary hover:text-primary-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      className="sr-only"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                    />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
-                </div>
+                <p className="mt-4 text-sm text-gray-600">
+                  Click or drag and drop an image
+                </p>
                 <p className="text-xs text-muted-foreground mt-2">
                   PNG, JPG, GIF up to 5MB
                 </p>
               </div>
             )}
+
+            <input
+              id="file-upload"
+              name="file-upload"
+              type="file"
+              className="sr-only"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
 
             <Controller
               name="featuredImage"

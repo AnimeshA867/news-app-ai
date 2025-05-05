@@ -56,9 +56,6 @@ export default async function EditAuthorPage({ params }: PageProps) {
   try {
     const author = await prisma.user.findUnique({
       where: { id },
-      include: {
-        authorProfile: true,
-      },
     });
 
     if (!author) {

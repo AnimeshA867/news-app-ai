@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import React from "react";
 
 // Create a schema for author form validation
 const authorSchema = z.object({
@@ -27,14 +28,7 @@ const authorSchema = z.object({
   email: z.string().email("Invalid email address"),
   role: z.enum(["USER", "ADMIN", "AUTHOR"]),
   bio: z.string().optional().nullable(),
-  profilePicture: z.string().optional().nullable(),
-  profilePictureAlt: z.string().optional().nullable(),
-  twitter: z.string().optional().nullable(),
-  facebook: z.string().optional().nullable(),
-  linkedin: z.string().optional().nullable(),
-  website: z.string().url("Invalid website URL").optional().nullable(),
-  isVerified: z.boolean().default(false),
-  isActive: z.boolean().default(true),
+  image: z.string().optional().optional(),
 });
 
 type FormData = z.infer<typeof authorSchema>;
@@ -72,33 +66,18 @@ export default function AuthorEditForm({
           email: "",
           role: "AUTHOR",
           bio: "",
-          profilePicture: "",
-          profilePictureAlt: "",
-          twitter: "",
-          facebook: "",
-          linkedin: "",
-          website: "",
-          isVerified: false,
-          isActive: true,
+          image: "",
         }
       : {
           name: initialAuthor?.name || "",
           email: initialAuthor?.email || "",
           role: initialAuthor?.role || "AUTHOR",
           bio: initialAuthor?.authorProfile?.bio || "",
-          profilePicture: initialAuthor?.authorProfile?.profilePicture || "",
-          profilePictureAlt:
-            initialAuthor?.authorProfile?.profilePictureAlt || "",
-          twitter: initialAuthor?.authorProfile?.twitter || "",
-          facebook: initialAuthor?.authorProfile?.facebook || "",
-          linkedin: initialAuthor?.authorProfile?.linkedin || "",
-          website: initialAuthor?.authorProfile?.website || "",
-          isVerified: initialAuthor?.isVerified || false,
-          isActive: initialAuthor?.isActive || true,
+          image: initialAuthor?.authorProfile?.image || "",
         },
   });
 
-  const profilePictureUrl = watch("profilePicture");
+  const profilePictureUrl = watch("image");
 
   const handleImageUpload = async (file: File) => {
     if (!file) return;
@@ -152,7 +131,7 @@ export default function AuthorEditForm({
 
       const data = await response.json();
 
-      setValue("profilePicture", data.url);
+      setValue("image", data.url);
 
       setUploadProgress(100);
 
@@ -390,52 +369,6 @@ export default function AuthorEditForm({
               <p className="mt-2 text-sm text-red-600">{errors.role.message}</p>
             )}
           </div>
-
-          <div className="flex items-end space-x-6">
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <Label htmlFor="isActive">Active Status</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Allow author to log in and manage their content
-                  </p>
-                </div>
-                <Controller
-                  name="isActive"
-                  control={control}
-                  render={({ field }) => (
-                    <Switch
-                      id="isActive"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <Label htmlFor="isVerified">Verified</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Mark this author as verified
-                  </p>
-                </div>
-                <Controller
-                  name="isVerified"
-                  control={control}
-                  render={({ field }) => (
-                    <Switch
-                      id="isVerified"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-          </div>
         </div>
 
         <div>
@@ -474,14 +407,15 @@ export default function AuthorEditForm({
           <div
             className={`mt-1 border-2 border-dashed rounded-lg p-4 text-center ${
               dragActive ? "border-primary bg-primary/10" : "border-gray-300"
-            }`}
+            } cursor-pointer`}
             onDragEnter={handleDrag}
             onDragOver={handleDrag}
             onDragLeave={handleDrag}
             onDrop={handleDrop}
+            onClick={() => document.getElementById("file-upload")?.click()}
           >
             {profilePictureUrl ? (
-              <div className="space-y-4">
+              <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
                 <div className="relative h-40 w-40 mx-auto rounded-full overflow-hidden">
                   <Image
                     src={profilePictureUrl}
@@ -494,33 +428,13 @@ export default function AuthorEditForm({
                     variant="destructive"
                     size="icon"
                     className="absolute top-2 right-2 h-8 w-8"
-                    onClick={() => {
-                      setValue("profilePicture", "");
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setValue("image", "");
                     }}
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                </div>
-
-                <div className="mt-2">
-                  <label
-                    htmlFor="profilePictureAlt"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Image Alt Text (for accessibility)
-                  </label>
-                  <Controller
-                    name="profilePictureAlt"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        id="profilePictureAlt"
-                        placeholder="Describe the image for screen readers"
-                        value={field.value || ""}
-                      />
-                    )}
-                  />
                 </div>
               </div>
             ) : isUploading ? (
@@ -537,149 +451,33 @@ export default function AuthorEditForm({
             ) : (
               <div className="py-8">
                 <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer rounded-md bg-white font-semibold text-primary hover:text-primary-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      className="sr-only"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                    />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
-                </div>
+                <p className="mt-4 text-sm text-gray-600">
+                  Click or drag and drop an image
+                </p>
                 <p className="text-xs text-muted-foreground mt-2">
                   PNG, JPG, GIF up to 5MB
                 </p>
               </div>
             )}
 
+            <input
+              id="file-upload"
+              name="file-upload"
+              type="file"
+              className="sr-only"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+
             <Controller
-              name="profilePicture"
+              name="image"
               control={control}
               render={({ field }) => <input type="hidden" {...field} />}
             />
           </div>
-          {errors.profilePicture && (
-            <p className="mt-2 text-sm text-red-600">
-              {errors.profilePicture.message}
-            </p>
+          {errors.image && (
+            <p className="mt-2 text-sm text-red-600">{errors.image.message}</p>
           )}
-        </div>
-
-        <div className="pt-6 border-t">
-          <h2 className="text-lg font-medium mb-4">Social Media</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="twitter"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Twitter / X
-              </label>
-              <Controller
-                name="twitter"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="twitter"
-                    placeholder="https://twitter.com/username"
-                    value={field.value || ""}
-                  />
-                )}
-              />
-              {errors.twitter && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.twitter.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="facebook"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Facebook
-              </label>
-              <Controller
-                name="facebook"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="facebook"
-                    placeholder="https://facebook.com/username"
-                    value={field.value || ""}
-                  />
-                )}
-              />
-              {errors.facebook && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.facebook.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="linkedin"
-                className="block text-sm font-medium text-gray-700"
-              >
-                LinkedIn
-              </label>
-              <Controller
-                name="linkedin"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="linkedin"
-                    placeholder="https://linkedin.com/in/username"
-                    value={field.value || ""}
-                  />
-                )}
-              />
-              {errors.linkedin && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.linkedin.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="website"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Website
-              </label>
-              <Controller
-                name="website"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    id="website"
-                    placeholder="https://example.com"
-                    value={field.value || ""}
-                  />
-                )}
-              />
-              {errors.website && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.website.message}
-                </p>
-              )}
-            </div>
-          </div>
         </div>
 
         <div className="flex justify-end">
