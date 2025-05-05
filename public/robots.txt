@@ -1,0 +1,14 @@
+# NewsHub Robots.txt
+User-agent: *
+Allow: /
+
+# Disallow admin and authentication routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+
+# Sitemap
+Sitemap: https://newshub-phi.vercel.app/sitemap.xml
+
+# Host
+Host: https://newshub-phi.vercel.app

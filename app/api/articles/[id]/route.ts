@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(
   req: Request,
@@ -36,25 +38,25 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getAuthSession();
-    const { id } = await params;
+    const { id } = params;
+    const session = await getServerSession(authOptions);
+
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const data = await req.json();
 
-    // Get existing article to manage tag relationships
+    // Check if article exists and belongs to the user
     const existingArticle = await prisma.article.findUnique({
       where: { id },
-      include: { tags: true },
+      include: { author: true },
     });
 
     if (!existingArticle) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
     }
 
-    // Update the article
     const article = await prisma.article.update({
       where: { id },
       data: {
@@ -63,21 +65,29 @@ export async function PUT(
         excerpt: data.excerpt || null,
         content: data.content,
         featuredImage: data.featuredImage || null,
+        featuredImageAlt: data.featuredImageAlt || null,
         status: data.status,
         category: {
           connect: { id: data.categoryId },
         },
-        // Handle tags - disconnect all existing and connect new ones
         tags: {
-          disconnect: existingArticle.tags.map((tag) => ({ id: tag.id })),
-          ...(data.tagIds?.length > 0
-            ? { connect: data.tagIds.map((id: string) => ({ id })) }
-            : {}),
+          set: [], // Disconnect all existing tags first
+          connect: data.tagIds?.map((id: string) => ({ id })) || [],
         },
+
+        metaTitle: data.metaTitle || null,
+        metaDescription: data.metaDescription || null,
+        metaKeywords: data.metaKeywords || null,
+        noIndex: data.noIndex || false,
+      },
+      include: {
+        author: true,
+        category: true,
+        tags: true,
       },
     });
 
-    return NextResponse.json(article);
+    return NextResponse.json({ article });
   } catch (error) {
     console.error("Error updating article:", error);
     return NextResponse.json(
