@@ -24,7 +24,7 @@ export function BreakingNewsBar({ breakingNews }: BreakingNewsProps) {
   }
 
   return (
-    <div className="relative mb-6 overflow-hidden rounded-lg bg-primary py-2 text-primary-foreground">
+    <div className="relative mb-6 overflow-hidden rounded-lg bg-primary py-2 text-primary-foreground px-4">
       <div className="container flex items-center gap-3">
         <div className="flex shrink-0 items-center gap-2">
           <AlertCircle className="h-4 w-4" />

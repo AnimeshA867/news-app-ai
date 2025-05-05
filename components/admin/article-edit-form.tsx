@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { articleSchema } from "@/lib/validations/article";
 import React from "react";
+import { TipTapEditor } from "@/components/editor/tiptap-editor";
 
 // Schema extension for form
 // Update your schema
@@ -529,11 +530,10 @@ export default function ArticleEditForm({
             name="content"
             control={control}
             render={({ field }) => (
-              <Textarea
-                {...field}
-                id="content"
-                placeholder="Article content"
-                rows={10}
+              <TipTapEditor
+                content={field.value || ""}
+                onChange={field.onChange}
+                placeholder="Write article content here..."
               />
             )}
           />

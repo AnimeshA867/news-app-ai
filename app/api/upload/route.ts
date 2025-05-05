@@ -9,6 +9,17 @@ import path from "path";
 
 export async function POST(req: Request) {
   try {
+    // Check if we're in production
+    if (process.env.NODE_ENV === "production") {
+      // In production, don't try to write files to disk
+      // Instead, return a placeholder image or suggest using a URL
+      return NextResponse.json({
+        url: "https://placehold.co/600x400?text=Image+Placeholder",
+        warning:
+          "File uploads to disk are not supported in production. Please use an external image URL.",
+      });
+    }
+
     // Verify authentication
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -65,3 +76,17 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// In your form component
+{process.env.NODE_ENV === 'production' ? (
+  <div>
+    <label htmlFor="imageUrl">Image URL</label>
+    <Input
+      id="imageUrl"
+      placeholder="Enter an image URL"
+      onChange={(e) => setValue("featuredImage", e.target.value)}
+    />
+  </div>
+) : (
+  // Your existing file upload UI
+)}

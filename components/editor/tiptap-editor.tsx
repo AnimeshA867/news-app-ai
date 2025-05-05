@@ -144,7 +144,7 @@ export function TipTapEditor({
   };
 
   if (!editor) {
-    return null;
+    return <div>Unable to load the editor.</div>;
   }
 
   return (

@@ -21,6 +21,7 @@ import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import React from "react";
+import { TipTapEditor } from "../editor/tiptap-editor";
 
 // Create a schema for author form validation
 const authorSchema = z.object({
@@ -382,12 +383,10 @@ export default function AuthorEditForm({
             name="bio"
             control={control}
             render={({ field }) => (
-              <Textarea
-                {...field}
-                id="bio"
-                placeholder="Author biography"
-                rows={5}
-                value={field.value || ""}
+              <TipTapEditor
+                content={field.value || ""}
+                onChange={field.onChange}
+                placeholder="Write bio of the author..."
               />
             )}
           />
