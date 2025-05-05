@@ -21,6 +21,8 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { articleSchema } from "@/lib/validations/article";
 import React from "react";
+import { TipTapEditor } from "@/components/editor/tiptap-editor";
+import { UploadDropzone } from "@/utils/uploadthing";
 
 // Schema extension for form
 // Update your schema
@@ -529,11 +531,10 @@ export default function ArticleEditForm({
             name="content"
             control={control}
             render={({ field }) => (
-              <Textarea
-                {...field}
-                id="content"
-                placeholder="Article content"
-                rows={10}
+              <TipTapEditor
+                content={field.value || ""}
+                onChange={field.onChange}
+                placeholder="Write article content here..."
               />
             )}
           />
@@ -720,12 +721,18 @@ export default function ArticleEditForm({
                     name="featuredImageAlt"
                     control={control}
                     render={({ field }) => (
-                      <Input
-                        {...field}
-                        id="featuredImageAlt"
-                        placeholder="Describe the image for screen readers and SEO"
-                        value={field.value || ""}
-                        onClick={(e) => e.stopPropagation()}
+                      <UploadDropzone
+                        endpoint={"imageUploader"}
+                        onClientUploadComplete={(res) => {
+                          if (res && res.length > 0) {
+                            setValue("featuredImage", res[0].url);
+                            toast({
+                              title: "Upload complete",
+                              description:
+                                "Image has been uploaded successfully",
+                            });
+                          }
+                        }}
                       />
                     )}
                   />

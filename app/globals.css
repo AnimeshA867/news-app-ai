@@ -1,7 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
+@plugin "@tailwindcss/typography";
 /* @import "tailwindcss/typography"; */
+@import "uploadthing/tw/v4";
+@source "../node_modules/@uploadthing/react/dist/index.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -49,6 +51,8 @@
 
 .container {
   width: 100%;
+  @apply px-2 md:px-4;
+
   @media (min-width: 640px) {
     max-width: 640px;
   }

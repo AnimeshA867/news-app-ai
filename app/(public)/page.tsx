@@ -13,7 +13,7 @@ export default async function HomePage() {
       status: "PUBLISHED",
       tags: {
         some: {
-          name: "featured",
+          slug: "feature",
         },
       },
     },
@@ -80,7 +80,7 @@ export default async function HomePage() {
       status: "PUBLISHED",
       tags: {
         some: {
-          name: "breaking-news",
+          slug: "breaking-news",
         },
       },
     },

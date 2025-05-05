@@ -57,18 +57,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`min-h-screen bg-background font-sans antialiased ${inter.variable}`}
-      >
-        <Session>
+    <Session>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`min-h-screen bg-background font-sans antialiased ${inter.variable}`}
+        >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Suspense>{children}</Suspense>
             <Toaster />
             <Analytics />
           </ThemeProvider>
-        </Session>
-      </body>
-    </html>
+        </body>
+      </html>
+    </Session>
   );
 }

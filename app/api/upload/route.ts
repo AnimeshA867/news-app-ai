@@ -9,10 +9,20 @@ import path from "path";
 
 export async function POST(req: Request) {
   try {
-    // Verify authentication
+    // Verify authentication first
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Check if we're in production
+    if (process.env.NODE_ENV === "production") {
+      // In production, don't try to write files to disk
+      return NextResponse.json({
+        url: "https://placehold.co/600x400?text=Image+Placeholder",
+        warning:
+          "File uploads to disk are not supported in production. Configure a cloud storage service for production use.",
+      });
     }
 
     const formData = await req.formData();
@@ -44,8 +54,8 @@ export async function POST(req: Request) {
       await mkdir(uploadDir, { recursive: true });
     }
 
-    // Generate unique filename
-    const fileExt = file.name.split(".").pop();
+    // Generate unique filename with proper extension
+    const fileExt = file.name.split(".").pop()?.toLowerCase() || "jpg";
     const fileName = `${uuidv4()}.${fileExt}`;
     const filePath = join(uploadDir, fileName);
 

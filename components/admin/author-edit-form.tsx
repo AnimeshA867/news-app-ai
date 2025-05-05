@@ -21,6 +21,9 @@ import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import React from "react";
+import { TipTapEditor } from "../editor/tiptap-editor";
+import { UploadButton } from "@/utils/uploadthing";
+import { UploadProfilePicture } from "./upload-image";
 
 // Create a schema for author form validation
 const authorSchema = z.object({
@@ -382,12 +385,10 @@ export default function AuthorEditForm({
             name="bio"
             control={control}
             render={({ field }) => (
-              <Textarea
-                {...field}
-                id="bio"
-                placeholder="Author biography"
-                rows={5}
-                value={field.value || ""}
+              <TipTapEditor
+                content={field.value || ""}
+                onChange={field.onChange}
+                placeholder="Write bio of the author..."
               />
             )}
           />
@@ -396,88 +397,24 @@ export default function AuthorEditForm({
           )}
         </div>
 
-        <div>
+        <div className="flex flex-col items-center ">
           <label
             htmlFor="profilePicture"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-gray-700 mb-4 mx-auto "
           >
             Profile Picture
           </label>
 
-          <div
-            className={`mt-1 border-2 border-dashed rounded-lg p-4 text-center ${
-              dragActive ? "border-primary bg-primary/10" : "border-gray-300"
-            } cursor-pointer`}
-            onDragEnter={handleDrag}
-            onDragOver={handleDrag}
-            onDragLeave={handleDrag}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById("file-upload")?.click()}
-          >
-            {profilePictureUrl ? (
-              <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
-                <div className="relative h-40 w-40 mx-auto rounded-full overflow-hidden">
-                  <Image
-                    src={profilePictureUrl}
-                    alt="Profile picture preview"
-                    fill
-                    className="object-cover"
-                  />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-2 right-2 h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setValue("image", "");
-                    }}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ) : isUploading ? (
-              <div className="py-8 flex flex-col items-center">
-                <Loader2 className="h-10 w-10 animate-spin text-muted-foreground mb-4" />
-                <p>Uploading image... {uploadProgress}%</p>
-                <div className="w-full max-w-md mt-2 h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary transition-all"
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
-              </div>
-            ) : (
-              <div className="py-8">
-                <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-4 text-sm text-gray-600">
-                  Click or drag and drop an image
-                </p>
-                <p className="text-xs text-muted-foreground mt-2">
-                  PNG, JPG, GIF up to 5MB
-                </p>
-              </div>
+          <Controller
+            name="image"
+            control={control}
+            render={({ field }) => (
+              <UploadProfilePicture
+                value={field.value || ""}
+                onChange={field.onChange}
+              />
             )}
-
-            <input
-              id="file-upload"
-              name="file-upload"
-              type="file"
-              className="sr-only"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-
-            <Controller
-              name="image"
-              control={control}
-              render={({ field }) => <input type="hidden" {...field} />}
-            />
-          </div>
-          {errors.image && (
-            <p className="mt-2 text-sm text-red-600">{errors.image.message}</p>
-          )}
+          />
         </div>
 
         <div className="flex justify-end">
