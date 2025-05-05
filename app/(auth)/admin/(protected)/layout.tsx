@@ -15,12 +15,12 @@ export default function AdminLayout({
 }) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex min-h-screen  container mx-auto">
         <AdminSidebar />
-        <div className="flex-1 w-full max-w-full overflow-x-hidden container ">
+        <div className="flex-1 mx-auto">
           <AdminHeader />
-          <div className="p-2 sm:p-4 md:p-6 mx-auto w-full mt-2">
-            <div className="w-full overflow-x-auto container">{children}</div>
+          <div className="p-6 container mx-auto flex justify-center">
+            {children}
           </div>
         </div>
       </div>
