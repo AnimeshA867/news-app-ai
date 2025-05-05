@@ -17,25 +17,9 @@ import {
 } from "@/components/ui/select";
 import { formatDate } from "@/lib/utils";
 import React from "react";
-
-interface Article {
-  id: string;
-  title: string;
-  excerpt: string;
-  slug: string;
-  featuredImage: string | null;
-  publishedAt: string;
-  category: {
-    name: string;
-    slug: string;
-  } | null;
-  author: {
-    name: string | null;
-    image: string | null;
-  } | null;
-  viewCount: number;
-  readTime?: number;
-}
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/redux/store";
 
 export default function SearchPage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -52,24 +36,21 @@ export default function SearchPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Fetch categories on mount
+  const storedCategories = useAppSelector((state) => state.category.categories);
+
+  const storedArticles = useAppSelector((state) => state.article.topHeadlines);
+
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const response = await fetch("/api/categories");
-        if (!response.ok) throw new Error("Failed to fetch categories");
-
-        const data = await response.json();
-        if (data.categories && Array.isArray(data.categories)) {
-          setCategories(data.categories);
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
+    if (storedCategories.length > 0) {
+      setCategories(storedCategories);
     }
-
-    fetchCategories();
-  }, []);
+    if (storedArticles.length > 0) {
+      setArticles(storedArticles);
+      setFilteredArticles(storedArticles);
+      setTotalResults(storedArticles.length);
+      setTotalPages(Math.ceil(storedArticles.length / 10));
+    }
+  }, [storedCategories, storedArticles]);
 
   // Fetch articles with debounce
   const fetchArticles = useCallback(async () => {
@@ -123,11 +104,6 @@ export default function SearchPage() {
 
     return () => clearTimeout(timer);
   }, [searchQuery, selectedCategory, sortBy, fetchArticles]);
-
-  // Load initial articles
-  useEffect(() => {
-    fetchArticles();
-  }, [currentPage, fetchArticles]);
 
   // Calculate estimated read time (if not provided by API)
   const getReadTime = (article: Article) => {

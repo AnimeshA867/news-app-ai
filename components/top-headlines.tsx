@@ -1,38 +1,29 @@
-import Link from "next/link"
-import { Clock } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
-interface Headline {
-  id: string
-  title: string
-  slug: string
-  publishedAt: Date | null
-  category: {
-    name: string
-  }
-}
+import Link from "next/link";
+import { Clock } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface TopHeadlinesProps {
-  headlines: Headline[]
+  headlines: Article[];
 }
 
 export function TopHeadlines({ headlines }: TopHeadlinesProps) {
   // Calculate time ago
   const getTimeAgo = (date: Date | null) => {
-    if (!date) return "Recently"
+    if (!date) return "Recently";
 
-    const now = new Date()
-    const diff = now.getTime() - new Date(date).getTime()
+    const now = new Date();
+    const diff = now.getTime() - new Date(date).getTime();
 
-    const minutes = Math.floor(diff / 60000)
-    if (minutes < 60) return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 60)
+      return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
 
-    const hours = Math.floor(minutes / 60)
-    if (hours < 24) return `${hours} ${hours === 1 ? "hour" : "hours"} ago`
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
 
-    const days = Math.floor(hours / 24)
-    return `${days} ${days === 1 ? "day" : "days"} ago`
-  }
+    const days = Math.floor(hours / 24);
+    return `${days} ${days === 1 ? "day" : "days"} ago`;
+  };
 
   return (
     <Card>
@@ -49,17 +40,20 @@ export function TopHeadlines({ headlines }: TopHeadlinesProps) {
             >
               <h3 className="font-medium">{headline.title}</h3>
               <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
-                <span>{headline.category.name}</span>
+                <span>{headline.category?.name}</span>
                 <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" /> {getTimeAgo(headline.publishedAt)}
+                  <Clock className="h-3 w-3" />{" "}
+                  {getTimeAgo(headline.publishedAt)}
                 </span>
               </div>
             </Link>
           ))
         ) : (
-          <div className="px-6 py-4 text-center text-muted-foreground">No headlines available</div>
+          <div className="px-6 py-4 text-center text-muted-foreground">
+            No headlines available
+          </div>
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

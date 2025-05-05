@@ -42,17 +42,26 @@ import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setArticles } from "@/store/articlesSlice";
+import { setArticles } from "@/lib/redux/store/articlesSlice";
+import { RootState } from "@/lib/redux/store";
 
 export default function ArticlesPage() {
   const { toast } = useToast();
   const dispatch = useDispatch();
-  const articles = useSelector((state) => state.articles.articles);
-  const isLoading = useSelector((state) => state.articles.isLoading);
-  const searchQuery = useSelector((state) => state.articles.searchQuery);
-  const statusFilter = useSelector((state) => state.articles.statusFilter);
-  const currentPage = useSelector((state) => state.articles.currentPage);
-  const totalPages = useSelector((state) => state.articles.totalPages);
+  const articles = useSelector((state: RootState) => state.article.articles);
+  const isLoading = useSelector((state: RootState) => state.article.isLoading);
+  const searchQuery = useSelector(
+    (state: RootState) => state.article.searchQuery
+  );
+  const statusFilter = useSelector(
+    (state: RootState) => state.article.statusFilter
+  );
+  const currentPage = useSelector(
+    (state: RootState) => state.article.currentPage
+  );
+  const totalPages = useSelector(
+    (state: RootState) => state.article.totalPages
+  );
 
   const fetchArticles = async () => {
     dispatch(setArticles({ isLoading: true }));
@@ -70,7 +79,26 @@ export default function ArticlesPage() {
       const response = await fetch(url);
       const data = await response.json();
 
-      dispatch(setArticles({ articles: data.articles, totalPages: data.meta.totalPages }));
+      // Serialize dates to ISO strings
+      const serializedArticles = data.articles.map((article) => ({
+        ...article,
+        publishedAt: article.publishedAt
+          ? new Date(article.publishedAt).toISOString()
+          : null,
+        createdAt: article.createdAt
+          ? new Date(article.createdAt).toISOString()
+          : null,
+        updatedAt: article.updatedAt
+          ? new Date(article.updatedAt).toISOString()
+          : null,
+      }));
+
+      dispatch(
+        setArticles({
+          articles: serializedArticles,
+          totalPages: data.meta.totalPages,
+        })
+      );
     } catch (error) {
       console.error("Error fetching articles:", error);
       toast({
@@ -135,12 +163,19 @@ export default function ArticlesPage() {
             placeholder="Search articles..."
             className="pl-8"
             value={searchQuery}
-            onChange={(e) => dispatch(setArticles({ searchQuery: e.target.value }))}
+            onChange={(e) =>
+              dispatch(setArticles({ searchQuery: e.target.value }))
+            }
           />
         </div>
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
-          <Select value={statusFilter} onValueChange={(value) => dispatch(setArticles({ statusFilter: value }))}>
+          <Select
+            value={statusFilter}
+            onValueChange={(value) =>
+              dispatch(setArticles({ statusFilter: value }))
+            }
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
@@ -195,8 +230,8 @@ export default function ArticlesPage() {
                           {article.status.toLowerCase()}
                         </Badge>
                       </TableCell>
-                      <TableCell>{article.category.name}</TableCell>
-                      <TableCell>{article.author.name}</TableCell>
+                      <TableCell>{article.category?.name}</TableCell>
+                      <TableCell>{article.author?.name}</TableCell>
                       <TableCell>
                         {formatDate(article.publishedAt || article.createdAt)}
                       </TableCell>
@@ -257,7 +292,11 @@ export default function ArticlesPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => dispatch(setArticles({ currentPage: Math.max(currentPage - 1, 1) }))}
+                onClick={() =>
+                  dispatch(
+                    setArticles({ currentPage: Math.max(currentPage - 1, 1) })
+                  )
+                }
                 disabled={currentPage === 1}
               >
                 Previous
@@ -268,7 +307,13 @@ export default function ArticlesPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => dispatch(setArticles({ currentPage: Math.min(currentPage + 1, totalPages) }))}
+                onClick={() =>
+                  dispatch(
+                    setArticles({
+                      currentPage: Math.min(currentPage + 1, totalPages),
+                    })
+                  )
+                }
                 disabled={currentPage === totalPages}
               >
                 Next

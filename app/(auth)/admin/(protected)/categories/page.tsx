@@ -23,41 +23,55 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { setCategories, setLoading } from "@/lib/redux/store/categoriesSlice";
 
 interface Category {
   id: string;
   name: string;
   slug: string;
-  description: string | null;
+  description?: string | null;
 }
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
+  const dispatch = useAppDispatch();
+
+  const categories = useAppSelector((state) => state.category.categories);
+  const isLoading = useAppSelector((state) => state.category.isLoading);
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    const fetchCategories = async () => {
+      try {
+        dispatch(setLoading(true));
 
-  async function fetchCategories() {
-    try {
-      setIsLoading(true);
-      const res = await fetch("/api/categories");
-      const data = await res.json();
-      setCategories(data);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch categories",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+        const response = await fetch("/api/categories");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json();
+
+        dispatch(setCategories(data));
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch categories",
+          variant: "destructive",
+        });
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+
+    if (!categories || categories.length === 0) {
+      fetchCategories();
     }
-  }
+  }, [dispatch, toast, categories]);
 
   async function deleteCategory(id: string) {
     try {
@@ -70,11 +84,14 @@ export default function CategoriesPage() {
         throw new Error("Failed to delete category");
       }
 
-      await fetchCategories();
       toast({
         title: "Success",
         description: "Category deleted successfully",
       });
+
+      dispatch(
+        setCategories(categories.filter((category) => category.id !== id))
+      );
     } catch (error) {
       toast({
         title: "Error",
@@ -113,12 +130,14 @@ export default function CategoriesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {categories.length > 0 ? (
+            {categories && categories.length > 0 ? (
               categories.map((category) => (
                 <TableRow key={category.id}>
                   <TableCell className="font-medium">{category.name}</TableCell>
                   <TableCell>{category.slug}</TableCell>
-                  <TableCell>{category.description || "-"}</TableCell>
+                  <TableCell>
+                    {category.description || "No description"}
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Button variant="ghost" size="icon" asChild>

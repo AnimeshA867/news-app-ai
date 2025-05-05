@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Plus, Trash2, X } from "lucide-react";
+import { Loader2, Plus, Trash2, X, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,11 +18,12 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-// import { articleSchema } from "@/lib/validations/article";
-import { Article, Category, Tag } from "@prisma/client";
+import { Article, Category, Tag } from "@/lib/generated/client";
 import { useSWRConfig } from "swr";
 import Image from "next/image";
 import React from "react";
+import { useSelector } from "react-redux";
+
 const schema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -38,6 +39,16 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+// Add this function to generate slugs from titles
+function generateSlug(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Remove consecutive hyphens
+    .trim();
+}
+
 export default function EditArticlePage({
   params,
 }: {
@@ -47,12 +58,21 @@ export default function EditArticlePage({
   const router = useRouter();
   const { toast } = useToast();
   const { mutate } = useSWRConfig();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
+  const storedCategories = useSelector(
+    (state: { category: { categories: Category[] } }) =>
+      state.category.categories
+  );
+  const [categories, setCategories] = useState<Category[]>(
+    storedCategories || []
+  );
   const [article, setArticle] = useState<Article | null>(null);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [dragActive, setDragActive] = useState(false);
 
   const {
     control,
@@ -60,6 +80,7 @@ export default function EditArticlePage({
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -76,33 +97,44 @@ export default function EditArticlePage({
     },
   });
 
-  const fetchCategoriesAndTags = async () => {
+  console.log("Stored categories:", storedCategories);
+
+  const fetchCategories = async () => {
     try {
-      const [categoriesRes, tagsRes] = await Promise.all([
-        fetch("/api/categories"),
-        fetch("/api/tags"),
-      ]);
-
-      if (!categoriesRes.ok || !tagsRes.ok) {
-        throw new Error("Failed to fetch data");
+      const response = await fetch("/api/categories");
+      if (!response.ok) {
+        throw new Error("Failed to fetch categories");
       }
-
-      const [categoriesData, tagsData] = await Promise.all([
-        categoriesRes.json(),
-        tagsRes.json(),
-      ]);
-
-      setCategories(categoriesData.categories || []);
-      setTags(tagsData.tags || []);
+      const data = await response.json();
+      setCategories(data.categories || []);
     } catch (error) {
-      console.error("Error fetching categories and tags:", error);
+      console.error("Error fetching categories:", error);
       toast({
         title: "Error",
-        description: "Failed to load categories and tags. Please try again.",
+        description: "Failed to load categories. Please try again.",
         variant: "destructive",
       });
     }
   };
+
+  const fetchTags = async () => {
+    try {
+      const response = await fetch("/api/tags");
+      if (!response.ok) {
+        throw new Error("Failed to fetch tags");
+      }
+      const data = await response.json();
+      setTags(data.tags || []);
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load tags. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const fetchArticle = async () => {
     setIsLoading(true);
     try {
@@ -148,13 +180,125 @@ export default function EditArticlePage({
   };
 
   useEffect(() => {
-    fetchCategoriesAndTags();
+    fetchCategories();
+    fetchTags();
     if (id !== "new") {
       fetchArticle();
     } else {
       setIsLoading(false);
     }
   }, [id]);
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file (JPEG, PNG, etc.)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Image must be smaller than 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 95) {
+            clearInterval(progressInterval);
+            return 95;
+          }
+          return prev + 5;
+        });
+      }, 100);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      clearInterval(progressInterval);
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await response.json();
+
+      control._formValues.featuredImage = data.url;
+      reset({ ...control._formValues });
+
+      setUploadProgress(100);
+
+      toast({
+        title: "Image uploaded",
+        description: "Your image has been uploaded successfully.",
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setTimeout(() => {
+        setIsUploading(false);
+        setUploadProgress(0);
+      }, 500);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      handleImageUpload(event.target.files[0]);
+    }
+  };
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleImageUpload(e.dataTransfer.files[0]);
+    }
+  }, []);
+
+  const title = watch("title");
+
+  useEffect(() => {
+    if (title && (id === "new" || !article)) {
+      // Only auto-generate for new articles or when article isn't loaded yet
+      const newSlug = generateSlug(title);
+      setValue("slug", newSlug);
+    }
+  }, [title, setValue, id, article]);
 
   const onSubmit = async (data: FormData) => {
     setIsSaving(true);
@@ -438,38 +582,84 @@ export default function EditArticlePage({
             >
               Featured Image
             </label>
-            <Controller
-              name="featuredImage"
-              control={control}
-              render={({ field }) => (
-                <Input {...field} id="featuredImage" placeholder="Image URL" />
+
+            <div
+              className={`mt-2 border-2 border-dashed rounded-lg p-4 text-center ${
+                dragActive ? "border-primary bg-primary/10" : "border-gray-300"
+              }`}
+              onDragEnter={handleDrag}
+              onDragOver={handleDrag}
+              onDragLeave={handleDrag}
+              onDrop={handleDrop}
+            >
+              {featuredImageUrl ? (
+                <div className="relative aspect-video w-full max-w-2xl mx-auto rounded-md overflow-hidden">
+                  <Image
+                    src={featuredImageUrl}
+                    alt="Featured image preview"
+                    fill
+                    className="object-cover"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-8 w-8"
+                    onClick={() => {
+                      control._formValues.featuredImage = "";
+                      reset({ ...control._formValues });
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : isUploading ? (
+                <div className="py-8 flex flex-col items-center">
+                  <Loader2 className="h-10 w-10 animate-spin text-muted-foreground mb-4" />
+                  <p>Uploading image... {uploadProgress}%</p>
+                  <div className="w-full max-w-md mt-2 h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all"
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-8">
+                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                  <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                    <label
+                      htmlFor="file-upload"
+                      className="relative cursor-pointer rounded-md bg-white font-semibold text-primary hover:text-primary-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+                    >
+                      <span>Upload a file</span>
+                      <input
+                        id="file-upload"
+                        name="file-upload"
+                        type="file"
+                        className="sr-only"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                      />
+                    </label>
+                    <p className="pl-1">or drag and drop</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    PNG, JPG, GIF up to 5MB
+                  </p>
+
+                  <Controller
+                    name="featuredImage"
+                    control={control}
+                    render={({ field }) => <input type="hidden" {...field} />}
+                  />
+                </div>
               )}
-            />
+            </div>
             {errors.featuredImage && (
               <p className="mt-2 text-sm text-red-600">
                 {errors.featuredImage.message}
               </p>
-            )}
-            {featuredImageUrl && (
-              <div className="mt-2 relative aspect-video w-full max-w-md rounded-md overflow-hidden border">
-                <Image
-                  src={featuredImageUrl}
-                  alt="Featured image preview"
-                  fill
-                  className="object-cover"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-2 right-2 h-6 w-6"
-                  onClick={() => {
-                    control._reset();
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
             )}
           </div>
 

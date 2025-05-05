@@ -9,20 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-}
-
-interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  featuredImage: string | null;
-  category: Category;
-}
-
 interface TrendingCarouselProps {
   articles: Article[];
 }
@@ -136,7 +122,7 @@ export function TrendingCarousel({ articles }: TrendingCarouselProps) {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <Badge className="mb-2 bg-primary hover:bg-primary/90">
-                      {article.category.name}
+                      {article.category?.name}
                     </Badge>
                     <h3 className="font-bold text-white">{article.title}</h3>
                   </div>

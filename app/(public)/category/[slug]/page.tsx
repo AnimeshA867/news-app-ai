@@ -41,6 +41,19 @@ export async function generateMetadata({
     title: `${category.name} News - NewsHub`,
     description:
       category.description || `Latest ${category.name} news and updates`,
+    openGraph: {
+      title: `${category.name} News - NewsHub`,
+      description:
+        category.description || `Latest ${category.name} news and updates`,
+      url: `https://newshub-phi.vercel.app/category/${slug}`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${category.name} News - NewsHub`,
+      description:
+        category.description || `Latest ${category.name} news and updates`,
+    },
   };
 }
 
@@ -52,7 +65,7 @@ export default async function CategoryPage({
   const { page: pageParam } = searchParams;
   const { slug } = params; // Removed unnecessary 'await'
   const page = Number(pageParam) || 1;
-  const pageSize = 9;
+  const pageSize = 6;
 
   // Fetch category and its articles
   const category = await prisma.category.findUnique({

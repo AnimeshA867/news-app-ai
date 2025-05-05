@@ -1,47 +1,20 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  status: string;
-  viewCount: number;
-  publishedAt: string | null;
-  createdAt: string;
-  category: {
-    name: string;
-  };
-  author: {
-    name: string | null;
-  };
-}
-
-interface ArticlesState {
-  articles: Article[];
-  featuredArticles: Article[];
-  trendingArticles: Article[];
-  topHeadlines: Article[];
-  isLoading: boolean;
-  searchQuery: string;
-  statusFilter: string;
-  currentPage: number;
-  totalPages: number;
-}
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: ArticlesState = {
   articles: [],
   featuredArticles: [],
   trendingArticles: [],
+  breakingNews: [],
   topHeadlines: [],
   isLoading: false,
-  searchQuery: '',
-  statusFilter: 'all',
+  searchQuery: "",
+  statusFilter: "all",
   currentPage: 1,
   totalPages: 1,
 };
 
 const articlesSlice = createSlice({
-  name: 'articles',
+  name: "articles",
   initialState,
   reducers: {
     setArticles(state, action: PayloadAction<Partial<ArticlesState>>) {
@@ -56,9 +29,18 @@ const articlesSlice = createSlice({
     setTopHeadlines(state, action: PayloadAction<Article[]>) {
       state.topHeadlines = action.payload;
     },
+    setBreakingNews(state, action: PayloadAction<BreakingNews[]>) {
+      state.breakingNews = action.payload;
+    },
   },
 });
 
-export const { setArticles, setFeaturedArticles, setTrendingArticles, setTopHeadlines } = articlesSlice.actions;
+export const {
+  setArticles,
+  setFeaturedArticles,
+  setTrendingArticles,
+  setTopHeadlines,
+  setBreakingNews,
+} = articlesSlice.actions;
 
 export default articlesSlice.reducer;

@@ -5,47 +5,37 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { setBreakingNews } from "@/lib/redux/store/articlesSlice";
 
-interface BreakingNewsArticle {
-  id: string;
-  title: string;
+interface BreakingNews {
   slug: string;
+  title: string;
 }
 
-export function BreakingNewsBar() {
-  const [breakingNews, setBreakingNews] = useState<BreakingNewsArticle[]>([]);
+interface BreakingNewsBarProps {
+  initialData?: BreakingNews[];
+}
+
+export function BreakingNewsBar({ initialData = [] }: BreakingNewsBarProps) {
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useAppDispatch();
 
+  // Get data from Redux with fallback to props
+  const reduxBreakingNews = useAppSelector(
+    (state) => state.article.breakingNews
+  );
+  const breakingNews =
+    reduxBreakingNews.length > 0 ? reduxBreakingNews : initialData;
+
+  // Store initial data in Redux if provided
   useEffect(() => {
-    async function fetchBreakingNews() {
-      try {
-        const response = await fetch("/api/articles?breaking=true&limit=5");
-        if (!response.ok) {
-          throw new Error("Failed to fetch breaking news");
-        }
-        const data = await response.json();
-
-        if (data.articles && data.articles.length > 0) {
-          setBreakingNews(
-            data.articles.map((article: BreakingNewsArticle) => ({
-              id: article.id,
-              title: article.title,
-              slug: article.slug,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching breaking news:", error);
-      } finally {
-        setIsLoading(false);
-      }
+    if (initialData && initialData.length > 0) {
+      dispatch(setBreakingNews(initialData));
     }
-    return () => {
-      fetchBreakingNews();
-    };
-  }, []);
+  }, [initialData, dispatch]);
 
+  // Auto-rotate breaking news
   useEffect(() => {
     if (breakingNews.length <= 1) return;
 
@@ -56,29 +46,13 @@ export function BreakingNewsBar() {
     return () => clearInterval(interval);
   }, [breakingNews.length]);
 
-  if (isLoading) {
-    return (
-      <div className="relative mb-6 overflow-hidden rounded-lg bg-primary py-2 text-primary-foreground animate-pulse">
-        <div className="container flex items-center gap-3">
-          <div className="flex shrink-0 items-center gap-2">
-            <AlertCircle className="h-4 w-4" />
-            <span className="font-bold uppercase">Breaking:</span>
-          </div>
-          <div className="flex items-center">
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            <span>Loading breaking news...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (breakingNews.length === 0) {
+  // If no breaking news, don't render anything
+  if (!breakingNews || breakingNews.length === 0) {
     return null;
   }
 
   return (
-    <div className="relative mb-6 overflow-hidden rounded-lg bg-primary py-2 text-primary-foreground">
+    <div className="relative mb-6 overflow-hidden rounded-lg bg-primary py-2 text-primary-foreground px-4">
       <div className="container flex items-center gap-3">
         <div className="flex shrink-0 items-center gap-2">
           <AlertCircle className="h-4 w-4" />
@@ -87,7 +61,7 @@ export function BreakingNewsBar() {
         <div className="relative h-6 flex-1 overflow-hidden">
           {breakingNews.map((news, index) => (
             <motion.div
-              key={news.id}
+              key={index}
               className="absolute w-full"
               initial={{ opacity: 0, y: 20 }}
               animate={{

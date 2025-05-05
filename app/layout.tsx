@@ -1,15 +1,17 @@
 import type React from "react";
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { Suspense } from "react";
+import { ReduxProvider } from "@/lib/redux/provider";
 
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: "NewsHub - Breaking News & Latest Headlines",
     template: "%s | NewsHub",
@@ -57,33 +59,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "NewsMediaOrganization",
-              name: "NewsHub",
-              url: "https://newshub.vercel.app",
-              logo: "https://newshub.vercel.app/logo.png",
-              sameAs: [
-                "https://www.facebook.com/newshub",
-                "https://www.twitter.com/newshub",
-                "https://www.instagram.com/newshub",
-              ],
-            }),
-          }}
-        />
-      </head>
       <body
         className={`min-h-screen bg-background font-sans antialiased ${inter.variable}`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Suspense>{children}</Suspense>
-          <Toaster />
-          <Analytics />
-        </ThemeProvider>
+        <ReduxProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+            <Toaster />
+            <Analytics />
+          </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
