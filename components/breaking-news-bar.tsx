@@ -6,46 +6,9 @@ import { motion } from "framer-motion";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useTheme } from "next-themes";
 
-interface BreakingNewsArticle {
-  id: string;
-  title: string;
-  slug: string;
-}
-
-export function BreakingNewsBar() {
-  const [breakingNews, setBreakingNews] = useState<BreakingNewsArticle[]>([]);
+export function BreakingNewsBar({ breakingNews }: BreakingNewsProps) {
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBreakingNews() {
-      try {
-        const response = await fetch("/api/articles?breaking=true&limit=5");
-        if (!response.ok) {
-          throw new Error("Failed to fetch breaking news");
-        }
-        const data = await response.json();
-
-        if (data.articles && data.articles.length > 0) {
-          setBreakingNews(
-            data.articles.map((article: BreakingNewsArticle) => ({
-              id: article.id,
-              title: article.title,
-              slug: article.slug,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching breaking news:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    return () => {
-      fetchBreakingNews();
-    };
-  }, []);
-
+  console.log("Breaking News:", breakingNews);
   useEffect(() => {
     if (breakingNews.length <= 1) return;
 
@@ -55,23 +18,6 @@ export function BreakingNewsBar() {
 
     return () => clearInterval(interval);
   }, [breakingNews.length]);
-
-  if (isLoading) {
-    return (
-      <div className="relative mb-6 overflow-hidden rounded-lg bg-primary py-2 text-primary-foreground animate-pulse">
-        <div className="container flex items-center gap-3">
-          <div className="flex shrink-0 items-center gap-2">
-            <AlertCircle className="h-4 w-4" />
-            <span className="font-bold uppercase">Breaking:</span>
-          </div>
-          <div className="flex items-center">
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            <span>Loading breaking news...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (breakingNews.length === 0) {
     return null;

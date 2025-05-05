@@ -1,8 +1,19 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { LayoutDashboard, FileText, Users, FolderOpen, Tag, ImageIcon, Settings, LogOut } from "lucide-react"
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  FolderOpen,
+  Tag,
+  ImageIcon,
+  Settings,
+  LogOut,
+  ExternalLink,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -11,14 +22,35 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+  SidebarSeparator,
+} from "@/components/ui/sidebar";
+import { useToast } from "@/hooks/use-toast";
 
 export function AdminSidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const router = useRouter();
+  const { toast } = useToast();
 
   const isActive = (path: string) => {
-    return pathname === path || pathname?.startsWith(`${path}/`)
-  }
+    return pathname === path || pathname?.startsWith(`${path}/`);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut({ redirect: false });
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+      router.push("/admin/login");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was a problem signing out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <Sidebar>
@@ -95,13 +127,20 @@ export function AdminSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/">
-                <LogOut className="h-4 w-4" />
+                <ExternalLink className="h-4 w-4" />
                 <span>Back to Site</span>
               </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarSeparator />
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={handleSignOut}>
+              <LogOut className="h-4 w-4" />
+              <span>Sign Out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

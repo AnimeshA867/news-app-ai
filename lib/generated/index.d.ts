@@ -6139,8 +6139,12 @@ export namespace Prisma {
     updatedAt: Date | null
     authorId: string | null
     categoryId: string | null
-    isBreakingNews: boolean | null
-    isFeatured: boolean | null
+    metaTitle: string | null
+    metaDescription: string | null
+    metaKeywords: string | null
+    canonicalUrl: string | null
+    noIndex: boolean | null
+    structuredData: string | null
   }
 
   export type ArticleMaxAggregateOutputType = {
@@ -6158,8 +6162,12 @@ export namespace Prisma {
     updatedAt: Date | null
     authorId: string | null
     categoryId: string | null
-    isBreakingNews: boolean | null
-    isFeatured: boolean | null
+    metaTitle: string | null
+    metaDescription: string | null
+    metaKeywords: string | null
+    canonicalUrl: string | null
+    noIndex: boolean | null
+    structuredData: string | null
   }
 
   export type ArticleCountAggregateOutputType = {
@@ -6177,8 +6185,12 @@ export namespace Prisma {
     updatedAt: number
     authorId: number
     categoryId: number
-    isBreakingNews: number
-    isFeatured: number
+    metaTitle: number
+    metaDescription: number
+    metaKeywords: number
+    canonicalUrl: number
+    noIndex: number
+    structuredData: number
     _all: number
   }
 
@@ -6208,8 +6220,12 @@ export namespace Prisma {
     updatedAt?: true
     authorId?: true
     categoryId?: true
-    isBreakingNews?: true
-    isFeatured?: true
+    metaTitle?: true
+    metaDescription?: true
+    metaKeywords?: true
+    canonicalUrl?: true
+    noIndex?: true
+    structuredData?: true
   }
 
   export type ArticleMaxAggregateInputType = {
@@ -6227,8 +6243,12 @@ export namespace Prisma {
     updatedAt?: true
     authorId?: true
     categoryId?: true
-    isBreakingNews?: true
-    isFeatured?: true
+    metaTitle?: true
+    metaDescription?: true
+    metaKeywords?: true
+    canonicalUrl?: true
+    noIndex?: true
+    structuredData?: true
   }
 
   export type ArticleCountAggregateInputType = {
@@ -6246,8 +6266,12 @@ export namespace Prisma {
     updatedAt?: true
     authorId?: true
     categoryId?: true
-    isBreakingNews?: true
-    isFeatured?: true
+    metaTitle?: true
+    metaDescription?: true
+    metaKeywords?: true
+    canonicalUrl?: true
+    noIndex?: true
+    structuredData?: true
     _all?: true
   }
 
@@ -6352,8 +6376,12 @@ export namespace Prisma {
     updatedAt: Date
     authorId: string
     categoryId: string
-    isBreakingNews: boolean
-    isFeatured: boolean
+    metaTitle: string | null
+    metaDescription: string | null
+    metaKeywords: string | null
+    canonicalUrl: string | null
+    noIndex: boolean
+    structuredData: string | null
     _count: ArticleCountAggregateOutputType | null
     _avg: ArticleAvgAggregateOutputType | null
     _sum: ArticleSumAggregateOutputType | null
@@ -6390,8 +6418,12 @@ export namespace Prisma {
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: boolean
+    metaDescription?: boolean
+    metaKeywords?: boolean
+    canonicalUrl?: boolean
+    noIndex?: boolean
+    structuredData?: boolean
     author?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
     tags?: boolean | Article$tagsArgs<ExtArgs>
@@ -6414,8 +6446,12 @@ export namespace Prisma {
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: boolean
+    metaDescription?: boolean
+    metaKeywords?: boolean
+    canonicalUrl?: boolean
+    noIndex?: boolean
+    structuredData?: boolean
     author?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["article"]>
@@ -6435,8 +6471,12 @@ export namespace Prisma {
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: boolean
+    metaDescription?: boolean
+    metaKeywords?: boolean
+    canonicalUrl?: boolean
+    noIndex?: boolean
+    structuredData?: boolean
     author?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["article"]>
@@ -6456,11 +6496,15 @@ export namespace Prisma {
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: boolean
+    metaDescription?: boolean
+    metaKeywords?: boolean
+    canonicalUrl?: boolean
+    noIndex?: boolean
+    structuredData?: boolean
   }
 
-  export type ArticleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "slug" | "excerpt" | "content" | "status" | "featuredImage" | "readTime" | "viewCount" | "publishedAt" | "createdAt" | "updatedAt" | "authorId" | "categoryId" | "isBreakingNews" | "isFeatured", ExtArgs["result"]["article"]>
+  export type ArticleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "slug" | "excerpt" | "content" | "status" | "featuredImage" | "readTime" | "viewCount" | "publishedAt" | "createdAt" | "updatedAt" | "authorId" | "categoryId" | "metaTitle" | "metaDescription" | "metaKeywords" | "canonicalUrl" | "noIndex" | "structuredData", ExtArgs["result"]["article"]>
   export type ArticleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     author?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
@@ -6500,8 +6544,12 @@ export namespace Prisma {
       updatedAt: Date
       authorId: string
       categoryId: string
-      isBreakingNews: boolean
-      isFeatured: boolean
+      metaTitle: string | null
+      metaDescription: string | null
+      metaKeywords: string | null
+      canonicalUrl: string | null
+      noIndex: boolean
+      structuredData: string | null
     }, ExtArgs["result"]["article"]>
     composites: {}
   }
@@ -6943,8 +6991,12 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Article", 'DateTime'>
     readonly authorId: FieldRef<"Article", 'String'>
     readonly categoryId: FieldRef<"Article", 'String'>
-    readonly isBreakingNews: FieldRef<"Article", 'Boolean'>
-    readonly isFeatured: FieldRef<"Article", 'Boolean'>
+    readonly metaTitle: FieldRef<"Article", 'String'>
+    readonly metaDescription: FieldRef<"Article", 'String'>
+    readonly metaKeywords: FieldRef<"Article", 'String'>
+    readonly canonicalUrl: FieldRef<"Article", 'String'>
+    readonly noIndex: FieldRef<"Article", 'Boolean'>
+    readonly structuredData: FieldRef<"Article", 'String'>
   }
     
 
@@ -10772,8 +10824,12 @@ export namespace Prisma {
     updatedAt: 'updatedAt',
     authorId: 'authorId',
     categoryId: 'categoryId',
-    isBreakingNews: 'isBreakingNews',
-    isFeatured: 'isFeatured'
+    metaTitle: 'metaTitle',
+    metaDescription: 'metaDescription',
+    metaKeywords: 'metaKeywords',
+    canonicalUrl: 'canonicalUrl',
+    noIndex: 'noIndex',
+    structuredData: 'structuredData'
   };
 
   export type ArticleScalarFieldEnum = (typeof ArticleScalarFieldEnum)[keyof typeof ArticleScalarFieldEnum]
@@ -11229,8 +11285,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Article"> | Date | string
     authorId?: StringFilter<"Article"> | string
     categoryId?: StringFilter<"Article"> | string
-    isBreakingNews?: BoolFilter<"Article"> | boolean
-    isFeatured?: BoolFilter<"Article"> | boolean
+    metaTitle?: StringNullableFilter<"Article"> | string | null
+    metaDescription?: StringNullableFilter<"Article"> | string | null
+    metaKeywords?: StringNullableFilter<"Article"> | string | null
+    canonicalUrl?: StringNullableFilter<"Article"> | string | null
+    noIndex?: BoolFilter<"Article"> | boolean
+    structuredData?: StringNullableFilter<"Article"> | string | null
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
     category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
     tags?: TagListRelationFilter
@@ -11252,8 +11312,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
-    isBreakingNews?: SortOrder
-    isFeatured?: SortOrder
+    metaTitle?: SortOrderInput | SortOrder
+    metaDescription?: SortOrderInput | SortOrder
+    metaKeywords?: SortOrderInput | SortOrder
+    canonicalUrl?: SortOrderInput | SortOrder
+    noIndex?: SortOrder
+    structuredData?: SortOrderInput | SortOrder
     author?: UserOrderByWithRelationInput
     category?: CategoryOrderByWithRelationInput
     tags?: TagOrderByRelationAggregateInput
@@ -11278,8 +11342,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Article"> | Date | string
     authorId?: StringFilter<"Article"> | string
     categoryId?: StringFilter<"Article"> | string
-    isBreakingNews?: BoolFilter<"Article"> | boolean
-    isFeatured?: BoolFilter<"Article"> | boolean
+    metaTitle?: StringNullableFilter<"Article"> | string | null
+    metaDescription?: StringNullableFilter<"Article"> | string | null
+    metaKeywords?: StringNullableFilter<"Article"> | string | null
+    canonicalUrl?: StringNullableFilter<"Article"> | string | null
+    noIndex?: BoolFilter<"Article"> | boolean
+    structuredData?: StringNullableFilter<"Article"> | string | null
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
     category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
     tags?: TagListRelationFilter
@@ -11301,8 +11369,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
-    isBreakingNews?: SortOrder
-    isFeatured?: SortOrder
+    metaTitle?: SortOrderInput | SortOrder
+    metaDescription?: SortOrderInput | SortOrder
+    metaKeywords?: SortOrderInput | SortOrder
+    canonicalUrl?: SortOrderInput | SortOrder
+    noIndex?: SortOrder
+    structuredData?: SortOrderInput | SortOrder
     _count?: ArticleCountOrderByAggregateInput
     _avg?: ArticleAvgOrderByAggregateInput
     _max?: ArticleMaxOrderByAggregateInput
@@ -11328,8 +11400,12 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Article"> | Date | string
     authorId?: StringWithAggregatesFilter<"Article"> | string
     categoryId?: StringWithAggregatesFilter<"Article"> | string
-    isBreakingNews?: BoolWithAggregatesFilter<"Article"> | boolean
-    isFeatured?: BoolWithAggregatesFilter<"Article"> | boolean
+    metaTitle?: StringNullableWithAggregatesFilter<"Article"> | string | null
+    metaDescription?: StringNullableWithAggregatesFilter<"Article"> | string | null
+    metaKeywords?: StringNullableWithAggregatesFilter<"Article"> | string | null
+    canonicalUrl?: StringNullableWithAggregatesFilter<"Article"> | string | null
+    noIndex?: BoolWithAggregatesFilter<"Article"> | boolean
+    structuredData?: StringNullableWithAggregatesFilter<"Article"> | string | null
   }
 
   export type CommentWhereInput = {
@@ -11876,8 +11952,12 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     author: UserCreateNestedOneWithoutArticlesInput
     category: CategoryCreateNestedOneWithoutArticlesInput
     tags?: TagCreateNestedManyWithoutArticlesInput
@@ -11899,8 +11979,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     authorId: string
     categoryId: string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     tags?: TagUncheckedCreateNestedManyWithoutArticlesInput
     comments?: CommentUncheckedCreateNestedManyWithoutArticleInput
   }
@@ -11918,8 +12002,12 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     author?: UserUpdateOneRequiredWithoutArticlesNestedInput
     category?: CategoryUpdateOneRequiredWithoutArticlesNestedInput
     tags?: TagUpdateManyWithoutArticlesNestedInput
@@ -11941,8 +12029,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: TagUncheckedUpdateManyWithoutArticlesNestedInput
     comments?: CommentUncheckedUpdateManyWithoutArticleNestedInput
   }
@@ -11962,8 +12054,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     authorId: string
     categoryId: string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
   }
 
   export type ArticleUpdateManyMutationInput = {
@@ -11979,8 +12075,12 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ArticleUncheckedUpdateManyInput = {
@@ -11998,8 +12098,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentCreateInput = {
@@ -12627,8 +12731,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
-    isBreakingNews?: SortOrder
-    isFeatured?: SortOrder
+    metaTitle?: SortOrder
+    metaDescription?: SortOrder
+    metaKeywords?: SortOrder
+    canonicalUrl?: SortOrder
+    noIndex?: SortOrder
+    structuredData?: SortOrder
   }
 
   export type ArticleAvgOrderByAggregateInput = {
@@ -12651,8 +12759,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
-    isBreakingNews?: SortOrder
-    isFeatured?: SortOrder
+    metaTitle?: SortOrder
+    metaDescription?: SortOrder
+    metaKeywords?: SortOrder
+    canonicalUrl?: SortOrder
+    noIndex?: SortOrder
+    structuredData?: SortOrder
   }
 
   export type ArticleMinOrderByAggregateInput = {
@@ -12670,8 +12782,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
-    isBreakingNews?: SortOrder
-    isFeatured?: SortOrder
+    metaTitle?: SortOrder
+    metaDescription?: SortOrder
+    metaKeywords?: SortOrder
+    canonicalUrl?: SortOrder
+    noIndex?: SortOrder
+    structuredData?: SortOrder
   }
 
   export type ArticleSumOrderByAggregateInput = {
@@ -13507,8 +13623,12 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     category: CategoryCreateNestedOneWithoutArticlesInput
     tags?: TagCreateNestedManyWithoutArticlesInput
     comments?: CommentCreateNestedManyWithoutArticleInput
@@ -13528,8 +13648,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     categoryId: string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     tags?: TagUncheckedCreateNestedManyWithoutArticlesInput
     comments?: CommentUncheckedCreateNestedManyWithoutArticleInput
   }
@@ -13630,8 +13754,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Article"> | Date | string
     authorId?: StringFilter<"Article"> | string
     categoryId?: StringFilter<"Article"> | string
-    isBreakingNews?: BoolFilter<"Article"> | boolean
-    isFeatured?: BoolFilter<"Article"> | boolean
+    metaTitle?: StringNullableFilter<"Article"> | string | null
+    metaDescription?: StringNullableFilter<"Article"> | string | null
+    metaKeywords?: StringNullableFilter<"Article"> | string | null
+    canonicalUrl?: StringNullableFilter<"Article"> | string | null
+    noIndex?: BoolFilter<"Article"> | boolean
+    structuredData?: StringNullableFilter<"Article"> | string | null
   }
 
   export type CommentUpsertWithWhereUniqueWithoutUserInput = {
@@ -13779,8 +13907,12 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     author: UserCreateNestedOneWithoutArticlesInput
     tags?: TagCreateNestedManyWithoutArticlesInput
     comments?: CommentCreateNestedManyWithoutArticleInput
@@ -13800,8 +13932,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     tags?: TagUncheckedCreateNestedManyWithoutArticlesInput
     comments?: CommentUncheckedCreateNestedManyWithoutArticleInput
   }
@@ -13845,8 +13981,12 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     author: UserCreateNestedOneWithoutArticlesInput
     category: CategoryCreateNestedOneWithoutArticlesInput
     comments?: CommentCreateNestedManyWithoutArticleInput
@@ -13867,8 +14007,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     authorId: string
     categoryId: string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     comments?: CommentUncheckedCreateNestedManyWithoutArticleInput
   }
 
@@ -14124,8 +14268,12 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     author: UserCreateNestedOneWithoutArticlesInput
     category: CategoryCreateNestedOneWithoutArticlesInput
     tags?: TagCreateNestedManyWithoutArticlesInput
@@ -14146,8 +14294,12 @@ export namespace Prisma {
     updatedAt?: Date | string
     authorId: string
     categoryId: string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
     tags?: TagUncheckedCreateNestedManyWithoutArticlesInput
   }
 
@@ -14215,8 +14367,12 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     author?: UserUpdateOneRequiredWithoutArticlesNestedInput
     category?: CategoryUpdateOneRequiredWithoutArticlesNestedInput
     tags?: TagUpdateManyWithoutArticlesNestedInput
@@ -14237,8 +14393,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: TagUncheckedUpdateManyWithoutArticlesNestedInput
   }
 
@@ -14297,8 +14457,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     categoryId: string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
   }
 
   export type CommentCreateManyUserInput = {
@@ -14330,8 +14494,12 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     category?: CategoryUpdateOneRequiredWithoutArticlesNestedInput
     tags?: TagUpdateManyWithoutArticlesNestedInput
     comments?: CommentUpdateManyWithoutArticleNestedInput
@@ -14351,8 +14519,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: TagUncheckedUpdateManyWithoutArticlesNestedInput
     comments?: CommentUncheckedUpdateManyWithoutArticleNestedInput
   }
@@ -14371,8 +14543,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentUpdateWithoutUserInput = {
@@ -14437,8 +14613,12 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
-    isBreakingNews?: boolean
-    isFeatured?: boolean
+    metaTitle?: string | null
+    metaDescription?: string | null
+    metaKeywords?: string | null
+    canonicalUrl?: string | null
+    noIndex?: boolean
+    structuredData?: string | null
   }
 
   export type ArticleUpdateWithoutCategoryInput = {
@@ -14454,8 +14634,12 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     author?: UserUpdateOneRequiredWithoutArticlesNestedInput
     tags?: TagUpdateManyWithoutArticlesNestedInput
     comments?: CommentUpdateManyWithoutArticleNestedInput
@@ -14475,8 +14659,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: TagUncheckedUpdateManyWithoutArticlesNestedInput
     comments?: CommentUncheckedUpdateManyWithoutArticleNestedInput
   }
@@ -14495,8 +14683,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ArticleUpdateWithoutTagsInput = {
@@ -14512,8 +14704,12 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     author?: UserUpdateOneRequiredWithoutArticlesNestedInput
     category?: CategoryUpdateOneRequiredWithoutArticlesNestedInput
     comments?: CommentUpdateManyWithoutArticleNestedInput
@@ -14534,8 +14730,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
     comments?: CommentUncheckedUpdateManyWithoutArticleNestedInput
   }
 
@@ -14554,8 +14754,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
-    isBreakingNews?: BoolFieldUpdateOperationsInput | boolean
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
+    canonicalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    noIndex?: BoolFieldUpdateOperationsInput | boolean
+    structuredData?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentCreateManyArticleInput = {

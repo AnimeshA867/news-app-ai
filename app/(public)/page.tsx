@@ -11,6 +11,11 @@ export default async function HomePage() {
   const featuredArticles = await prisma.article.findMany({
     where: {
       status: "PUBLISHED",
+      tags: {
+        some: {
+          name: "featured",
+        },
+      },
     },
     include: {
       author: {
@@ -70,9 +75,31 @@ export default async function HomePage() {
     take: 7,
   });
 
+  const breakingNews = (await prisma.article.findMany({
+    where: {
+      status: "PUBLISHED",
+      tags: {
+        some: {
+          name: "breaking-news",
+        },
+      },
+    },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      // publishedAt: true,
+    },
+    orderBy: [
+      {
+        publishedAt: "desc",
+      },
+    ],
+  })) as BreakingNews[];
+
   return (
     <main className="container mx-auto px-4 py-6">
-      <BreakingNewsBar />
+      <BreakingNewsBar breakingNews={breakingNews} />
       <div className="grid gap-8 md:grid-cols-12">
         <div className="md:col-span-8">
           <FeaturedGrid articles={featuredArticles} />

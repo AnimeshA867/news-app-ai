@@ -58,26 +58,32 @@ model Tag {
 }
 
 model Article {
-  id             String    @id @default(cuid())
-  title          String
-  slug           String    @unique
-  excerpt        String?
-  content        String
-  status         Status    @default(DRAFT)
-  featuredImage  String?
-  readTime       Int?
-  viewCount      Int       @default(0)
-  publishedAt    DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  authorId       String
-  categoryId     String
-  author         User      @relation(fields: [authorId], references: [id])
-  category       Category  @relation(fields: [categoryId], references: [id])
-  tags           Tag[]
-  comments       Comment[]
-  isBreakingNews Boolean   @default(false)
-  isFeatured     Boolean   @default(false)
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  excerpt       String?
+  content       String
+  status        Status    @default(DRAFT)
+  featuredImage String?
+  readTime      Int?
+  viewCount     Int       @default(0)
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  authorId      String
+  categoryId    String
+  author        User      @relation(fields: [authorId], references: [id])
+  category      Category  @relation(fields: [categoryId], references: [id])
+  tags          Tag[]
+  comments      Comment[]
+
+  // SEO fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  canonicalUrl    String?
+  noIndex         Boolean @default(false)
+  structuredData  String? // JSON-LD as string
 }
 
 model Comment {

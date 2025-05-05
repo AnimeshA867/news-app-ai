@@ -19,7 +19,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 // import { articleSchema } from "@/lib/validations/article";
-import { Article, Category, Tag } from "@prisma/client";
+import { Article, Category, Tag } from "@/lib/generated/client";
 import { useSWRConfig } from "swr";
 import Image from "next/image";
 import React from "react";
@@ -34,6 +34,12 @@ const schema = z.object({
   isBreakingNews: z.boolean(),
   isFeatured: z.boolean(),
   tagIds: z.array(z.string()).optional(),
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  metaKeywords: z.string().optional(),
+  canonicalUrl: z.string().optional(),
+  noIndex: z.boolean().optional(),
+  structuredData: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -73,6 +79,12 @@ export default function EditArticlePage({
       isBreakingNews: false,
       isFeatured: false,
       tagIds: [],
+      metaTitle: "",
+      metaDescription: "",
+      metaKeywords: "",
+      canonicalUrl: "",
+      noIndex: false,
+      structuredData: "",
     },
   });
 
@@ -131,9 +143,14 @@ export default function EditArticlePage({
         tagIds: Array.isArray(data.article.tags)
           ? data.article.tags.map((tag: any) => tag.id)
           : [],
-
         isBreakingNews: !!data.article.isBreakingNews,
         isFeatured: !!data.article.isFeatured,
+        metaTitle: data.article.metaTitle || "",
+        metaDescription: data.article.metaDescription || "",
+        metaKeywords: data.article.metaKeywords || "",
+        canonicalUrl: data.article.canonicalUrl || "",
+        noIndex: !!data.article.noIndex,
+        structuredData: data.article.structuredData || "",
       });
     } catch (error) {
       console.error("Error fetching article:", error);
@@ -556,6 +573,175 @@ export default function EditArticlePage({
                   </div>
                 )}
               />
+            </div>
+          </div>
+
+          <div className="mt-10 border-t pt-6">
+            <h2 className="text-xl font-semibold mb-4">SEO Settings</h2>
+
+            <div className="grid grid-cols-1 gap-6">
+              <div>
+                <label
+                  htmlFor="metaTitle"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Meta Title
+                  <span className="text-muted-foreground ml-1 text-xs">
+                    (Recommended: 50-60 characters)
+                  </span>
+                </label>
+                <Controller
+                  name="metaTitle"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="metaTitle"
+                      placeholder="Custom meta title (defaults to article title if empty)"
+                      value={field.value || ""}
+                      className="mt-1"
+                    />
+                  )}
+                />
+                {control._formValues.metaTitle &&
+                  control._formValues.metaTitle.length > 60 && (
+                    <p className="mt-1 text-xs text-amber-500">
+                      Meta title is {control._formValues.metaTitle.length}{" "}
+                      characters long (recommended: 50-60)
+                    </p>
+                  )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="metaDescription"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Meta Description
+                  <span className="text-muted-foreground ml-1 text-xs">
+                    (Recommended: 150-160 characters)
+                  </span>
+                </label>
+                <Controller
+                  name="metaDescription"
+                  control={control}
+                  render={({ field }) => (
+                    <Textarea
+                      {...field}
+                      id="metaDescription"
+                      placeholder="Custom meta description (defaults to article excerpt if empty)"
+                      value={field.value || ""}
+                      className="mt-1"
+                      rows={3}
+                    />
+                  )}
+                />
+                {control._formValues.metaDescription &&
+                  control._formValues.metaDescription.length > 160 && (
+                    <p className="mt-1 text-xs text-amber-500">
+                      Meta description is{" "}
+                      {control._formValues.metaDescription.length} characters
+                      long (recommended: 150-160)
+                    </p>
+                  )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="metaKeywords"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Meta Keywords (comma-separated)
+                </label>
+                <Controller
+                  name="metaKeywords"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="metaKeywords"
+                      placeholder="news, article, keyword1, keyword2"
+                      value={field.value || ""}
+                      className="mt-1"
+                    />
+                  )}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Less important for SEO now, but still used by some search
+                  engines
+                </p>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="canonicalUrl"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Canonical URL
+                </label>
+                <Controller
+                  name="canonicalUrl"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="canonicalUrl"
+                      placeholder="https://example.com/original-article (only if this is syndicated content)"
+                      value={field.value || ""}
+                      className="mt-1"
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="flex items-center">
+                <Controller
+                  name="noIndex"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="noIndex"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                      <label
+                        htmlFor="noIndex"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Exclude from search engines (noindex)
+                      </label>
+                    </div>
+                  )}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="structuredData"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Custom Structured Data (JSON-LD)
+                </label>
+                <Controller
+                  name="structuredData"
+                  control={control}
+                  render={({ field }) => (
+                    <Textarea
+                      {...field}
+                      id="structuredData"
+                      placeholder='{"@context":"https://schema.org","@type":"NewsArticle",...}'
+                      value={field.value || ""}
+                      className="mt-1 font-mono text-sm"
+                      rows={8}
+                    />
+                  )}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Advanced: Custom JSON-LD schema markup (defaults to
+                  auto-generated if empty)
+                </p>
+              </div>
             </div>
           </div>
 

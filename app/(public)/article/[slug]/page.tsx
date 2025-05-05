@@ -29,10 +29,10 @@ export async function generateMetadata({
   const { slug } = await params;
 
   const article = await prisma.article.findUnique({
-    where: { slug: slug },
+    where: { slug },
     include: {
+      category: true,
       author: true,
-      tags: true,
     },
   });
 
@@ -43,33 +43,37 @@ export async function generateMetadata({
     };
   }
 
+  // Use custom meta title/description if provided, otherwise use defaults
+  const title = article.metaTitle || article.title;
+  const description = article.metaDescription || article.excerpt || undefined;
+  const keywords = article.metaKeywords?.split(",") || undefined;
+
   return {
-    title: article.title,
-    description: article.excerpt || undefined,
+    title: title,
+    description: description,
+    keywords: keywords,
+    robots: article.noIndex ? { index: false } : undefined,
     openGraph: {
-      title: article.title,
-      description: article.excerpt || undefined,
+      title: title,
+      description: description,
       type: "article",
       publishedTime: article.publishedAt?.toISOString(),
-      authors: [article.author.name || ""],
-      tags: article.tags.map((tag) => tag.name),
-      images: [
-        {
-          url:
-            article.featuredImage || "/placeholder.svg?height=600&width=1200",
-          width: 1200,
-          height: 630,
-          alt: article.title,
-        },
-      ],
+      modifiedTime: article.updatedAt.toISOString(),
+      authors: article.author?.name ? [article.author.name] : undefined,
+      tags: keywords,
+      url: `https://newshub-phi.vercel.app/article/${article.slug}`,
+      images: article.featuredImage
+        ? [{ url: article.featuredImage, alt: article.title }]
+        : undefined,
     },
     twitter: {
       card: "summary_large_image",
-      title: article.title,
-      description: article.excerpt || undefined,
-      images: [
-        article.featuredImage || "/placeholder.svg?height=600&width=1200",
-      ],
+      title: title,
+      description: description,
+      images: article.featuredImage ? [article.featuredImage] : undefined,
+    },
+    alternates: {
+      canonical: article.canonicalUrl || undefined,
     },
   };
 }
@@ -119,6 +123,44 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       publishedAt: "desc",
     },
   });
+
+  // Generate structured data if not provided
+  let structuredData = article.structuredData;
+
+  if (!structuredData) {
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      headline: article.title,
+      description: article.excerpt || "",
+      image: article.featuredImage ? [article.featuredImage] : [],
+      datePublished: article.publishedAt?.toISOString(),
+      dateModified: article.updatedAt.toISOString(),
+      author: article.author
+        ? {
+            "@type": "Person",
+            name: article.author.name,
+            url: article.author.id
+              ? `https://yourdomain.com/author/${article.author.id}`
+              : undefined,
+          }
+        : undefined,
+      publisher: {
+        "@type": "Organization",
+        name: "NewsHub",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://yourdomain.com/logo.png",
+        },
+      },
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": `https://yourdomain.com/article/${article.slug}`,
+      },
+    };
+
+    structuredData = JSON.stringify(jsonLd);
+  }
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -325,6 +367,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         )}
       </article>
+
+      {/* Include JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: structuredData }}
+      />
     </main>
   );
 }
