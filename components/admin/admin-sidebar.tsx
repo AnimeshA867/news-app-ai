@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   FileText,
@@ -25,12 +25,13 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
-
+  const { data: session, status } = useSession();
   const isActive = (path: string) => {
     return pathname === path || pathname?.startsWith(`${path}/`);
   };
@@ -56,10 +57,20 @@ export function AdminSidebar() {
     <Sidebar>
       <SidebarHeader className="border-b px-6 py-3">
         <Link href="/admin" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-            <span className="text-lg font-bold text-primary-foreground">N</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary relative">
+            {session?.user.picture && (
+              <Image
+                src={session?.user.picture || ""}
+                alt={session?.user.name || ""}
+                fill
+                className="rounded-full"
+              />
+            )}
+            <span>N</span>
           </div>
-          <span className="text-xl font-bold">Admin</span>
+          <span className="text-sm font-bold wrap-break-word">
+            {session?.user.name?.split(" ")[0]}
+          </span>
         </Link>
       </SidebarHeader>
       <SidebarContent>

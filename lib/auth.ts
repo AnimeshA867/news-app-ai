@@ -8,6 +8,7 @@ declare module "next-auth" {
       name: string | null;
       email: string | null;
       role: Role;
+      picture: string | null;
     };
   }
   enum Role {
@@ -21,6 +22,7 @@ declare module "next-auth" {
     name: string | null;
     email: string | null;
     role: string;
+    picture: string | null;
   }
 }
 import { getServerSession } from "next-auth/next";
@@ -76,6 +78,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          picture: user.image || "",
         };
       },
     }),
@@ -87,6 +90,7 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name || null;
         session.user.email = token.email || null;
         session.user.role = token.role as Role;
+        session.user.picture = token.picture || null;
       }
       return session;
     },
@@ -94,6 +98,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.picture = user.picture;
       }
       return token;
     },

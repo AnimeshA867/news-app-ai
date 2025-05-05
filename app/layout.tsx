@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Suspense } from "react";
 
 import "./globals.css";
+import Session from "@/components/session-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -60,11 +61,13 @@ export default function RootLayout({
       <body
         className={`min-h-screen bg-background font-sans antialiased ${inter.variable}`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Suspense>{children}</Suspense>
-          <Toaster />
-          <Analytics />
-        </ThemeProvider>
+        <Session>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Suspense>{children}</Suspense>
+            <Toaster />
+            <Analytics />
+          </ThemeProvider>
+        </Session>
       </body>
     </html>
   );

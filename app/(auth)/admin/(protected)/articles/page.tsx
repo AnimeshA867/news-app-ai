@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Loader2,
@@ -40,6 +40,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
+import { debounce } from "lodash";
 import React from "react";
 
 interface Article {
@@ -63,11 +64,12 @@ export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const fetchArticles = async () => {
+  const fetchArticles = useCallback(async () => {
     setIsLoading(true);
     try {
       let url = `/api/articles?page=${currentPage}&limit=10`;
@@ -81,6 +83,11 @@ export default function ArticlesPage() {
       }
 
       const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch articles: ${response.status}`);
+      }
+
       const data = await response.json();
 
       setArticles(data.articles);
@@ -95,11 +102,24 @@ export default function ArticlesPage() {
     } finally {
       setIsLoading(false);
     }
+  }, [currentPage, searchQuery, statusFilter, toast]);
+
+  const debouncedSetSearchQuery = useCallback(
+    debounce((value: string) => {
+      setSearchQuery(value);
+    }, 500),
+    []
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    debouncedSetSearchQuery(value);
   };
 
   useEffect(() => {
     fetchArticles();
-  }, [currentPage, searchQuery, statusFilter, fetchArticles]);
+  }, [fetchArticles]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this article?")) {
@@ -148,8 +168,8 @@ export default function ArticlesPage() {
           <Input
             placeholder="Search articles..."
             className="pl-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
         </div>
         <div className="flex items-center gap-2">

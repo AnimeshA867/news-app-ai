@@ -1,29 +1,17 @@
-import { NextResponse } from "next/server";
-import { getAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { hash } from "bcryptjs";
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-// GET all authors
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const session = await getAuthSession();
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const authors = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        role: true,
-        createdAt: true,
-        _count: {
-          select: { articles: true },
+      where: {
+        role: {
+          in: ["AUTHOR", "ADMIN"],
         },
       },
+
       orderBy: {
         name: "asc",
       },
@@ -39,53 +27,28 @@ export async function GET() {
   }
 }
 
-// POST new author
 export async function POST(req: Request) {
   try {
-    const session = await getAuthSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user || session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, email, password, role, image, bio } = await req.json();
+    const data = await req.json();
 
-    // Check if author with email already exists
-    const existingAuthor = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingAuthor) {
-      return NextResponse.json(
-        { error: "A user with this email already exists" },
-        { status: 400 }
-      );
-    }
-
-    // Hash password
-    const hashedPassword = await hash(password, 12);
-
-    const author = await prisma.user.create({
+    // Create the user first
+    const user = await prisma.user.create({
       data: {
-        name,
-        email,
-        password: hashedPassword,
-        role: role || "AUTHOR",
-        image,
-        bio,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        image: true,
-        bio: true,
-        createdAt: true,
+        name: data.name,
+        email: data.email,
+        role: data.role,
+
+        // Create the author profile with the same transaction
       },
     });
 
-    return NextResponse.json(author, { status: 201 });
+    return NextResponse.json({ author: user });
   } catch (error) {
     console.error("Error creating author:", error);
     return NextResponse.json(

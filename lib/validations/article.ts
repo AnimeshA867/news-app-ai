@@ -1,3 +1,4 @@
+import { toast } from "@/hooks/use-toast";
 import * as z from "zod";
 
 export const articleSchema = z.object({
@@ -24,7 +25,6 @@ export const articleSchema = z.object({
 
   featuredImage: z
     .string()
-    .url("Featured image must be a valid URL")
     .optional()
     .nullable()
     .transform((val) => (val === "" ? null : val)),
@@ -36,9 +36,6 @@ export const articleSchema = z.object({
     .default("DRAFT"),
 
   publishedAt: z.date().optional().nullable().or(z.string().nullable()),
-
-  isFeatured: z.boolean().default(false),
-  isBreakingNews: z.boolean().default(false),
 
   // The parent schema does not include these as they're extended in the component
   // categoryId: z.string().nonempty("Category is required"),

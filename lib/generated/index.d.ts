@@ -6139,6 +6139,7 @@ export namespace Prisma {
     updatedAt: Date | null
     authorId: string | null
     categoryId: string | null
+    featuredImageAlt: string | null
     metaTitle: string | null
     metaDescription: string | null
     metaKeywords: string | null
@@ -6162,6 +6163,7 @@ export namespace Prisma {
     updatedAt: Date | null
     authorId: string | null
     categoryId: string | null
+    featuredImageAlt: string | null
     metaTitle: string | null
     metaDescription: string | null
     metaKeywords: string | null
@@ -6185,6 +6187,7 @@ export namespace Prisma {
     updatedAt: number
     authorId: number
     categoryId: number
+    featuredImageAlt: number
     metaTitle: number
     metaDescription: number
     metaKeywords: number
@@ -6220,6 +6223,7 @@ export namespace Prisma {
     updatedAt?: true
     authorId?: true
     categoryId?: true
+    featuredImageAlt?: true
     metaTitle?: true
     metaDescription?: true
     metaKeywords?: true
@@ -6243,6 +6247,7 @@ export namespace Prisma {
     updatedAt?: true
     authorId?: true
     categoryId?: true
+    featuredImageAlt?: true
     metaTitle?: true
     metaDescription?: true
     metaKeywords?: true
@@ -6266,6 +6271,7 @@ export namespace Prisma {
     updatedAt?: true
     authorId?: true
     categoryId?: true
+    featuredImageAlt?: true
     metaTitle?: true
     metaDescription?: true
     metaKeywords?: true
@@ -6376,6 +6382,7 @@ export namespace Prisma {
     updatedAt: Date
     authorId: string
     categoryId: string
+    featuredImageAlt: string | null
     metaTitle: string | null
     metaDescription: string | null
     metaKeywords: string | null
@@ -6418,6 +6425,7 @@ export namespace Prisma {
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
+    featuredImageAlt?: boolean
     metaTitle?: boolean
     metaDescription?: boolean
     metaKeywords?: boolean
@@ -6446,6 +6454,7 @@ export namespace Prisma {
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
+    featuredImageAlt?: boolean
     metaTitle?: boolean
     metaDescription?: boolean
     metaKeywords?: boolean
@@ -6471,6 +6480,7 @@ export namespace Prisma {
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
+    featuredImageAlt?: boolean
     metaTitle?: boolean
     metaDescription?: boolean
     metaKeywords?: boolean
@@ -6496,6 +6506,7 @@ export namespace Prisma {
     updatedAt?: boolean
     authorId?: boolean
     categoryId?: boolean
+    featuredImageAlt?: boolean
     metaTitle?: boolean
     metaDescription?: boolean
     metaKeywords?: boolean
@@ -6504,7 +6515,7 @@ export namespace Prisma {
     structuredData?: boolean
   }
 
-  export type ArticleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "slug" | "excerpt" | "content" | "status" | "featuredImage" | "readTime" | "viewCount" | "publishedAt" | "createdAt" | "updatedAt" | "authorId" | "categoryId" | "metaTitle" | "metaDescription" | "metaKeywords" | "canonicalUrl" | "noIndex" | "structuredData", ExtArgs["result"]["article"]>
+  export type ArticleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "slug" | "excerpt" | "content" | "status" | "featuredImage" | "readTime" | "viewCount" | "publishedAt" | "createdAt" | "updatedAt" | "authorId" | "categoryId" | "featuredImageAlt" | "metaTitle" | "metaDescription" | "metaKeywords" | "canonicalUrl" | "noIndex" | "structuredData", ExtArgs["result"]["article"]>
   export type ArticleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     author?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
@@ -6544,6 +6555,7 @@ export namespace Prisma {
       updatedAt: Date
       authorId: string
       categoryId: string
+      featuredImageAlt: string | null
       metaTitle: string | null
       metaDescription: string | null
       metaKeywords: string | null
@@ -6991,6 +7003,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Article", 'DateTime'>
     readonly authorId: FieldRef<"Article", 'String'>
     readonly categoryId: FieldRef<"Article", 'String'>
+    readonly featuredImageAlt: FieldRef<"Article", 'String'>
     readonly metaTitle: FieldRef<"Article", 'String'>
     readonly metaDescription: FieldRef<"Article", 'String'>
     readonly metaKeywords: FieldRef<"Article", 'String'>
@@ -10824,6 +10837,7 @@ export namespace Prisma {
     updatedAt: 'updatedAt',
     authorId: 'authorId',
     categoryId: 'categoryId',
+    featuredImageAlt: 'featuredImageAlt',
     metaTitle: 'metaTitle',
     metaDescription: 'metaDescription',
     metaKeywords: 'metaKeywords',
@@ -11285,6 +11299,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Article"> | Date | string
     authorId?: StringFilter<"Article"> | string
     categoryId?: StringFilter<"Article"> | string
+    featuredImageAlt?: StringNullableFilter<"Article"> | string | null
     metaTitle?: StringNullableFilter<"Article"> | string | null
     metaDescription?: StringNullableFilter<"Article"> | string | null
     metaKeywords?: StringNullableFilter<"Article"> | string | null
@@ -11312,6 +11327,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
+    featuredImageAlt?: SortOrderInput | SortOrder
     metaTitle?: SortOrderInput | SortOrder
     metaDescription?: SortOrderInput | SortOrder
     metaKeywords?: SortOrderInput | SortOrder
@@ -11342,6 +11358,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Article"> | Date | string
     authorId?: StringFilter<"Article"> | string
     categoryId?: StringFilter<"Article"> | string
+    featuredImageAlt?: StringNullableFilter<"Article"> | string | null
     metaTitle?: StringNullableFilter<"Article"> | string | null
     metaDescription?: StringNullableFilter<"Article"> | string | null
     metaKeywords?: StringNullableFilter<"Article"> | string | null
@@ -11369,6 +11386,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
+    featuredImageAlt?: SortOrderInput | SortOrder
     metaTitle?: SortOrderInput | SortOrder
     metaDescription?: SortOrderInput | SortOrder
     metaKeywords?: SortOrderInput | SortOrder
@@ -11400,6 +11418,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Article"> | Date | string
     authorId?: StringWithAggregatesFilter<"Article"> | string
     categoryId?: StringWithAggregatesFilter<"Article"> | string
+    featuredImageAlt?: StringNullableWithAggregatesFilter<"Article"> | string | null
     metaTitle?: StringNullableWithAggregatesFilter<"Article"> | string | null
     metaDescription?: StringNullableWithAggregatesFilter<"Article"> | string | null
     metaKeywords?: StringNullableWithAggregatesFilter<"Article"> | string | null
@@ -11952,6 +11971,7 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -11979,6 +11999,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     authorId: string
     categoryId: string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -12002,6 +12023,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12029,6 +12051,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12054,6 +12077,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     authorId: string
     categoryId: string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -12075,6 +12099,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12098,6 +12123,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12731,6 +12757,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
+    featuredImageAlt?: SortOrder
     metaTitle?: SortOrder
     metaDescription?: SortOrder
     metaKeywords?: SortOrder
@@ -12759,6 +12786,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
+    featuredImageAlt?: SortOrder
     metaTitle?: SortOrder
     metaDescription?: SortOrder
     metaKeywords?: SortOrder
@@ -12782,6 +12810,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     authorId?: SortOrder
     categoryId?: SortOrder
+    featuredImageAlt?: SortOrder
     metaTitle?: SortOrder
     metaDescription?: SortOrder
     metaKeywords?: SortOrder
@@ -13623,6 +13652,7 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -13648,6 +13678,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     categoryId: string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -13754,6 +13785,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Article"> | Date | string
     authorId?: StringFilter<"Article"> | string
     categoryId?: StringFilter<"Article"> | string
+    featuredImageAlt?: StringNullableFilter<"Article"> | string | null
     metaTitle?: StringNullableFilter<"Article"> | string | null
     metaDescription?: StringNullableFilter<"Article"> | string | null
     metaKeywords?: StringNullableFilter<"Article"> | string | null
@@ -13907,6 +13939,7 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -13932,6 +13965,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -13981,6 +14015,7 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -14007,6 +14042,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     authorId: string
     categoryId: string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -14268,6 +14304,7 @@ export namespace Prisma {
     publishedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -14294,6 +14331,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     authorId: string
     categoryId: string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -14367,6 +14405,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14393,6 +14432,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14457,6 +14497,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     categoryId: string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -14494,6 +14535,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14519,6 +14561,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14543,6 +14586,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14613,6 +14657,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     authorId: string
+    featuredImageAlt?: string | null
     metaTitle?: string | null
     metaDescription?: string | null
     metaKeywords?: string | null
@@ -14634,6 +14679,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14659,6 +14705,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14683,6 +14730,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14704,6 +14752,7 @@ export namespace Prisma {
     publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14730,6 +14779,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14754,6 +14804,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     authorId?: StringFieldUpdateOperationsInput | string
     categoryId?: StringFieldUpdateOperationsInput | string
+    featuredImageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null

@@ -32,3 +32,18 @@ export const articleSchema = z.object({
       { message: "Invalid JSON format" }
     ),
 });
+
+export const schema = articleSchema.extend({
+  categoryId: z.string().nonempty("Category is required"),
+  tagIds: z.array(z.string()).optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "SCHEDULED"]),
+  isBreakingNews: z.boolean(),
+  isFeatured: z.boolean(),
+  featuredImage: z.string().optional(),
+  featuredImageAlt: z.string().optional(),
+  // SEO fields
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  metaKeywords: z.string().optional(),
+  noIndex: z.boolean().default(false),
+});

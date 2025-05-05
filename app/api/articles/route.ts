@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,8 +16,6 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get("category") || "";
     const tag = searchParams.get("tag") || "";
     const author = searchParams.get("author") || "";
-    const breaking = searchParams.get("breaking") === "true";
-    const featured = searchParams.get("featured") === "true";
 
     // Build where conditions
     const where: Record<string, unknown> = { status: "PUBLISHED" };
@@ -46,14 +46,6 @@ export async function GET(req: NextRequest) {
       where.author = {
         id: author,
       };
-    }
-
-    if (breaking) {
-      where.isBreakingNews = true;
-    }
-
-    if (featured) {
-      where.isFeatured = true;
     }
 
     // Get total count
@@ -112,15 +104,26 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: Request) {
   try {
-    const session = await getAuthSession();
+    // Verify authentication
+    const session = await getServerSession(authOptions);
 
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Get the user from the session
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user.email as string,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
     const data = await req.json();
 
-    // Create the article
     const article = await prisma.article.create({
       data: {
         title: data.title,
@@ -128,24 +131,32 @@ export async function POST(req: Request) {
         excerpt: data.excerpt || null,
         content: data.content,
         featuredImage: data.featuredImage || null,
+        featuredImageAlt: data.featuredImageAlt || "",
         status: data.status,
         author: {
-          connect: { id: session.user.id },
+          connect: { id: user.id }, // Connect to the authenticated user
         },
         category: {
           connect: { id: data.categoryId },
         },
-        ...(data.tagIds?.length > 0
+        tags: data.tagIds?.length
           ? {
-              tags: {
-                connect: data.tagIds.map((id: string) => ({ id })),
-              },
+              connect: data.tagIds.map((id: string) => ({ id })),
             }
-          : {}),
+          : undefined,
+        metaTitle: data.metaTitle || null,
+        metaDescription: data.metaDescription || null,
+        metaKeywords: data.metaKeywords || null,
+        noIndex: data.noIndex || false,
+      },
+      include: {
+        author: true,
+        category: true,
+        tags: true,
       },
     });
 
-    return NextResponse.json(article, { status: 201 });
+    return NextResponse.json({ article });
   } catch (error) {
     console.error("Error creating article:", error);
     return NextResponse.json(
