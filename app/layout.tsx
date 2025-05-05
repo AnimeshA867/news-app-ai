@@ -57,6 +57,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "NewsMediaOrganization",
+              name: "NewsHub",
+              url: "https://newshub.vercel.app",
+              logo: "https://newshub.vercel.app/logo.png",
+              sameAs: [
+                "https://www.facebook.com/newshub",
+                "https://www.twitter.com/newshub",
+                "https://www.instagram.com/newshub",
+              ],
+            }),
+          }}
+        />
+      </head>
       <body
         className={`min-h-screen bg-background font-sans antialiased ${inter.variable}`}
       >

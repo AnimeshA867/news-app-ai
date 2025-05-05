@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import {
   Loader2,
@@ -41,34 +41,21 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { formatDate } from "@/lib/utils";
 import React from "react";
-
-interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  status: string;
-  category: {
-    name: string;
-  };
-  author: {
-    name: string | null;
-  };
-  publishedAt: string | null;
-  createdAt: string;
-  viewCount: number;
-}
+import { useDispatch, useSelector } from "react-redux";
+import { setArticles } from "@/store/articlesSlice";
 
 export default function ArticlesPage() {
   const { toast } = useToast();
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const dispatch = useDispatch();
+  const articles = useSelector((state) => state.articles.articles);
+  const isLoading = useSelector((state) => state.articles.isLoading);
+  const searchQuery = useSelector((state) => state.articles.searchQuery);
+  const statusFilter = useSelector((state) => state.articles.statusFilter);
+  const currentPage = useSelector((state) => state.articles.currentPage);
+  const totalPages = useSelector((state) => state.articles.totalPages);
 
   const fetchArticles = async () => {
-    setIsLoading(true);
+    dispatch(setArticles({ isLoading: true }));
     try {
       let url = `/api/articles?page=${currentPage}&limit=10`;
 
@@ -83,8 +70,7 @@ export default function ArticlesPage() {
       const response = await fetch(url);
       const data = await response.json();
 
-      setArticles(data.articles);
-      setTotalPages(data.meta.totalPages);
+      dispatch(setArticles({ articles: data.articles, totalPages: data.meta.totalPages }));
     } catch (error) {
       console.error("Error fetching articles:", error);
       toast({
@@ -93,13 +79,13 @@ export default function ArticlesPage() {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      dispatch(setArticles({ isLoading: false }));
     }
   };
 
   useEffect(() => {
     fetchArticles();
-  }, [currentPage, searchQuery, statusFilter, fetchArticles]);
+  }, [currentPage, searchQuery, statusFilter]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this article?")) {
@@ -149,12 +135,12 @@ export default function ArticlesPage() {
             placeholder="Search articles..."
             className="pl-8"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => dispatch(setArticles({ searchQuery: e.target.value }))}
           />
         </div>
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={(value) => dispatch(setArticles({ statusFilter: value }))}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
@@ -271,7 +257,7 @@ export default function ArticlesPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                onClick={() => dispatch(setArticles({ currentPage: Math.max(currentPage - 1, 1) }))}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -282,9 +268,7 @@ export default function ArticlesPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
+                onClick={() => dispatch(setArticles({ currentPage: Math.min(currentPage + 1, totalPages) }))}
                 disabled={currentPage === totalPages}
               >
                 Next

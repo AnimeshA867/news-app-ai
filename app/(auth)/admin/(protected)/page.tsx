@@ -1,56 +1,42 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { AdminStats } from "@/components/admin/admin-stats";
 import { AdminRecentArticles } from "@/components/admin/admin-recent-articles";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { setStats } from "@/store/statsSlice";
 
 export default function AdminDashboardPage() {
-  interface Stats {
-    counts: {
-      articles: number;
-      publishedArticles: number;
-      categories: number;
-      tags: number;
-      users: number;
-    };
-    recentActivity: { id: string; name: string; email: string; role: string }[];
-    articleStatusCounts: { status: string; count: number }[];
-    categoryStats: { name: string; count: number }[];
-  }
-
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
   const { toast } = useToast();
+  const stats = useSelector((state) => state.stats.stats);
+  const isLoading = useSelector((state) => state.stats.isLoading);
+
+  const fetchStats = async () => {
+    dispatch(setStats({ isLoading: true }));
+    try {
+      const response = await fetch("/api/admin/stats");
+      const data = await response.json();
+      dispatch(setStats({ stats: data }));
+    } catch (error) {
+      console.error("Failed to fetch dashboard stats:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load dashboard statistics",
+        variant: "destructive",
+      });
+    } finally {
+      dispatch(setStats({ isLoading: false }));
+    }
+  };
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/admin/stats");
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setStats(data);
-      } catch (error) {
-        console.error("Failed to fetch dashboard stats:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load dashboard statistics",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchStats();
-  }, [toast]);
+  }, [dispatch, toast]);
 
   return (
     <div className="space-y-6">
