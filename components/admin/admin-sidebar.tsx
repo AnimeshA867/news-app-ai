@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   ExternalLink,
+  UserCog,
 } from "lucide-react";
 import {
   Sidebar,
@@ -128,6 +129,17 @@ export function AdminSidebar() {
               <Link href="/admin/settings">
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive("/admin/user-settings")}
+            >
+              <Link href="/admin/user-settings">
+                <UserCog className="h-4 w-4 mr-2" />
+                <span>Account Settings</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
