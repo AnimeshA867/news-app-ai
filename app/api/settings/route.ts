@@ -18,7 +18,6 @@ export async function GET() {
           faviconUrl: "/favicon.ico",
           senderEmail: "news@example.com",
           senderName: "News AI",
-          enableComments: true,
           enableNewsletter: true,
           enableSearch: true,
           enableSocialSharing: true,

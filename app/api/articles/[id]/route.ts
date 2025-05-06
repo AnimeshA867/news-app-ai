@@ -35,50 +35,58 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
     const session = await getServerSession(authOptions);
-
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const data = await req.json();
 
-    // Check if article exists and belongs to the user
-    const existingArticle = await prisma.article.findUnique({
-      where: { id },
-      include: { author: true },
-    });
-
-    if (!existingArticle) {
-      return NextResponse.json({ error: "Article not found" }, { status: 404 });
+    // Process JSON-LD data
+    let jsonLdData = {};
+    if (data.structuredData) {
+      try {
+        jsonLdData = JSON.parse(data.structuredData);
+      } catch (err) {
+        console.error("Invalid JSON-LD data:", err);
+      }
     }
+    const id = await params;
 
     const article = await prisma.article.update({
-      where: { id },
+      where: {
+        id,
+      },
       data: {
         title: data.title,
         slug: data.slug,
         excerpt: data.excerpt || null,
         content: data.content,
+        status: data.status,
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || null,
-        status: data.status,
-        category: {
-          connect: { id: data.categoryId },
-        },
-        tags: {
-          set: [], // Disconnect all existing tags first
-          connect: data.tagIds?.map((id: string) => ({ id })) || [],
-        },
-
+        // ... other fields
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,
         metaKeywords: data.metaKeywords || null,
         noIndex: data.noIndex || false,
+        structuredData: data.structuredData || null,
+        jsonLd: jsonLdData, // Add this line
+        // Relations
+        category: data.categoryId
+          ? {
+              connect: {
+                id: data.categoryId,
+              },
+            }
+          : undefined,
+        tags: {
+          set: [], // Clear existing connections
+          connect: data.tagIds ? data.tagIds.map((id: string) => ({ id })) : [],
+        },
       },
       include: {
         author: true,
@@ -87,7 +95,7 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json({ article });
+    return NextResponse.json(article);
   } catch (error) {
     console.error("Error updating article:", error);
     return NextResponse.json(

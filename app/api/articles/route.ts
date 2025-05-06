@@ -124,6 +124,16 @@ export async function POST(req: Request) {
 
     const data = await req.json();
 
+    // Process JSON-LD data
+    let jsonLdData = {};
+    if (data.structuredData) {
+      try {
+        jsonLdData = JSON.parse(data.structuredData);
+      } catch (err) {
+        console.error("Invalid JSON-LD data:", err);
+      }
+    }
+
     const article = await prisma.article.create({
       data: {
         title: data.title,
@@ -148,6 +158,8 @@ export async function POST(req: Request) {
         metaDescription: data.metaDescription || null,
         metaKeywords: data.metaKeywords || null,
         noIndex: data.noIndex || false,
+        structuredData: data.structuredData || null,
+        jsonLd: jsonLdData, // Add this line
       },
       include: {
         author: true,
