@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Search, Plus } from "lucide-react";
+import { Bell, Search, Plus, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSession, signOut } from "next-auth/react";
 
 type NewActionConfig = {
   path: string;
@@ -26,6 +28,7 @@ type NewActionConfig = {
 export function AdminHeader() {
   const [searchQuery, setSearchQuery] = useState("");
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   // Configuration for "New" button based on current route
   const newActions: NewActionConfig[] = [
@@ -50,7 +53,7 @@ export function AdminHeader() {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center border-b bg-background px-6 mx-auto container">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 flex-1">
         <SidebarTrigger />
         <div className="relative hidden md:block">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -62,39 +65,73 @@ export function AdminHeader() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-      </div>
-      <div className="ml-auto flex items-center gap-2">
-        {currentAction && (
-          <Button variant="outline" size="sm" asChild>
-            <Link href={currentAction.href}>
-              <Plus className="mr-1 h-4 w-4" /> {currentAction.label}
-            </Link>
-          </Button>
-        )}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute right-1 top-1 flex h-2 w-2 rounded-full bg-primary"></span>
-              <span className="sr-only">Notifications</span>
+        <div className="ml-auto flex items-center gap-4">
+          {currentAction && (
+            <Button asChild>
+              <Link href={currentAction.href}>
+                <Plus className="mr-2 h-4 w-4" />
+                {currentAction.label}
+              </Link>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              New comment on &quot;Global Climate Summit&quot;
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              New user registration: john.doe@example.com
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-center text-sm text-muted-foreground">
-              View all notifications
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <ModeToggle />
+          )}
+          {session?.user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={session.user.image || ""}
+                      alt={session.user.name || "User"}
+                    />
+                    <AvatarFallback>
+                      {session.user.name?.[0] || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/user-settings">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Account Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => signOut({ callbackUrl: "/admin/login" })}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                <span className="absolute right-1 top-1 flex h-2 w-2 rounded-full bg-primary"></span>
+                <span className="sr-only">Notifications</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                New comment on &quot;Global Climate Summit&quot;
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                New user registration: john.doe@example.com
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-center text-sm text-muted-foreground">
+                View all notifications
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <ModeToggle />
+        </div>
       </div>
     </header>
   );
