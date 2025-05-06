@@ -30,13 +30,13 @@ const schema = articleSchema.extend({
   categoryId: z.string().nonempty("Category is required"),
   tagIds: z.array(z.string()).optional(),
   status: z.enum(["DRAFT", "PUBLISHED", "SCHEDULED"]),
-  // featuredImage: z.string().optional(),
   featuredImageAlt: z.string().optional(),
-  // SEO fields
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   metaKeywords: z.string().optional(),
   noIndex: z.boolean().default(false).optional(),
+  structuredData: z.string().optional(),
+  jsonLd: z.record(z.any()).optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -74,7 +74,6 @@ export default function ArticleEditForm({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
 
-  // Save our server-fetched data in state
   const [categories, setCategories] = useState<Category[]>(
     initialCategories || []
   );
@@ -105,6 +104,8 @@ export default function ArticleEditForm({
           metaDescription: "",
           metaKeywords: "",
           noIndex: false,
+          structuredData: "{}",
+          jsonLd: {},
         }
       : {
           title: initialArticle?.title || "",
@@ -120,19 +121,23 @@ export default function ArticleEditForm({
           metaDescription: initialArticle?.metaDescription || "",
           metaKeywords: initialArticle?.metaKeywords || "",
           noIndex: initialArticle?.noIndex || false,
+          structuredData: initialArticle?.structuredData || "{}",
+          jsonLd: initialArticle?.jsonLd
+            ? typeof initialArticle.jsonLd === "string"
+              ? JSON.parse(initialArticle.jsonLd)
+              : initialArticle.jsonLd
+            : {},
         },
   });
 
   const featuredImageUrl = watch("featuredImage");
   const title = watch("title");
 
-  // Generate a slug from the title automatically
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
     setValue("title", newTitle);
 
     if (isNewArticle) {
-      // Only auto-generate slug for new articles
       const slug = newTitle
         .toLowerCase()
         .replace(/[^\w\s-]/g, "")
@@ -171,9 +176,22 @@ export default function ArticleEditForm({
   };
 
   const onSubmit = async (data: FormData) => {
+    // Validate JSON-LD if needed
+    try {
+      if (data.structuredData && data.structuredData.trim() !== "") {
+        JSON.parse(data.structuredData);
+      }
+    } catch (err) {
+      toast({
+        title: "Invalid JSON-LD",
+        description: "Please fix the JSON-LD syntax before submitting",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
-      // For new articles use POST, for existing ones use PUT
       const url = isNewArticle ? "/api/articles" : `/api/articles/${articleId}`;
       const method = isNewArticle ? "POST" : "PUT";
 
@@ -199,7 +217,7 @@ export default function ArticleEditForm({
       });
 
       router.push("/admin/articles");
-      router.refresh(); // Refresh server components
+      router.refresh();
     } catch (error) {
       console.error(
         `Error ${isNewArticle ? "creating" : "saving"} article:`,
@@ -220,7 +238,6 @@ export default function ArticleEditForm({
   const handleImageUpload = async (file: File) => {
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       toast({
         title: "Invalid file type",
@@ -230,7 +247,6 @@ export default function ArticleEditForm({
       return;
     }
 
-    // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: "File too large",
@@ -244,11 +260,9 @@ export default function ArticleEditForm({
     setUploadProgress(0);
 
     try {
-      // Create form data
       const formData = new FormData();
       formData.append("image", file);
 
-      // Simulate upload progress with intervals
       const progressInterval = setInterval(() => {
         setUploadProgress((prev) => {
           if (prev >= 95) {
@@ -259,7 +273,6 @@ export default function ArticleEditForm({
         });
       }, 100);
 
-      // Upload the image
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
@@ -274,12 +287,10 @@ export default function ArticleEditForm({
 
       const data = await response.json();
 
-      // Check if data has url property
       if (!data.url) {
         throw new Error("Invalid response from server");
       }
 
-      // Set the image URL in the form
       setValue("featuredImage", data.url);
 
       setUploadProgress(100);
@@ -299,7 +310,6 @@ export default function ArticleEditForm({
         variant: "destructive",
       });
     } finally {
-      // Small delay to show 100% progress before resetting
       setTimeout(() => {
         setIsUploading(false);
         setUploadProgress(0);
@@ -308,7 +318,7 @@ export default function ArticleEditForm({
   };
 
   const handleDelete = async () => {
-    if (isNewArticle) return; // Can't delete a new article
+    if (isNewArticle) return;
 
     if (!confirm("Are you sure you want to delete this article?")) {
       return;
@@ -330,7 +340,7 @@ export default function ArticleEditForm({
       });
 
       router.push("/admin/articles");
-      router.refresh(); // Refresh server components
+      router.refresh();
     } catch (error) {
       console.error("Error deleting article:", error);
       toast({
@@ -556,13 +566,11 @@ export default function ArticleEditForm({
             name="tagIds"
             control={control}
             render={({ field }) => {
-              // Prepare the options and selected values
               const options = tags.map((tag) => ({
                 value: tag.id,
                 label: tag.name,
               }));
 
-              // Create the currently selected values array
               const selectedValues = options.filter(
                 (option) => field.value && field.value.includes(option.value)
               );
@@ -593,71 +601,71 @@ export default function ArticleEditForm({
                       ...base,
                       backgroundColor:
                         document.documentElement.classList.contains("dark")
-                          ? "#1f2937" // Dark mode background
-                          : "#ffffff", // Light mode background
+                          ? "#1f2937"
+                          : "#ffffff",
                       borderColor: state.isFocused
-                        ? "#3b82f6" // Focus border color
+                        ? "#3b82f6"
                         : document.documentElement.classList.contains("dark")
-                        ? "#374151" // Dark mode border
-                        : "#d1d5db", // Light mode border
+                        ? "#374151"
+                        : "#d1d5db",
                       color: document.documentElement.classList.contains("dark")
-                        ? "#ffffff" // Dark mode text
-                        : "#000000", // Light mode text
+                        ? "#ffffff"
+                        : "#000000",
                     }),
                     menu: (base) => ({
                       ...base,
                       backgroundColor:
                         document.documentElement.classList.contains("dark")
-                          ? "#1f2937" // Dark mode menu background
-                          : "#ffffff", // Light mode menu background
+                          ? "#1f2937"
+                          : "#ffffff",
                       color: document.documentElement.classList.contains("dark")
-                        ? "#ffffff" // Dark mode menu text
-                        : "#000000", // Light mode menu text
+                        ? "#ffffff"
+                        : "#000000",
                     }),
                     menuList: (base) => ({
                       ...base,
                       backgroundColor:
                         document.documentElement.classList.contains("dark")
-                          ? "#1f2937" // Dark mode menu list background
-                          : "#ffffff", // Light mode menu list background
+                          ? "#1f2937"
+                          : "#ffffff",
                       color: document.documentElement.classList.contains("dark")
-                        ? "#ffffff" // Dark mode menu list text
-                        : "#000000", // Light mode menu list text
+                        ? "#ffffff"
+                        : "#000000",
                     }),
                     option: (base, state) => ({
                       ...base,
                       backgroundColor: state.isFocused
                         ? document.documentElement.classList.contains("dark")
-                          ? "#374151" // Dark mode hover background
-                          : "#e5e7eb" // Light mode hover background
+                          ? "#374151"
+                          : "#e5e7eb"
                         : "transparent",
                       color: state.isFocused
                         ? document.documentElement.classList.contains("dark")
-                          ? "#ffffff" // Dark mode hover text
-                          : "#000000" // Light mode hover text
+                          ? "#ffffff"
+                          : "#000000"
                         : base.color,
                     }),
                     multiValue: (base) => ({
                       ...base,
                       backgroundColor:
                         document.documentElement.classList.contains("dark")
-                          ? "#374151" // Dark mode multi-value background
-                          : "#e5e7eb", // Light mode multi-value background
+                          ? "#374151"
+                          : "#e5e7eb",
                       color: document.documentElement.classList.contains("dark")
-                        ? "#ffffff" // Dark mode multi-value text
-                        : "#000000", // Light mode multi-value text
+                        ? "#ffffff"
+                        : "#000000",
                     }),
                     multiValueLabel: (base) => ({
                       ...base,
                       color: document.documentElement.classList.contains("dark")
-                        ? "#ffffff" // Dark mode multi-value label text
-                        : "#000000", // Light mode multi-value label text
+                        ? "#ffffff"
+                        : "#000000",
                     }),
                     multiValueRemove: (base) => ({
                       ...base,
                       color: document.documentElement.classList.contains("dark")
-                        ? "#f87171" // Dark mode remove icon
-                        : "#ef4444", // Light mode remove icon
+                        ? "#f87171"
+                        : "#ef4444",
                     }),
                   }}
                 />
@@ -721,20 +729,40 @@ export default function ArticleEditForm({
                     name="featuredImageAlt"
                     control={control}
                     render={({ field }) => (
-                      <UploadDropzone
-                        endpoint={"imageUploader"}
-                        onClientUploadComplete={(res) => {
-                          if (res && res.length > 0) {
-                            setValue("featuredImage", res[0].url);
-                            toast({
-                              title: "Upload complete",
-                              description:
-                                "Image has been uploaded successfully",
-                            });
-                          }
-                        }}
+                      <Input
+                        {...field}
+                        id="featuredImageAlt"
+                        placeholder="Describe the image for screen readers and SEO"
+                        value={field.value || ""}
+                        onClick={(e) => e.stopPropagation()}
                       />
                     )}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <p className="block text-sm font-medium text-gray-700 mb-2">
+                    Or upload a new image:
+                  </p>
+                  <UploadDropzone
+                    endpoint="imageUploader"
+                    onClientUploadComplete={(res) => {
+                      if (res && res.length > 0) {
+                        setValue("featuredImage", res[0].url);
+                        toast({
+                          title: "Upload complete",
+                          description: "Image has been uploaded successfully",
+                        });
+                      }
+                    }}
+                    onUploadError={(error: Error) => {
+                      toast({
+                        title: "Upload failed",
+                        description:
+                          "Failed to upload image. Please try again.",
+                        variant: "destructive",
+                      });
+                    }}
                   />
                 </div>
               </div>
@@ -785,7 +813,6 @@ export default function ArticleEditForm({
           )}
         </div>
 
-        {/* SEO Settings Section */}
         <div className="mt-10 border-t pt-6">
           <h2 className="text-xl font-semibold mb-4">SEO Settings</h2>
 
@@ -902,6 +929,102 @@ export default function ArticleEditForm({
               </label>
             </div>
           </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">Structured Data (JSON-LD)</h3>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const articleData = watch();
+                const jsonLd = {
+                  "@context": "https://schema.org",
+                  "@type": "NewsArticle",
+                  headline: articleData.title,
+                  description: articleData.excerpt || "",
+                  image: articleData.featuredImage
+                    ? [articleData.featuredImage]
+                    : [],
+                  datePublished: new Date().toISOString(),
+                  dateModified: new Date().toISOString(),
+                  author: {
+                    "@type": "Person",
+                    name: "Editor",
+                  },
+                  publisher: {
+                    "@type": "Organization",
+                    name: "NewsHub",
+                    logo: {
+                      "@type": "ImageObject",
+                      url: "/logo.png",
+                    },
+                  },
+                  mainEntityOfPage: {
+                    "@type": "WebPage",
+                    "@id": `https://yourdomain.com/article/${articleData.slug}`,
+                  },
+                };
+
+                setValue("jsonLd", jsonLd);
+                setValue("structuredData", JSON.stringify(jsonLd, null, 2));
+              }}
+            >
+              Generate
+            </Button>
+          </div>
+
+          <Controller
+            name="structuredData"
+            control={control}
+            render={({ field }) => (
+              <div>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <label
+                      htmlFor="structuredData"
+                      className="text-sm font-medium"
+                    >
+                      JSON-LD
+                    </label>
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      (Structured data for SEO)
+                    </span>
+                  </div>
+                  <Textarea
+                    placeholder='{
+                      "@context": "https://schema.org",
+                      "@type": "NewsArticle",
+                      "headline": "Article Title",
+                      ...
+                    }'
+                    className="font-mono text-sm h-48"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      try {
+                        const parsed = JSON.parse(e.target.value);
+                        setValue("jsonLd", parsed);
+                      } catch (err) {
+                        // Only show error if there's actual content and it's invalid
+                        if (e.target.value.trim().length > 0) {
+                          console.error("Invalid JSON-LD:", err);
+                          // Optional: You can comment out this toast if it's too intrusive
+                          // toast({
+                          //   title: "Invalid JSON-LD",
+                          //   description: "Please check your JSON-LD syntax.",
+                          //   variant: "destructive",
+                          // });
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          />
         </div>
 
         <div className="flex justify-end">

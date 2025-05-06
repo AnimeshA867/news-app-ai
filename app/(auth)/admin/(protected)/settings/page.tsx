@@ -47,9 +47,6 @@ const emailSettingsSchema = z.object({
 });
 
 const featureSettingsSchema = z.object({
-  enableComments: z.boolean({
-    required_error: "enableComments is required",
-  }),
   enableNewsletter: z.boolean({
     required_error: "enableNewsletter is required",
   }),
@@ -102,7 +99,6 @@ export default function SettingsPage() {
   const featureForm = useForm<FeatureSettingsValues>({
     resolver: zodResolver(featureSettingsSchema),
     defaultValues: {
-      enableComments: true,
       enableNewsletter: true,
       enableSearch: true,
       enableSocialSharing: true,
@@ -144,7 +140,6 @@ export default function SettingsPage() {
 
         // Set feature settings
         featureForm.reset({
-          enableComments: settings.enableComments,
           enableNewsletter: settings.enableNewsletter,
           enableSearch: settings.enableSearch,
           enableSocialSharing: settings.enableSocialSharing,
@@ -544,27 +539,6 @@ export default function SettingsPage() {
                   onSubmit={featureForm.handleSubmit(onSaveFeatureSettings)}
                   className="space-y-6"
                 >
-                  <FormField
-                    control={featureForm.control}
-                    name="enableComments"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-                        <div className="space-y-0.5">
-                          <FormLabel>Comments</FormLabel>
-                          <FormDescription>
-                            Allow users to comment on articles
-                          </FormDescription>
-                        </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
                   <FormField
                     control={featureForm.control}
                     name="enableNewsletter"

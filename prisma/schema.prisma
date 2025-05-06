@@ -25,7 +25,6 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   articles      Article[]
-  comments      Comment[]
   sessions      Session[]
 }
 
@@ -76,7 +75,6 @@ model Article {
   author           User      @relation(fields: [authorId], references: [id])
   category         Category  @relation(fields: [categoryId], references: [id])
   tags             Tag[]
-  comments         Comment[]
   featuredImageAlt String?
   // SEO fields
   metaTitle        String?
@@ -84,18 +82,8 @@ model Article {
   metaKeywords     String?
   canonicalUrl     String?
   noIndex          Boolean   @default(false)
-  structuredData   String? // JSON-LD as string
-}
-
-model Comment {
-  id        String   @id @default(cuid())
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  articleId String
-  userId    String
-  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id])
+  structuredData   String?   @db.Text
+  jsonLd           Json?
 }
 
 model Media {
@@ -121,7 +109,6 @@ model Setting {
   smtpPort              String?
   smtpUsername          String?
   smtpPassword          String?
-  enableComments        Boolean @default(true)
   enableNewsletter      Boolean @default(true)
   enableSearch          Boolean @default(true)
   enableSocialSharing   Boolean @default(true)
