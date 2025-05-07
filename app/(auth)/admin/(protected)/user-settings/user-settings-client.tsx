@@ -306,7 +306,7 @@ export function UserSettingsClient({
                                   </Avatar>
                                 </div>
                               )}
-                              <UploadDropzone
+                              <UploadDropzone<OurFileRouter, "imageUploader">
                                 endpoint="imageUploader"
                                 onClientUploadComplete={(res) => {
                                   if (res && res.length > 0) {
