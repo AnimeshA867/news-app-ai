@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-
+import { hash } from "bcryptjs";
 export async function GET(req: Request) {
   try {
     const authors = await prisma.user.findMany({
@@ -37,13 +37,15 @@ export async function POST(req: Request) {
 
     const data = await req.json();
 
+    const hashedPassword = await hash(data.password, 10);
     // Create the user first
     const user = await prisma.user.create({
       data: {
         name: data.name,
         email: data.email,
         role: data.role,
-
+        password: hashedPassword, // Ensure this is hashed in a real application
+        image: data.image,
         // Create the author profile with the same transaction
       },
     });
