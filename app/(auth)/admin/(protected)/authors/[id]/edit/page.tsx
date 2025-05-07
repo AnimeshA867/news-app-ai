@@ -12,7 +12,7 @@ interface PageProps {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { id } = params;
+  const { id } = await params;
 
   if (id === "new") {
     return {

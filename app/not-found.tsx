@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Home, ArrowLeft } from "lucide-react";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import React from "react";
 
 export const metadata = {
   title: "Page Not Found - NewsHub",

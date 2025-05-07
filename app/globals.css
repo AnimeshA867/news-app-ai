@@ -4,10 +4,36 @@
 /* @import "tailwindcss/typography"; */
 @import "uploadthing/tw/v4";
 @source "../node_modules/@uploadthing/react/dist/index.css";
-
+@import "react-day-picker/src/style.css";
 @custom-variant dark (&:is(.dark *));
 
 /* @import "/app/uploadthing.css"; */
+.rdp-root {
+  --rdp-accent-color: var(--color-foreground);
+  --rdp-accent-color-hover: var(--color-foreground);
+}
+
+[data-theme="dark"] {
+  --rdp-accent-color: var(--color-foreground);
+  --rdp-accent-color-hover: var(--color-foreground);
+}
+/* .rdp-today {
+  color: var(--color-foreground);
+} */
+
+.rdp-selected .rdp-day_button {
+  color: var(--color-primary);
+  border: var(--color-primary);
+}
+.rdp-day:hover {
+  /* background-color: var(--color-primary); */
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+/* .rdp-today:not(.rdp-outside) {
+  color: var(--color-foreground);
+} */
 
 @theme inline {
   --color-background: var(--background);

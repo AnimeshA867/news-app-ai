@@ -80,7 +80,7 @@ export function AdminHeader() {
                 <Button variant="ghost" className="rounded-full h-8 w-8 p-0">
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={session.user.image || ""}
+                      src={session.user.picture || ""}
                       alt={session.user.name || "User"}
                     />
                     <AvatarFallback>

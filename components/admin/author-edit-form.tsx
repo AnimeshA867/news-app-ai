@@ -418,10 +418,12 @@ export default function AuthorEditForm({
             name="bio"
             control={control}
             render={({ field }) => (
-              <TipTapEditor
-                content={field.value || ""}
-                onChange={field.onChange}
+              <Textarea
+                value={field.value || ""}
+                onChange={(e) => field.onChange(e.target.value)}
+                id="bio"
                 placeholder="Write bio of the author..."
+                rows={4}
               />
             )}
           />

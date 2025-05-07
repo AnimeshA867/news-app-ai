@@ -115,6 +115,48 @@ model Setting {
   enableRelatedArticles Boolean @default(true)
 }
 
+model Advertisement {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  linkUrl     String?
+  width       Int       @default(300)
+  height      Int       @default(250)
+  position    String // sidebar, header, footer, in-article, etc.
+  startDate   DateTime  @default(now())
+  endDate     DateTime?
+  isActive    Boolean   @default(true)
+  impressions Int       @default(0)
+  clicks      Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  adCode      String?   @db.Text // For custom ad code/scripts
+  priority    Int       @default(1) // Higher priority ads show first
+
+  // For targeting specific pages
+  pages AdPagePlacement[]
+  zones AdZone[]
+}
+
+model AdZone {
+  id             String          @id @default(cuid())
+  name           String
+  description    String?
+  slug           String          @unique
+  advertisements Advertisement[]
+}
+
+model AdPagePlacement {
+  id              String        @id @default(cuid())
+  pageType        String // article, category, homepage, etc.
+  pageIdentifier  String? // slug or id of specific page
+  advertisementId String
+  advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+
+  @@unique([pageType, pageIdentifier, advertisementId])
+}
+
 enum Role {
   ADMIN
   EDITOR

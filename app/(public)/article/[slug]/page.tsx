@@ -16,17 +16,17 @@ import { Separator } from "@/components/ui/separator";
 import { formatDate, calculateReadTime } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import { JsonLd } from "@/components/json-ld";
+import { AdPosition } from "@/components/advertisements/ad-position";
+import React from "react";
 
 interface ArticlePageProps {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: { slug: string };
 }
 
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
 
   const article = await prisma.article.findUnique({
     where: { slug },
@@ -43,7 +43,6 @@ export async function generateMetadata({
     };
   }
 
-  // Use custom meta title/description if provided, otherwise use defaults
   const title = article.metaTitle || article.title;
   const description = article.metaDescription || article.excerpt || undefined;
   const keywords = article.metaKeywords?.split(",") || undefined;
@@ -80,9 +79,7 @@ export async function generateMetadata({
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const { slug } = await params;
-
-  // Increment view count
+  const { slug } = params;
 
   const article = await prisma.article.findUnique({
     where: { slug },
@@ -108,7 +105,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     data: { viewCount: { increment: 1 } },
   });
 
-  // Get related articles based on category and tags
   const relatedArticles = await prisma.article.findMany({
     where: {
       OR: [
@@ -124,7 +120,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     },
   });
 
-  // Generate structured data if not provided
   let structuredData = article.structuredData;
 
   if (!structuredData) {
@@ -162,70 +157,123 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     structuredData = JSON.stringify(jsonLd);
   }
 
+  const content = article.content;
+  let paragraphs = content.split("</p>");
+  paragraphs = paragraphs.map((p) => (p.trim() ? `${p}</p>` : p));
+  const middleIndex = Math.max(2, Math.floor(paragraphs.length / 2));
+  const firstHalf = paragraphs.slice(0, middleIndex).join("");
+  const secondHalf = paragraphs.slice(middleIndex).join("");
+
   return (
     <>
-      {article.jsonLd && <JsonLd data={article.jsonLd} />}
+      {article.jsonLd && (
+        <JsonLd
+          data={
+            typeof article.jsonLd === "string"
+              ? JSON.parse(article.jsonLd)
+              : article.jsonLd
+          }
+        />
+      )}
 
       <main className="container mx-auto px-4 py-8">
-        <article className="mx-auto max-w-4xl">
-          <header className="mb-8 text-center">
-            <Badge className="mb-4">{article.category.name}</Badge>
-            <h1 className="mb-4 text-3xl font-bold leading-tight md:text-4xl lg:text-5xl">
-              {article.title}
-            </h1>
-            <p className="mb-6 text-xl text-muted-foreground">
-              {article.excerpt}
-            </p>
+        <div className="mb-6">
+          <AdPosition
+            position="header"
+            pageType="article"
+            pageId={article.id}
+            className="w-full h-[90px] flex items-center justify-center"
+            fallback={
+              <div className="w-full h-[90px] bg-muted/10 rounded-md"></div>
+            }
+          />
+        </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="relative h-12 w-12 overflow-hidden rounded-full object-center flex justify-center items-center">
-                  <Image
-                    src={
-                      article.author.image ||
-                      "/placeholder.svg?height=100&width=100"
-                    }
-                    alt={article.author.name || "Author"}
-                    width={40}
-                    height={40}
-                    className="rounded-full object-center"
-                  />
-                </div>
-                <span className="font-medium">{article.author.name}</span>
+        <article className="mx-auto max-w-3xl">
+          <header className="mb-8">
+            <Link
+              href={`/category/${article.category?.slug}`}
+              className="text-sm font-medium text-primary mb-2 inline-block"
+            >
+              {article.category?.name}
+            </Link>
+
+            <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
+
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
+              <div className="flex items-center">
+                <Calendar className="mr-1 h-4 w-4" />
+                <time dateTime={article.publishedAt?.toISOString() || ""}>
+                  {article.publishedAt
+                    ? formatDate(article.publishedAt)
+                    : "Unpublished"}
+                </time>
               </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Calendar className="h-4 w-4" />
-                <span>
-                  {formatDate(article.publishedAt || article.createdAt)}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                <span>
-                  {article.readTime || calculateReadTime(article.content)} min
-                  read
-                </span>
+
+              <div className="flex items-center">
+                <Clock className="mr-1 h-4 w-4" />
+                <span>{calculateReadTime(article.content)} min read</span>
               </div>
             </div>
+
+            {article.featuredImage && (
+              <div className="relative aspect-[16/9] overflow-hidden rounded-lg mb-8">
+                <Image
+                  src={article.featuredImage}
+                  alt={article.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            )}
           </header>
 
-          <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-lg">
-            <Image
-              src={
-                article.featuredImage ||
-                "/placeholder.svg?height=600&width=1200"
+          <div className="my-6">
+            <AdPosition
+              position="before-content"
+              pageType="article"
+              pageId={article.id}
+              className="w-full h-[250px] flex items-center justify-center"
+              fallback={
+                <div className="w-full h-[120px] bg-muted/10 rounded-md"></div>
               }
-              alt={article.title}
-              fill
-              className="object-cover"
-              priority
             />
           </div>
 
           <div
-            className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-bold prose-p:text-base prose-img:rounded-lg prose-list-disc prose-li-list-inside prose-a:text-primary prose-a:no-underline prose-a:transition-colors prose-a:focus-visible:outline-none prose-a:focus-visible:ring-2 prose-a:focus-visible:ring-primary prose-a:focus-visible:ring-offset-2 prose-code:bg-muted/50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-bold prose-p:text-base prose-img:rounded-lg prose-img:mx-auto"
+            dangerouslySetInnerHTML={{ __html: firstHalf }}
           />
+
+          <div className="my-8 flex justify-center">
+            <AdPosition
+              position="in-article"
+              pageType="article"
+              pageId={article.id}
+              className="max-w-[600px] h-[250px] flex items-center justify-center"
+              fallback={
+                <div className="w-full h-[250px] bg-muted/10 rounded-md"></div>
+              }
+            />
+          </div>
+
+          <div
+            className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-bold prose-p:text-base prose-img:rounded-lg prose-img:mx-auto"
+            dangerouslySetInnerHTML={{ __html: secondHalf }}
+          />
+
+          <div className="my-8 flex justify-center">
+            <AdPosition
+              position="after-content"
+              pageType="article"
+              pageId={article.id}
+              className="w-full h-[250px] flex items-center justify-center"
+              fallback={
+                <div className="w-full h-[120px] bg-muted/10 rounded-md"></div>
+              }
+            />
+          </div>
 
           <Separator className="my-8" />
 
@@ -335,9 +383,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </div>
             </div>
           )}
+
+          <div className="mt-12">
+            <AdPosition
+              position="footer"
+              pageType="article"
+              pageId={article.id}
+              className="w-full h-[90px] flex items-center justify-center"
+              fallback={
+                <div className="w-full h-[90px] bg-muted/10 rounded-md"></div>
+              }
+            />
+          </div>
         </article>
 
-        {/* Include JSON-LD structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: structuredData }}
