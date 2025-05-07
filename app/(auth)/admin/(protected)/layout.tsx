@@ -2,11 +2,18 @@ import type React from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminHeader } from "@/components/admin/admin-header";
+import { prisma } from "@/lib/prisma";
 
-export const metadata = {
-  title: "Admin Dashboard | NewsHub",
-  description: "NewsHub content management system",
-};
+export async function generateMetadata() {
+  const settings = (await prisma.setting.findFirst()) || {
+    siteName: "NewsHub",
+  };
+
+  return {
+    title: `Admin Dashboard | ${settings.siteName}`,
+    description: `${settings.siteName} content management system`,
+  };
+}
 
 export default function AdminLayout({
   children,
@@ -15,7 +22,7 @@ export default function AdminLayout({
 }) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen  container mx-auto">
+      <div className="flex min-h-screen container mx-auto">
         <AdminSidebar />
         <div className="flex-1 mx-auto">
           <AdminHeader />

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { getAuthSession } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 
 // GET settings
 export async function GET() {
@@ -16,8 +17,16 @@ export async function GET() {
           description: "The latest news and stories from around the world",
           logoUrl: "/logo.svg",
           faviconUrl: "/favicon.ico",
+          siteUrl: null,
+          socialImageUrl: null,
+          twitterImageUrl: null,
+          facebookImageUrl: null,
           senderEmail: "news@example.com",
           senderName: "News AI",
+          smtpHost: null,
+          smtpPort: null,
+          smtpUsername: null,
+          smtpPassword: null,
           enableNewsletter: true,
           enableSearch: true,
           enableSocialSharing: true,
@@ -40,25 +49,70 @@ export async function GET() {
 // PUT (update) settings
 export async function PUT(req: Request) {
   try {
-    const session = await getAuthSession();
+    const session = await getServerSession(authOptions);
 
-    if (!session?.user || session.user.role !== "ADMIN") {
+    // Authentication check
+    if (!session?.user?.role || session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const data = await req.json();
 
-    // Get existing settings or create default
-    const existingSettings = await prisma.setting.findFirst();
+    // For all email and feature settings, ensure they're properly handled if undefined
+    const emailSettings = {
+      senderEmail: data.senderEmail || null,
+      senderName: data.senderName || null,
+      smtpHost: data.smtpHost || null,
+      smtpPort: data.smtpPort || null,
+      smtpUsername: data.smtpUsername || null,
+      smtpPassword: data.smtpPassword || null,
+    };
 
-    const settings = existingSettings
-      ? await prisma.setting.update({
-          where: { id: existingSettings.id },
-          data,
-        })
-      : await prisma.setting.create({
-          data,
-        });
+    const featureSettings = {
+      enableNewsletter:
+        data.enableNewsletter === undefined ? true : data.enableNewsletter,
+      enableSearch: data.enableSearch === undefined ? true : data.enableSearch,
+      enableSocialSharing:
+        data.enableSocialSharing === undefined
+          ? true
+          : data.enableSocialSharing,
+      enableRelatedArticles:
+        data.enableRelatedArticles === undefined
+          ? true
+          : data.enableRelatedArticles,
+    };
+
+    // Update settings with all fields properly handled
+    const settings = await prisma.setting.upsert({
+      where: { id: data.id || "default" },
+      create: {
+        id: data.id || "default",
+        siteName: data.siteName || "News AI",
+        siteUrl: data.siteUrl || null,
+        tagline: data.tagline || null,
+        description: data.description || null,
+        logoUrl: data.logoUrl || null,
+        faviconUrl: data.faviconUrl || null,
+        socialImageUrl: data.socialImageUrl || null,
+        twitterImageUrl: data.twitterImageUrl || null,
+        facebookImageUrl: data.facebookImageUrl || null,
+        ...emailSettings,
+        ...featureSettings,
+      },
+      update: {
+        siteName: data.siteName,
+        siteUrl: data.siteUrl,
+        tagline: data.tagline,
+        description: data.description,
+        logoUrl: data.logoUrl,
+        faviconUrl: data.faviconUrl,
+        socialImageUrl: data.socialImageUrl,
+        twitterImageUrl: data.twitterImageUrl,
+        facebookImageUrl: data.facebookImageUrl,
+        ...emailSettings,
+        ...featureSettings,
+      },
+    });
 
     return NextResponse.json(settings);
   } catch (error) {

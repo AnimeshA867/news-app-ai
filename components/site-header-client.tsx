@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { cn } from "@/lib/utils";
 import React from "react";
+import { useSettings } from "./providers/settings-provider";
 
 interface Category {
   id: string;
@@ -21,6 +22,7 @@ interface SiteHeaderClientProps {
 }
 
 export function SiteHeaderClient({ categories }: SiteHeaderClientProps) {
+  const { settings } = useSettings();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -50,7 +52,7 @@ export function SiteHeaderClient({ categories }: SiteHeaderClientProps) {
               className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary"
             >
               <span className="text-lg font-bold text-primary-foreground">
-                N
+                {settings.siteName.charAt(0)}
               </span>
             </motion.div>
             <motion.span
@@ -59,7 +61,7 @@ export function SiteHeaderClient({ categories }: SiteHeaderClientProps) {
               transition={{ duration: 0.3, delay: 0.1 }}
               className="text-xl font-bold tracking-tight"
             >
-              NewsHub
+              {settings.siteName}
             </motion.span>
           </Link>
           <nav className="hidden md:flex md:gap-6 items-center">

@@ -3,13 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Search, Home, ArrowLeft } from "lucide-react";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import { prisma } from "@/lib/prisma";
 import React from "react";
 
-export const metadata = {
-  title: "Page Not Found - NewsHub",
-  description: "Sorry, the page you're looking for doesn't exist.",
-  robots: "noindex",
-};
+export async function generateMetadata() {
+  const settings = (await prisma.setting.findFirst()) || {
+    siteName: "NewsHub",
+  };
+
+  return {
+    title: `Page Not Found - ${settings.siteName}`,
+    description: "Sorry, the page you're looking for doesn't exist.",
+    robots: "noindex",
+  };
+}
 
 export default function NotFound() {
   return (

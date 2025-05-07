@@ -1,19 +1,27 @@
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  // Fetch settings
+  const settings = (await prisma.setting.findFirst()) || {
+    siteName: "NewsHub",
+  };
+
   return (
-    <footer className="border-t bg-muted/40 ">
+    <footer className="border-t bg-muted/40">
       <div className="container py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link href="/" className="flex items-center space-x-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
                 <span className="text-lg font-bold text-primary-foreground">
-                  N
+                  {settings.siteName.charAt(0)}
                 </span>
               </div>
-              <span className="text-xl font-bold tracking-tight">NewsHub</span>
+              <span className="text-xl font-bold tracking-tight">
+                {settings.siteName}
+              </span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
               Delivering the latest breaking news and top stories from around
@@ -194,7 +202,8 @@ export function SiteFooter() {
         </div>
         <div className="mt-12 border-t pt-8">
           <p className="text-center text-xs text-muted-foreground">
-            © {new Date().getFullYear()} NewsHub. All rights reserved.
+            © {new Date().getFullYear()} {settings.siteName}. All rights
+            reserved.
           </p>
         </div>
       </div>

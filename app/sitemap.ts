@@ -2,8 +2,11 @@ import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Set your actual domain name here
-  const domain = "https://newshub-phi.vercel.app";
+  // Get settings for domain name
+  const settings = await prisma.setting.findFirst();
+
+  // Use the setting if available, otherwise fall back to hardcoded domain
+  const domain = settings?.siteUrl || "https://news.manasukh.com";
 
   // Define static pages
   const staticPages = [

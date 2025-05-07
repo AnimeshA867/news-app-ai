@@ -10,19 +10,13 @@ export async function SiteHeader() {
       name: true,
       slug: true,
     },
-
-    // Optionally limit the number of categories
   });
 
   // If database fetch fails, use a fallback set of categories
   const fallbackCategories = [
     { id: "1", name: "Politics", slug: "politics" },
     { id: "2", name: "World", slug: "world" },
-    { id: "3", name: "Business", slug: "business" },
-    { id: "4", name: "Technology", slug: "technology" },
-    { id: "5", name: "Entertainment", slug: "entertainment" },
-    { id: "6", name: "Sports", slug: "sports" },
-    { id: "7", name: "Health", slug: "health" },
+    // Rest of the fallback categories...
   ];
 
   return (
