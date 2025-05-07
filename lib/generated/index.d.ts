@@ -54,11 +54,6 @@ export type Setting = $Result.DefaultSelection<Prisma.$SettingPayload>
  */
 export type Advertisement = $Result.DefaultSelection<Prisma.$AdvertisementPayload>
 /**
- * Model AdZone
- * 
- */
-export type AdZone = $Result.DefaultSelection<Prisma.$AdZonePayload>
-/**
  * Model AdPagePlacement
  * 
  */
@@ -299,16 +294,6 @@ export class PrismaClient<
     * ```
     */
   get advertisement(): Prisma.AdvertisementDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.adZone`: Exposes CRUD operations for the **AdZone** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more AdZones
-    * const adZones = await prisma.adZone.findMany()
-    * ```
-    */
-  get adZone(): Prisma.AdZoneDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.adPagePlacement`: Exposes CRUD operations for the **AdPagePlacement** model.
@@ -767,7 +752,6 @@ export namespace Prisma {
     Media: 'Media',
     Setting: 'Setting',
     Advertisement: 'Advertisement',
-    AdZone: 'AdZone',
     AdPagePlacement: 'AdPagePlacement'
   };
 
@@ -787,7 +771,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "category" | "tag" | "article" | "media" | "setting" | "advertisement" | "adZone" | "adPagePlacement"
+      modelProps: "user" | "session" | "category" | "tag" | "article" | "media" | "setting" | "advertisement" | "adPagePlacement"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1383,80 +1367,6 @@ export namespace Prisma {
           }
         }
       }
-      AdZone: {
-        payload: Prisma.$AdZonePayload<ExtArgs>
-        fields: Prisma.AdZoneFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.AdZoneFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.AdZoneFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>
-          }
-          findFirst: {
-            args: Prisma.AdZoneFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.AdZoneFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>
-          }
-          findMany: {
-            args: Prisma.AdZoneFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>[]
-          }
-          create: {
-            args: Prisma.AdZoneCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>
-          }
-          createMany: {
-            args: Prisma.AdZoneCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.AdZoneCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>[]
-          }
-          delete: {
-            args: Prisma.AdZoneDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>
-          }
-          update: {
-            args: Prisma.AdZoneUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>
-          }
-          deleteMany: {
-            args: Prisma.AdZoneDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.AdZoneUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.AdZoneUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>[]
-          }
-          upsert: {
-            args: Prisma.AdZoneUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AdZonePayload>
-          }
-          aggregate: {
-            args: Prisma.AdZoneAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateAdZone>
-          }
-          groupBy: {
-            args: Prisma.AdZoneGroupByArgs<ExtArgs>
-            result: $Utils.Optional<AdZoneGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.AdZoneCountArgs<ExtArgs>
-            result: $Utils.Optional<AdZoneCountAggregateOutputType> | number
-          }
-        }
-      }
       AdPagePlacement: {
         payload: Prisma.$AdPagePlacementPayload<ExtArgs>
         fields: Prisma.AdPagePlacementFieldRefs
@@ -1623,7 +1533,6 @@ export namespace Prisma {
     media?: MediaOmit
     setting?: SettingOmit
     advertisement?: AdvertisementOmit
-    adZone?: AdZoneOmit
     adPagePlacement?: AdPagePlacementOmit
   }
 
@@ -1853,12 +1762,10 @@ export namespace Prisma {
 
   export type AdvertisementCountOutputType = {
     pages: number
-    zones: number
   }
 
   export type AdvertisementCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     pages?: boolean | AdvertisementCountOutputTypeCountPagesArgs
-    zones?: boolean | AdvertisementCountOutputTypeCountZonesArgs
   }
 
   // Custom InputTypes
@@ -1877,44 +1784,6 @@ export namespace Prisma {
    */
   export type AdvertisementCountOutputTypeCountPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AdPagePlacementWhereInput
-  }
-
-  /**
-   * AdvertisementCountOutputType without action
-   */
-  export type AdvertisementCountOutputTypeCountZonesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AdZoneWhereInput
-  }
-
-
-  /**
-   * Count Type AdZoneCountOutputType
-   */
-
-  export type AdZoneCountOutputType = {
-    advertisements: number
-  }
-
-  export type AdZoneCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    advertisements?: boolean | AdZoneCountOutputTypeCountAdvertisementsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * AdZoneCountOutputType without action
-   */
-  export type AdZoneCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZoneCountOutputType
-     */
-    select?: AdZoneCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * AdZoneCountOutputType without action
-   */
-  export type AdZoneCountOutputTypeCountAdvertisementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AdvertisementWhereInput
   }
 
 
@@ -10164,7 +10033,6 @@ export namespace Prisma {
     adCode?: boolean
     priority?: boolean
     pages?: boolean | Advertisement$pagesArgs<ExtArgs>
-    zones?: boolean | Advertisement$zonesArgs<ExtArgs>
     _count?: boolean | AdvertisementCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["advertisement"]>
 
@@ -10231,7 +10099,6 @@ export namespace Prisma {
   export type AdvertisementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "linkUrl" | "width" | "height" | "position" | "startDate" | "endDate" | "isActive" | "impressions" | "clicks" | "createdAt" | "updatedAt" | "adCode" | "priority", ExtArgs["result"]["advertisement"]>
   export type AdvertisementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     pages?: boolean | Advertisement$pagesArgs<ExtArgs>
-    zones?: boolean | Advertisement$zonesArgs<ExtArgs>
     _count?: boolean | AdvertisementCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AdvertisementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -10241,7 +10108,6 @@ export namespace Prisma {
     name: "Advertisement"
     objects: {
       pages: Prisma.$AdPagePlacementPayload<ExtArgs>[]
-      zones: Prisma.$AdZonePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10656,7 +10522,6 @@ export namespace Prisma {
   export interface Prisma__AdvertisementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     pages<T extends Advertisement$pagesArgs<ExtArgs> = {}>(args?: Subset<T, Advertisement$pagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    zones<T extends Advertisement$zonesArgs<ExtArgs> = {}>(args?: Subset<T, Advertisement$zonesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11115,30 +10980,6 @@ export namespace Prisma {
   }
 
   /**
-   * Advertisement.zones
-   */
-  export type Advertisement$zonesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    where?: AdZoneWhereInput
-    orderBy?: AdZoneOrderByWithRelationInput | AdZoneOrderByWithRelationInput[]
-    cursor?: AdZoneWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: AdZoneScalarFieldEnum | AdZoneScalarFieldEnum[]
-  }
-
-  /**
    * Advertisement without action
    */
   export type AdvertisementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11154,1063 +10995,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AdvertisementInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model AdZone
-   */
-
-  export type AggregateAdZone = {
-    _count: AdZoneCountAggregateOutputType | null
-    _min: AdZoneMinAggregateOutputType | null
-    _max: AdZoneMaxAggregateOutputType | null
-  }
-
-  export type AdZoneMinAggregateOutputType = {
-    id: string | null
-    name: string | null
-    description: string | null
-    slug: string | null
-  }
-
-  export type AdZoneMaxAggregateOutputType = {
-    id: string | null
-    name: string | null
-    description: string | null
-    slug: string | null
-  }
-
-  export type AdZoneCountAggregateOutputType = {
-    id: number
-    name: number
-    description: number
-    slug: number
-    _all: number
-  }
-
-
-  export type AdZoneMinAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    slug?: true
-  }
-
-  export type AdZoneMaxAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    slug?: true
-  }
-
-  export type AdZoneCountAggregateInputType = {
-    id?: true
-    name?: true
-    description?: true
-    slug?: true
-    _all?: true
-  }
-
-  export type AdZoneAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which AdZone to aggregate.
-     */
-    where?: AdZoneWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of AdZones to fetch.
-     */
-    orderBy?: AdZoneOrderByWithRelationInput | AdZoneOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: AdZoneWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` AdZones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` AdZones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned AdZones
-    **/
-    _count?: true | AdZoneCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: AdZoneMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: AdZoneMaxAggregateInputType
-  }
-
-  export type GetAdZoneAggregateType<T extends AdZoneAggregateArgs> = {
-        [P in keyof T & keyof AggregateAdZone]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateAdZone[P]>
-      : GetScalarType<T[P], AggregateAdZone[P]>
-  }
-
-
-
-
-  export type AdZoneGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AdZoneWhereInput
-    orderBy?: AdZoneOrderByWithAggregationInput | AdZoneOrderByWithAggregationInput[]
-    by: AdZoneScalarFieldEnum[] | AdZoneScalarFieldEnum
-    having?: AdZoneScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: AdZoneCountAggregateInputType | true
-    _min?: AdZoneMinAggregateInputType
-    _max?: AdZoneMaxAggregateInputType
-  }
-
-  export type AdZoneGroupByOutputType = {
-    id: string
-    name: string
-    description: string | null
-    slug: string
-    _count: AdZoneCountAggregateOutputType | null
-    _min: AdZoneMinAggregateOutputType | null
-    _max: AdZoneMaxAggregateOutputType | null
-  }
-
-  type GetAdZoneGroupByPayload<T extends AdZoneGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<AdZoneGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof AdZoneGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], AdZoneGroupByOutputType[P]>
-            : GetScalarType<T[P], AdZoneGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type AdZoneSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    slug?: boolean
-    advertisements?: boolean | AdZone$advertisementsArgs<ExtArgs>
-    _count?: boolean | AdZoneCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["adZone"]>
-
-  export type AdZoneSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    slug?: boolean
-  }, ExtArgs["result"]["adZone"]>
-
-  export type AdZoneSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    slug?: boolean
-  }, ExtArgs["result"]["adZone"]>
-
-  export type AdZoneSelectScalar = {
-    id?: boolean
-    name?: boolean
-    description?: boolean
-    slug?: boolean
-  }
-
-  export type AdZoneOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "slug", ExtArgs["result"]["adZone"]>
-  export type AdZoneInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    advertisements?: boolean | AdZone$advertisementsArgs<ExtArgs>
-    _count?: boolean | AdZoneCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type AdZoneIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type AdZoneIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-
-  export type $AdZonePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "AdZone"
-    objects: {
-      advertisements: Prisma.$AdvertisementPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      name: string
-      description: string | null
-      slug: string
-    }, ExtArgs["result"]["adZone"]>
-    composites: {}
-  }
-
-  type AdZoneGetPayload<S extends boolean | null | undefined | AdZoneDefaultArgs> = $Result.GetResult<Prisma.$AdZonePayload, S>
-
-  type AdZoneCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<AdZoneFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: AdZoneCountAggregateInputType | true
-    }
-
-  export interface AdZoneDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdZone'], meta: { name: 'AdZone' } }
-    /**
-     * Find zero or one AdZone that matches the filter.
-     * @param {AdZoneFindUniqueArgs} args - Arguments to find a AdZone
-     * @example
-     * // Get one AdZone
-     * const adZone = await prisma.adZone.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends AdZoneFindUniqueArgs>(args: SelectSubset<T, AdZoneFindUniqueArgs<ExtArgs>>): Prisma__AdZoneClient<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one AdZone that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {AdZoneFindUniqueOrThrowArgs} args - Arguments to find a AdZone
-     * @example
-     * // Get one AdZone
-     * const adZone = await prisma.adZone.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends AdZoneFindUniqueOrThrowArgs>(args: SelectSubset<T, AdZoneFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdZoneClient<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first AdZone that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdZoneFindFirstArgs} args - Arguments to find a AdZone
-     * @example
-     * // Get one AdZone
-     * const adZone = await prisma.adZone.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends AdZoneFindFirstArgs>(args?: SelectSubset<T, AdZoneFindFirstArgs<ExtArgs>>): Prisma__AdZoneClient<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first AdZone that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdZoneFindFirstOrThrowArgs} args - Arguments to find a AdZone
-     * @example
-     * // Get one AdZone
-     * const adZone = await prisma.adZone.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends AdZoneFindFirstOrThrowArgs>(args?: SelectSubset<T, AdZoneFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdZoneClient<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more AdZones that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdZoneFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all AdZones
-     * const adZones = await prisma.adZone.findMany()
-     * 
-     * // Get first 10 AdZones
-     * const adZones = await prisma.adZone.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const adZoneWithIdOnly = await prisma.adZone.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends AdZoneFindManyArgs>(args?: SelectSubset<T, AdZoneFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a AdZone.
-     * @param {AdZoneCreateArgs} args - Arguments to create a AdZone.
-     * @example
-     * // Create one AdZone
-     * const AdZone = await prisma.adZone.create({
-     *   data: {
-     *     // ... data to create a AdZone
-     *   }
-     * })
-     * 
-     */
-    create<T extends AdZoneCreateArgs>(args: SelectSubset<T, AdZoneCreateArgs<ExtArgs>>): Prisma__AdZoneClient<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many AdZones.
-     * @param {AdZoneCreateManyArgs} args - Arguments to create many AdZones.
-     * @example
-     * // Create many AdZones
-     * const adZone = await prisma.adZone.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends AdZoneCreateManyArgs>(args?: SelectSubset<T, AdZoneCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many AdZones and returns the data saved in the database.
-     * @param {AdZoneCreateManyAndReturnArgs} args - Arguments to create many AdZones.
-     * @example
-     * // Create many AdZones
-     * const adZone = await prisma.adZone.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many AdZones and only return the `id`
-     * const adZoneWithIdOnly = await prisma.adZone.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends AdZoneCreateManyAndReturnArgs>(args?: SelectSubset<T, AdZoneCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a AdZone.
-     * @param {AdZoneDeleteArgs} args - Arguments to delete one AdZone.
-     * @example
-     * // Delete one AdZone
-     * const AdZone = await prisma.adZone.delete({
-     *   where: {
-     *     // ... filter to delete one AdZone
-     *   }
-     * })
-     * 
-     */
-    delete<T extends AdZoneDeleteArgs>(args: SelectSubset<T, AdZoneDeleteArgs<ExtArgs>>): Prisma__AdZoneClient<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one AdZone.
-     * @param {AdZoneUpdateArgs} args - Arguments to update one AdZone.
-     * @example
-     * // Update one AdZone
-     * const adZone = await prisma.adZone.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends AdZoneUpdateArgs>(args: SelectSubset<T, AdZoneUpdateArgs<ExtArgs>>): Prisma__AdZoneClient<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more AdZones.
-     * @param {AdZoneDeleteManyArgs} args - Arguments to filter AdZones to delete.
-     * @example
-     * // Delete a few AdZones
-     * const { count } = await prisma.adZone.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends AdZoneDeleteManyArgs>(args?: SelectSubset<T, AdZoneDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more AdZones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdZoneUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many AdZones
-     * const adZone = await prisma.adZone.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends AdZoneUpdateManyArgs>(args: SelectSubset<T, AdZoneUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more AdZones and returns the data updated in the database.
-     * @param {AdZoneUpdateManyAndReturnArgs} args - Arguments to update many AdZones.
-     * @example
-     * // Update many AdZones
-     * const adZone = await prisma.adZone.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more AdZones and only return the `id`
-     * const adZoneWithIdOnly = await prisma.adZone.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends AdZoneUpdateManyAndReturnArgs>(args: SelectSubset<T, AdZoneUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one AdZone.
-     * @param {AdZoneUpsertArgs} args - Arguments to update or create a AdZone.
-     * @example
-     * // Update or create a AdZone
-     * const adZone = await prisma.adZone.upsert({
-     *   create: {
-     *     // ... data to create a AdZone
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the AdZone we want to update
-     *   }
-     * })
-     */
-    upsert<T extends AdZoneUpsertArgs>(args: SelectSubset<T, AdZoneUpsertArgs<ExtArgs>>): Prisma__AdZoneClient<$Result.GetResult<Prisma.$AdZonePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of AdZones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdZoneCountArgs} args - Arguments to filter AdZones to count.
-     * @example
-     * // Count the number of AdZones
-     * const count = await prisma.adZone.count({
-     *   where: {
-     *     // ... the filter for the AdZones we want to count
-     *   }
-     * })
-    **/
-    count<T extends AdZoneCountArgs>(
-      args?: Subset<T, AdZoneCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], AdZoneCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a AdZone.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdZoneAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends AdZoneAggregateArgs>(args: Subset<T, AdZoneAggregateArgs>): Prisma.PrismaPromise<GetAdZoneAggregateType<T>>
-
-    /**
-     * Group by AdZone.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AdZoneGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends AdZoneGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: AdZoneGroupByArgs['orderBy'] }
-        : { orderBy?: AdZoneGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, AdZoneGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdZoneGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the AdZone model
-   */
-  readonly fields: AdZoneFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for AdZone.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__AdZoneClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    advertisements<T extends AdZone$advertisementsArgs<ExtArgs> = {}>(args?: Subset<T, AdZone$advertisementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the AdZone model
-   */
-  interface AdZoneFieldRefs {
-    readonly id: FieldRef<"AdZone", 'String'>
-    readonly name: FieldRef<"AdZone", 'String'>
-    readonly description: FieldRef<"AdZone", 'String'>
-    readonly slug: FieldRef<"AdZone", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * AdZone findUnique
-   */
-  export type AdZoneFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * Filter, which AdZone to fetch.
-     */
-    where: AdZoneWhereUniqueInput
-  }
-
-  /**
-   * AdZone findUniqueOrThrow
-   */
-  export type AdZoneFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * Filter, which AdZone to fetch.
-     */
-    where: AdZoneWhereUniqueInput
-  }
-
-  /**
-   * AdZone findFirst
-   */
-  export type AdZoneFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * Filter, which AdZone to fetch.
-     */
-    where?: AdZoneWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of AdZones to fetch.
-     */
-    orderBy?: AdZoneOrderByWithRelationInput | AdZoneOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for AdZones.
-     */
-    cursor?: AdZoneWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` AdZones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` AdZones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of AdZones.
-     */
-    distinct?: AdZoneScalarFieldEnum | AdZoneScalarFieldEnum[]
-  }
-
-  /**
-   * AdZone findFirstOrThrow
-   */
-  export type AdZoneFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * Filter, which AdZone to fetch.
-     */
-    where?: AdZoneWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of AdZones to fetch.
-     */
-    orderBy?: AdZoneOrderByWithRelationInput | AdZoneOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for AdZones.
-     */
-    cursor?: AdZoneWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` AdZones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` AdZones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of AdZones.
-     */
-    distinct?: AdZoneScalarFieldEnum | AdZoneScalarFieldEnum[]
-  }
-
-  /**
-   * AdZone findMany
-   */
-  export type AdZoneFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * Filter, which AdZones to fetch.
-     */
-    where?: AdZoneWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of AdZones to fetch.
-     */
-    orderBy?: AdZoneOrderByWithRelationInput | AdZoneOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing AdZones.
-     */
-    cursor?: AdZoneWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` AdZones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` AdZones.
-     */
-    skip?: number
-    distinct?: AdZoneScalarFieldEnum | AdZoneScalarFieldEnum[]
-  }
-
-  /**
-   * AdZone create
-   */
-  export type AdZoneCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * The data needed to create a AdZone.
-     */
-    data: XOR<AdZoneCreateInput, AdZoneUncheckedCreateInput>
-  }
-
-  /**
-   * AdZone createMany
-   */
-  export type AdZoneCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many AdZones.
-     */
-    data: AdZoneCreateManyInput | AdZoneCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * AdZone createManyAndReturn
-   */
-  export type AdZoneCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * The data used to create many AdZones.
-     */
-    data: AdZoneCreateManyInput | AdZoneCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * AdZone update
-   */
-  export type AdZoneUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * The data needed to update a AdZone.
-     */
-    data: XOR<AdZoneUpdateInput, AdZoneUncheckedUpdateInput>
-    /**
-     * Choose, which AdZone to update.
-     */
-    where: AdZoneWhereUniqueInput
-  }
-
-  /**
-   * AdZone updateMany
-   */
-  export type AdZoneUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update AdZones.
-     */
-    data: XOR<AdZoneUpdateManyMutationInput, AdZoneUncheckedUpdateManyInput>
-    /**
-     * Filter which AdZones to update
-     */
-    where?: AdZoneWhereInput
-    /**
-     * Limit how many AdZones to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * AdZone updateManyAndReturn
-   */
-  export type AdZoneUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * The data used to update AdZones.
-     */
-    data: XOR<AdZoneUpdateManyMutationInput, AdZoneUncheckedUpdateManyInput>
-    /**
-     * Filter which AdZones to update
-     */
-    where?: AdZoneWhereInput
-    /**
-     * Limit how many AdZones to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * AdZone upsert
-   */
-  export type AdZoneUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * The filter to search for the AdZone to update in case it exists.
-     */
-    where: AdZoneWhereUniqueInput
-    /**
-     * In case the AdZone found by the `where` argument doesn't exist, create a new AdZone with this data.
-     */
-    create: XOR<AdZoneCreateInput, AdZoneUncheckedCreateInput>
-    /**
-     * In case the AdZone was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<AdZoneUpdateInput, AdZoneUncheckedUpdateInput>
-  }
-
-  /**
-   * AdZone delete
-   */
-  export type AdZoneDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
-    /**
-     * Filter which AdZone to delete.
-     */
-    where: AdZoneWhereUniqueInput
-  }
-
-  /**
-   * AdZone deleteMany
-   */
-  export type AdZoneDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which AdZones to delete
-     */
-    where?: AdZoneWhereInput
-    /**
-     * Limit how many AdZones to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * AdZone.advertisements
-   */
-  export type AdZone$advertisementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Advertisement
-     */
-    select?: AdvertisementSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Advertisement
-     */
-    omit?: AdvertisementOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdvertisementInclude<ExtArgs> | null
-    where?: AdvertisementWhereInput
-    orderBy?: AdvertisementOrderByWithRelationInput | AdvertisementOrderByWithRelationInput[]
-    cursor?: AdvertisementWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: AdvertisementScalarFieldEnum | AdvertisementScalarFieldEnum[]
-  }
-
-  /**
-   * AdZone without action
-   */
-  export type AdZoneDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AdZone
-     */
-    select?: AdZoneSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AdZone
-     */
-    omit?: AdZoneOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AdZoneInclude<ExtArgs> | null
   }
 
 
@@ -13410,16 +12194,6 @@ export namespace Prisma {
   export type AdvertisementScalarFieldEnum = (typeof AdvertisementScalarFieldEnum)[keyof typeof AdvertisementScalarFieldEnum]
 
 
-  export const AdZoneScalarFieldEnum: {
-    id: 'id',
-    name: 'name',
-    description: 'description',
-    slug: 'slug'
-  };
-
-  export type AdZoneScalarFieldEnum = (typeof AdZoneScalarFieldEnum)[keyof typeof AdZoneScalarFieldEnum]
-
-
   export const AdPagePlacementScalarFieldEnum: {
     id: 'id',
     pageType: 'pageType',
@@ -14183,7 +12957,6 @@ export namespace Prisma {
     adCode?: StringNullableFilter<"Advertisement"> | string | null
     priority?: IntFilter<"Advertisement"> | number
     pages?: AdPagePlacementListRelationFilter
-    zones?: AdZoneListRelationFilter
   }
 
   export type AdvertisementOrderByWithRelationInput = {
@@ -14205,7 +12978,6 @@ export namespace Prisma {
     adCode?: SortOrderInput | SortOrder
     priority?: SortOrder
     pages?: AdPagePlacementOrderByRelationAggregateInput
-    zones?: AdZoneOrderByRelationAggregateInput
   }
 
   export type AdvertisementWhereUniqueInput = Prisma.AtLeast<{
@@ -14230,7 +13002,6 @@ export namespace Prisma {
     adCode?: StringNullableFilter<"Advertisement"> | string | null
     priority?: IntFilter<"Advertisement"> | number
     pages?: AdPagePlacementListRelationFilter
-    zones?: AdZoneListRelationFilter
   }, "id">
 
   export type AdvertisementOrderByWithAggregationInput = {
@@ -14279,56 +13050,6 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Advertisement"> | Date | string
     adCode?: StringNullableWithAggregatesFilter<"Advertisement"> | string | null
     priority?: IntWithAggregatesFilter<"Advertisement"> | number
-  }
-
-  export type AdZoneWhereInput = {
-    AND?: AdZoneWhereInput | AdZoneWhereInput[]
-    OR?: AdZoneWhereInput[]
-    NOT?: AdZoneWhereInput | AdZoneWhereInput[]
-    id?: StringFilter<"AdZone"> | string
-    name?: StringFilter<"AdZone"> | string
-    description?: StringNullableFilter<"AdZone"> | string | null
-    slug?: StringFilter<"AdZone"> | string
-    advertisements?: AdvertisementListRelationFilter
-  }
-
-  export type AdZoneOrderByWithRelationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    slug?: SortOrder
-    advertisements?: AdvertisementOrderByRelationAggregateInput
-  }
-
-  export type AdZoneWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    slug?: string
-    AND?: AdZoneWhereInput | AdZoneWhereInput[]
-    OR?: AdZoneWhereInput[]
-    NOT?: AdZoneWhereInput | AdZoneWhereInput[]
-    name?: StringFilter<"AdZone"> | string
-    description?: StringNullableFilter<"AdZone"> | string | null
-    advertisements?: AdvertisementListRelationFilter
-  }, "id" | "slug">
-
-  export type AdZoneOrderByWithAggregationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    slug?: SortOrder
-    _count?: AdZoneCountOrderByAggregateInput
-    _max?: AdZoneMaxOrderByAggregateInput
-    _min?: AdZoneMinOrderByAggregateInput
-  }
-
-  export type AdZoneScalarWhereWithAggregatesInput = {
-    AND?: AdZoneScalarWhereWithAggregatesInput | AdZoneScalarWhereWithAggregatesInput[]
-    OR?: AdZoneScalarWhereWithAggregatesInput[]
-    NOT?: AdZoneScalarWhereWithAggregatesInput | AdZoneScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"AdZone"> | string
-    name?: StringWithAggregatesFilter<"AdZone"> | string
-    description?: StringNullableWithAggregatesFilter<"AdZone"> | string | null
-    slug?: StringWithAggregatesFilter<"AdZone"> | string
   }
 
   export type AdPagePlacementWhereInput = {
@@ -15069,7 +13790,6 @@ export namespace Prisma {
     adCode?: string | null
     priority?: number
     pages?: AdPagePlacementCreateNestedManyWithoutAdvertisementInput
-    zones?: AdZoneCreateNestedManyWithoutAdvertisementsInput
   }
 
   export type AdvertisementUncheckedCreateInput = {
@@ -15091,7 +13811,6 @@ export namespace Prisma {
     adCode?: string | null
     priority?: number
     pages?: AdPagePlacementUncheckedCreateNestedManyWithoutAdvertisementInput
-    zones?: AdZoneUncheckedCreateNestedManyWithoutAdvertisementsInput
   }
 
   export type AdvertisementUpdateInput = {
@@ -15113,7 +13832,6 @@ export namespace Prisma {
     adCode?: NullableStringFieldUpdateOperationsInput | string | null
     priority?: IntFieldUpdateOperationsInput | number
     pages?: AdPagePlacementUpdateManyWithoutAdvertisementNestedInput
-    zones?: AdZoneUpdateManyWithoutAdvertisementsNestedInput
   }
 
   export type AdvertisementUncheckedUpdateInput = {
@@ -15135,7 +13853,6 @@ export namespace Prisma {
     adCode?: NullableStringFieldUpdateOperationsInput | string | null
     priority?: IntFieldUpdateOperationsInput | number
     pages?: AdPagePlacementUncheckedUpdateManyWithoutAdvertisementNestedInput
-    zones?: AdZoneUncheckedUpdateManyWithoutAdvertisementsNestedInput
   }
 
   export type AdvertisementCreateManyInput = {
@@ -15196,59 +13913,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adCode?: NullableStringFieldUpdateOperationsInput | string | null
     priority?: IntFieldUpdateOperationsInput | number
-  }
-
-  export type AdZoneCreateInput = {
-    id?: string
-    name: string
-    description?: string | null
-    slug: string
-    advertisements?: AdvertisementCreateNestedManyWithoutZonesInput
-  }
-
-  export type AdZoneUncheckedCreateInput = {
-    id?: string
-    name: string
-    description?: string | null
-    slug: string
-    advertisements?: AdvertisementUncheckedCreateNestedManyWithoutZonesInput
-  }
-
-  export type AdZoneUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    slug?: StringFieldUpdateOperationsInput | string
-    advertisements?: AdvertisementUpdateManyWithoutZonesNestedInput
-  }
-
-  export type AdZoneUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    slug?: StringFieldUpdateOperationsInput | string
-    advertisements?: AdvertisementUncheckedUpdateManyWithoutZonesNestedInput
-  }
-
-  export type AdZoneCreateManyInput = {
-    id?: string
-    name: string
-    description?: string | null
-    slug: string
-  }
-
-  export type AdZoneUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    slug?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AdZoneUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    slug?: StringFieldUpdateOperationsInput | string
   }
 
   export type AdPagePlacementCreateInput = {
@@ -15911,17 +14575,7 @@ export namespace Prisma {
     none?: AdPagePlacementWhereInput
   }
 
-  export type AdZoneListRelationFilter = {
-    every?: AdZoneWhereInput
-    some?: AdZoneWhereInput
-    none?: AdZoneWhereInput
-  }
-
   export type AdPagePlacementOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type AdZoneOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15999,37 +14653,6 @@ export namespace Prisma {
     impressions?: SortOrder
     clicks?: SortOrder
     priority?: SortOrder
-  }
-
-  export type AdvertisementListRelationFilter = {
-    every?: AdvertisementWhereInput
-    some?: AdvertisementWhereInput
-    none?: AdvertisementWhereInput
-  }
-
-  export type AdvertisementOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type AdZoneCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    slug?: SortOrder
-  }
-
-  export type AdZoneMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    slug?: SortOrder
-  }
-
-  export type AdZoneMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    description?: SortOrder
-    slug?: SortOrder
   }
 
   export type AdvertisementScalarRelationFilter = {
@@ -16359,23 +14982,11 @@ export namespace Prisma {
     connect?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
   }
 
-  export type AdZoneCreateNestedManyWithoutAdvertisementsInput = {
-    create?: XOR<AdZoneCreateWithoutAdvertisementsInput, AdZoneUncheckedCreateWithoutAdvertisementsInput> | AdZoneCreateWithoutAdvertisementsInput[] | AdZoneUncheckedCreateWithoutAdvertisementsInput[]
-    connectOrCreate?: AdZoneCreateOrConnectWithoutAdvertisementsInput | AdZoneCreateOrConnectWithoutAdvertisementsInput[]
-    connect?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-  }
-
   export type AdPagePlacementUncheckedCreateNestedManyWithoutAdvertisementInput = {
     create?: XOR<AdPagePlacementCreateWithoutAdvertisementInput, AdPagePlacementUncheckedCreateWithoutAdvertisementInput> | AdPagePlacementCreateWithoutAdvertisementInput[] | AdPagePlacementUncheckedCreateWithoutAdvertisementInput[]
     connectOrCreate?: AdPagePlacementCreateOrConnectWithoutAdvertisementInput | AdPagePlacementCreateOrConnectWithoutAdvertisementInput[]
     createMany?: AdPagePlacementCreateManyAdvertisementInputEnvelope
     connect?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
-  }
-
-  export type AdZoneUncheckedCreateNestedManyWithoutAdvertisementsInput = {
-    create?: XOR<AdZoneCreateWithoutAdvertisementsInput, AdZoneUncheckedCreateWithoutAdvertisementsInput> | AdZoneCreateWithoutAdvertisementsInput[] | AdZoneUncheckedCreateWithoutAdvertisementsInput[]
-    connectOrCreate?: AdZoneCreateOrConnectWithoutAdvertisementsInput | AdZoneCreateOrConnectWithoutAdvertisementsInput[]
-    connect?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
   }
 
   export type AdPagePlacementUpdateManyWithoutAdvertisementNestedInput = {
@@ -16392,19 +15003,6 @@ export namespace Prisma {
     deleteMany?: AdPagePlacementScalarWhereInput | AdPagePlacementScalarWhereInput[]
   }
 
-  export type AdZoneUpdateManyWithoutAdvertisementsNestedInput = {
-    create?: XOR<AdZoneCreateWithoutAdvertisementsInput, AdZoneUncheckedCreateWithoutAdvertisementsInput> | AdZoneCreateWithoutAdvertisementsInput[] | AdZoneUncheckedCreateWithoutAdvertisementsInput[]
-    connectOrCreate?: AdZoneCreateOrConnectWithoutAdvertisementsInput | AdZoneCreateOrConnectWithoutAdvertisementsInput[]
-    upsert?: AdZoneUpsertWithWhereUniqueWithoutAdvertisementsInput | AdZoneUpsertWithWhereUniqueWithoutAdvertisementsInput[]
-    set?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-    disconnect?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-    delete?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-    connect?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-    update?: AdZoneUpdateWithWhereUniqueWithoutAdvertisementsInput | AdZoneUpdateWithWhereUniqueWithoutAdvertisementsInput[]
-    updateMany?: AdZoneUpdateManyWithWhereWithoutAdvertisementsInput | AdZoneUpdateManyWithWhereWithoutAdvertisementsInput[]
-    deleteMany?: AdZoneScalarWhereInput | AdZoneScalarWhereInput[]
-  }
-
   export type AdPagePlacementUncheckedUpdateManyWithoutAdvertisementNestedInput = {
     create?: XOR<AdPagePlacementCreateWithoutAdvertisementInput, AdPagePlacementUncheckedCreateWithoutAdvertisementInput> | AdPagePlacementCreateWithoutAdvertisementInput[] | AdPagePlacementUncheckedCreateWithoutAdvertisementInput[]
     connectOrCreate?: AdPagePlacementCreateOrConnectWithoutAdvertisementInput | AdPagePlacementCreateOrConnectWithoutAdvertisementInput[]
@@ -16417,57 +15015,6 @@ export namespace Prisma {
     update?: AdPagePlacementUpdateWithWhereUniqueWithoutAdvertisementInput | AdPagePlacementUpdateWithWhereUniqueWithoutAdvertisementInput[]
     updateMany?: AdPagePlacementUpdateManyWithWhereWithoutAdvertisementInput | AdPagePlacementUpdateManyWithWhereWithoutAdvertisementInput[]
     deleteMany?: AdPagePlacementScalarWhereInput | AdPagePlacementScalarWhereInput[]
-  }
-
-  export type AdZoneUncheckedUpdateManyWithoutAdvertisementsNestedInput = {
-    create?: XOR<AdZoneCreateWithoutAdvertisementsInput, AdZoneUncheckedCreateWithoutAdvertisementsInput> | AdZoneCreateWithoutAdvertisementsInput[] | AdZoneUncheckedCreateWithoutAdvertisementsInput[]
-    connectOrCreate?: AdZoneCreateOrConnectWithoutAdvertisementsInput | AdZoneCreateOrConnectWithoutAdvertisementsInput[]
-    upsert?: AdZoneUpsertWithWhereUniqueWithoutAdvertisementsInput | AdZoneUpsertWithWhereUniqueWithoutAdvertisementsInput[]
-    set?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-    disconnect?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-    delete?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-    connect?: AdZoneWhereUniqueInput | AdZoneWhereUniqueInput[]
-    update?: AdZoneUpdateWithWhereUniqueWithoutAdvertisementsInput | AdZoneUpdateWithWhereUniqueWithoutAdvertisementsInput[]
-    updateMany?: AdZoneUpdateManyWithWhereWithoutAdvertisementsInput | AdZoneUpdateManyWithWhereWithoutAdvertisementsInput[]
-    deleteMany?: AdZoneScalarWhereInput | AdZoneScalarWhereInput[]
-  }
-
-  export type AdvertisementCreateNestedManyWithoutZonesInput = {
-    create?: XOR<AdvertisementCreateWithoutZonesInput, AdvertisementUncheckedCreateWithoutZonesInput> | AdvertisementCreateWithoutZonesInput[] | AdvertisementUncheckedCreateWithoutZonesInput[]
-    connectOrCreate?: AdvertisementCreateOrConnectWithoutZonesInput | AdvertisementCreateOrConnectWithoutZonesInput[]
-    connect?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-  }
-
-  export type AdvertisementUncheckedCreateNestedManyWithoutZonesInput = {
-    create?: XOR<AdvertisementCreateWithoutZonesInput, AdvertisementUncheckedCreateWithoutZonesInput> | AdvertisementCreateWithoutZonesInput[] | AdvertisementUncheckedCreateWithoutZonesInput[]
-    connectOrCreate?: AdvertisementCreateOrConnectWithoutZonesInput | AdvertisementCreateOrConnectWithoutZonesInput[]
-    connect?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-  }
-
-  export type AdvertisementUpdateManyWithoutZonesNestedInput = {
-    create?: XOR<AdvertisementCreateWithoutZonesInput, AdvertisementUncheckedCreateWithoutZonesInput> | AdvertisementCreateWithoutZonesInput[] | AdvertisementUncheckedCreateWithoutZonesInput[]
-    connectOrCreate?: AdvertisementCreateOrConnectWithoutZonesInput | AdvertisementCreateOrConnectWithoutZonesInput[]
-    upsert?: AdvertisementUpsertWithWhereUniqueWithoutZonesInput | AdvertisementUpsertWithWhereUniqueWithoutZonesInput[]
-    set?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-    disconnect?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-    delete?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-    connect?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-    update?: AdvertisementUpdateWithWhereUniqueWithoutZonesInput | AdvertisementUpdateWithWhereUniqueWithoutZonesInput[]
-    updateMany?: AdvertisementUpdateManyWithWhereWithoutZonesInput | AdvertisementUpdateManyWithWhereWithoutZonesInput[]
-    deleteMany?: AdvertisementScalarWhereInput | AdvertisementScalarWhereInput[]
-  }
-
-  export type AdvertisementUncheckedUpdateManyWithoutZonesNestedInput = {
-    create?: XOR<AdvertisementCreateWithoutZonesInput, AdvertisementUncheckedCreateWithoutZonesInput> | AdvertisementCreateWithoutZonesInput[] | AdvertisementUncheckedCreateWithoutZonesInput[]
-    connectOrCreate?: AdvertisementCreateOrConnectWithoutZonesInput | AdvertisementCreateOrConnectWithoutZonesInput[]
-    upsert?: AdvertisementUpsertWithWhereUniqueWithoutZonesInput | AdvertisementUpsertWithWhereUniqueWithoutZonesInput[]
-    set?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-    disconnect?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-    delete?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-    connect?: AdvertisementWhereUniqueInput | AdvertisementWhereUniqueInput[]
-    update?: AdvertisementUpdateWithWhereUniqueWithoutZonesInput | AdvertisementUpdateWithWhereUniqueWithoutZonesInput[]
-    updateMany?: AdvertisementUpdateManyWithWhereWithoutZonesInput | AdvertisementUpdateManyWithWhereWithoutZonesInput[]
-    deleteMany?: AdvertisementScalarWhereInput | AdvertisementScalarWhereInput[]
   }
 
   export type AdvertisementCreateNestedOneWithoutPagesInput = {
@@ -17313,25 +15860,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type AdZoneCreateWithoutAdvertisementsInput = {
-    id?: string
-    name: string
-    description?: string | null
-    slug: string
-  }
-
-  export type AdZoneUncheckedCreateWithoutAdvertisementsInput = {
-    id?: string
-    name: string
-    description?: string | null
-    slug: string
-  }
-
-  export type AdZoneCreateOrConnectWithoutAdvertisementsInput = {
-    where: AdZoneWhereUniqueInput
-    create: XOR<AdZoneCreateWithoutAdvertisementsInput, AdZoneUncheckedCreateWithoutAdvertisementsInput>
-  }
-
   export type AdPagePlacementUpsertWithWhereUniqueWithoutAdvertisementInput = {
     where: AdPagePlacementWhereUniqueInput
     update: XOR<AdPagePlacementUpdateWithoutAdvertisementInput, AdPagePlacementUncheckedUpdateWithoutAdvertisementInput>
@@ -17358,118 +15886,6 @@ export namespace Prisma {
     advertisementId?: StringFilter<"AdPagePlacement"> | string
   }
 
-  export type AdZoneUpsertWithWhereUniqueWithoutAdvertisementsInput = {
-    where: AdZoneWhereUniqueInput
-    update: XOR<AdZoneUpdateWithoutAdvertisementsInput, AdZoneUncheckedUpdateWithoutAdvertisementsInput>
-    create: XOR<AdZoneCreateWithoutAdvertisementsInput, AdZoneUncheckedCreateWithoutAdvertisementsInput>
-  }
-
-  export type AdZoneUpdateWithWhereUniqueWithoutAdvertisementsInput = {
-    where: AdZoneWhereUniqueInput
-    data: XOR<AdZoneUpdateWithoutAdvertisementsInput, AdZoneUncheckedUpdateWithoutAdvertisementsInput>
-  }
-
-  export type AdZoneUpdateManyWithWhereWithoutAdvertisementsInput = {
-    where: AdZoneScalarWhereInput
-    data: XOR<AdZoneUpdateManyMutationInput, AdZoneUncheckedUpdateManyWithoutAdvertisementsInput>
-  }
-
-  export type AdZoneScalarWhereInput = {
-    AND?: AdZoneScalarWhereInput | AdZoneScalarWhereInput[]
-    OR?: AdZoneScalarWhereInput[]
-    NOT?: AdZoneScalarWhereInput | AdZoneScalarWhereInput[]
-    id?: StringFilter<"AdZone"> | string
-    name?: StringFilter<"AdZone"> | string
-    description?: StringNullableFilter<"AdZone"> | string | null
-    slug?: StringFilter<"AdZone"> | string
-  }
-
-  export type AdvertisementCreateWithoutZonesInput = {
-    id?: string
-    name: string
-    description?: string | null
-    imageUrl?: string | null
-    linkUrl?: string | null
-    width?: number
-    height?: number
-    position: string
-    startDate?: Date | string
-    endDate?: Date | string | null
-    isActive?: boolean
-    impressions?: number
-    clicks?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    adCode?: string | null
-    priority?: number
-    pages?: AdPagePlacementCreateNestedManyWithoutAdvertisementInput
-  }
-
-  export type AdvertisementUncheckedCreateWithoutZonesInput = {
-    id?: string
-    name: string
-    description?: string | null
-    imageUrl?: string | null
-    linkUrl?: string | null
-    width?: number
-    height?: number
-    position: string
-    startDate?: Date | string
-    endDate?: Date | string | null
-    isActive?: boolean
-    impressions?: number
-    clicks?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    adCode?: string | null
-    priority?: number
-    pages?: AdPagePlacementUncheckedCreateNestedManyWithoutAdvertisementInput
-  }
-
-  export type AdvertisementCreateOrConnectWithoutZonesInput = {
-    where: AdvertisementWhereUniqueInput
-    create: XOR<AdvertisementCreateWithoutZonesInput, AdvertisementUncheckedCreateWithoutZonesInput>
-  }
-
-  export type AdvertisementUpsertWithWhereUniqueWithoutZonesInput = {
-    where: AdvertisementWhereUniqueInput
-    update: XOR<AdvertisementUpdateWithoutZonesInput, AdvertisementUncheckedUpdateWithoutZonesInput>
-    create: XOR<AdvertisementCreateWithoutZonesInput, AdvertisementUncheckedCreateWithoutZonesInput>
-  }
-
-  export type AdvertisementUpdateWithWhereUniqueWithoutZonesInput = {
-    where: AdvertisementWhereUniqueInput
-    data: XOR<AdvertisementUpdateWithoutZonesInput, AdvertisementUncheckedUpdateWithoutZonesInput>
-  }
-
-  export type AdvertisementUpdateManyWithWhereWithoutZonesInput = {
-    where: AdvertisementScalarWhereInput
-    data: XOR<AdvertisementUpdateManyMutationInput, AdvertisementUncheckedUpdateManyWithoutZonesInput>
-  }
-
-  export type AdvertisementScalarWhereInput = {
-    AND?: AdvertisementScalarWhereInput | AdvertisementScalarWhereInput[]
-    OR?: AdvertisementScalarWhereInput[]
-    NOT?: AdvertisementScalarWhereInput | AdvertisementScalarWhereInput[]
-    id?: StringFilter<"Advertisement"> | string
-    name?: StringFilter<"Advertisement"> | string
-    description?: StringNullableFilter<"Advertisement"> | string | null
-    imageUrl?: StringNullableFilter<"Advertisement"> | string | null
-    linkUrl?: StringNullableFilter<"Advertisement"> | string | null
-    width?: IntFilter<"Advertisement"> | number
-    height?: IntFilter<"Advertisement"> | number
-    position?: StringFilter<"Advertisement"> | string
-    startDate?: DateTimeFilter<"Advertisement"> | Date | string
-    endDate?: DateTimeNullableFilter<"Advertisement"> | Date | string | null
-    isActive?: BoolFilter<"Advertisement"> | boolean
-    impressions?: IntFilter<"Advertisement"> | number
-    clicks?: IntFilter<"Advertisement"> | number
-    createdAt?: DateTimeFilter<"Advertisement"> | Date | string
-    updatedAt?: DateTimeFilter<"Advertisement"> | Date | string
-    adCode?: StringNullableFilter<"Advertisement"> | string | null
-    priority?: IntFilter<"Advertisement"> | number
-  }
-
   export type AdvertisementCreateWithoutPagesInput = {
     id?: string
     name: string
@@ -17488,7 +15904,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     adCode?: string | null
     priority?: number
-    zones?: AdZoneCreateNestedManyWithoutAdvertisementsInput
   }
 
   export type AdvertisementUncheckedCreateWithoutPagesInput = {
@@ -17509,7 +15924,6 @@ export namespace Prisma {
     updatedAt?: Date | string
     adCode?: string | null
     priority?: number
-    zones?: AdZoneUncheckedCreateNestedManyWithoutAdvertisementsInput
   }
 
   export type AdvertisementCreateOrConnectWithoutPagesInput = {
@@ -17546,7 +15960,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adCode?: NullableStringFieldUpdateOperationsInput | string | null
     priority?: IntFieldUpdateOperationsInput | number
-    zones?: AdZoneUpdateManyWithoutAdvertisementsNestedInput
   }
 
   export type AdvertisementUncheckedUpdateWithoutPagesInput = {
@@ -17567,7 +15980,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     adCode?: NullableStringFieldUpdateOperationsInput | string | null
     priority?: IntFieldUpdateOperationsInput | number
-    zones?: AdZoneUncheckedUpdateManyWithoutAdvertisementsNestedInput
   }
 
   export type ArticleCreateManyAuthorInput = {
@@ -17919,89 +16331,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     pageType?: StringFieldUpdateOperationsInput | string
     pageIdentifier?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type AdZoneUpdateWithoutAdvertisementsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    slug?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AdZoneUncheckedUpdateWithoutAdvertisementsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    slug?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AdZoneUncheckedUpdateManyWithoutAdvertisementsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    slug?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type AdvertisementUpdateWithoutZonesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    position?: StringFieldUpdateOperationsInput | string
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    impressions?: IntFieldUpdateOperationsInput | number
-    clicks?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    adCode?: NullableStringFieldUpdateOperationsInput | string | null
-    priority?: IntFieldUpdateOperationsInput | number
-    pages?: AdPagePlacementUpdateManyWithoutAdvertisementNestedInput
-  }
-
-  export type AdvertisementUncheckedUpdateWithoutZonesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    position?: StringFieldUpdateOperationsInput | string
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    impressions?: IntFieldUpdateOperationsInput | number
-    clicks?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    adCode?: NullableStringFieldUpdateOperationsInput | string | null
-    priority?: IntFieldUpdateOperationsInput | number
-    pages?: AdPagePlacementUncheckedUpdateManyWithoutAdvertisementNestedInput
-  }
-
-  export type AdvertisementUncheckedUpdateManyWithoutZonesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    position?: StringFieldUpdateOperationsInput | string
-    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    impressions?: IntFieldUpdateOperationsInput | number
-    clicks?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    adCode?: NullableStringFieldUpdateOperationsInput | string | null
-    priority?: IntFieldUpdateOperationsInput | number
   }
 
 

@@ -136,15 +136,6 @@ model Advertisement {
 
   // For targeting specific pages
   pages AdPagePlacement[]
-  zones AdZone[]
-}
-
-model AdZone {
-  id             String          @id @default(cuid())
-  name           String
-  description    String?
-  slug           String          @unique
-  advertisements Advertisement[]
 }
 
 model AdPagePlacement {
