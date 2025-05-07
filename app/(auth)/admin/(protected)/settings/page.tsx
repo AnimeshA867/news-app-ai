@@ -32,7 +32,7 @@ import { SocialImageUpload } from "@/components/settings/social-image-upload";
 
 const generalSettingsSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
-  siteUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  siteUrl: z.string().min(1, "Site URL is required"),
   tagline: z.string().optional(),
   description: z.string().optional(),
   logoUrl: z.string().optional(),
@@ -171,12 +171,20 @@ export default function SettingsPage() {
     try {
       setIsSavingGeneral(true);
 
+      // Get current settings first
+      const currentSettingsResponse = await fetch("/api/settings");
+      const currentSettings = await currentSettingsResponse.json();
+
+      // Merge current settings with new general settings to avoid losing other values
       const response = await fetch("/api/settings", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...currentSettings, // Keep existing settings
+          ...values, // Update with new general settings
+        }),
       });
 
       if (!response.ok) {
@@ -202,12 +210,20 @@ export default function SettingsPage() {
     try {
       setIsSavingEmail(true);
 
+      // Get current settings first
+      const currentSettingsResponse = await fetch("/api/settings");
+      const currentSettings = await currentSettingsResponse.json();
+
+      // Merge current settings with new email settings to avoid losing other values
       const response = await fetch("/api/settings", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...currentSettings, // Keep existing settings
+          ...values, // Update with new email settings
+        }),
       });
 
       if (!response.ok) {
@@ -233,12 +249,20 @@ export default function SettingsPage() {
     try {
       setIsSavingFeatures(true);
 
+      // Get current settings first
+      const currentSettingsResponse = await fetch("/api/settings");
+      const currentSettings = await currentSettingsResponse.json();
+
+      // Merge current settings with new feature settings to avoid losing other values
       const response = await fetch("/api/settings", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...currentSettings, // Keep existing settings
+          ...values, // Update with new feature settings
+        }),
       });
 
       if (!response.ok) {

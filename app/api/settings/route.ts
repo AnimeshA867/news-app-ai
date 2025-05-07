@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { getAuthSession } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 
 // GET settings
 export async function GET() {
@@ -16,8 +17,16 @@ export async function GET() {
           description: "The latest news and stories from around the world",
           logoUrl: "/logo.svg",
           faviconUrl: "/favicon.ico",
+          siteUrl: null,
+          socialImageUrl: null,
+          twitterImageUrl: null,
+          facebookImageUrl: null,
           senderEmail: "news@example.com",
           senderName: "News AI",
+          smtpHost: null,
+          smtpPort: null,
+          smtpUsername: null,
+          smtpPassword: null,
           enableNewsletter: true,
           enableSearch: true,
           enableSocialSharing: true,
@@ -49,39 +58,59 @@ export async function PUT(req: Request) {
 
     const data = await req.json();
 
-    // Update settings - ensuring we include the new fields
+    // For all email and feature settings, ensure they're properly handled if undefined
+    const emailSettings = {
+      senderEmail: data.senderEmail || null,
+      senderName: data.senderName || null,
+      smtpHost: data.smtpHost || null,
+      smtpPort: data.smtpPort || null,
+      smtpUsername: data.smtpUsername || null,
+      smtpPassword: data.smtpPassword || null,
+    };
+
+    const featureSettings = {
+      enableNewsletter:
+        data.enableNewsletter === undefined ? true : data.enableNewsletter,
+      enableSearch: data.enableSearch === undefined ? true : data.enableSearch,
+      enableSocialSharing:
+        data.enableSocialSharing === undefined
+          ? true
+          : data.enableSocialSharing,
+      enableRelatedArticles:
+        data.enableRelatedArticles === undefined
+          ? true
+          : data.enableRelatedArticles,
+    };
+
+    // Update settings with all fields properly handled
     const settings = await prisma.setting.upsert({
       where: { id: data.id || "default" },
       create: {
         id: data.id || "default",
         siteName: data.siteName || "News AI",
+        siteUrl: data.siteUrl || null,
         tagline: data.tagline || null,
         description: data.description || null,
         logoUrl: data.logoUrl || null,
         faviconUrl: data.faviconUrl || null,
-        // Add new social image fields
         socialImageUrl: data.socialImageUrl || null,
         twitterImageUrl: data.twitterImageUrl || null,
         facebookImageUrl: data.facebookImageUrl || null,
-        // Rest of your fields
-        senderEmail: data.senderEmail || null,
-        senderName: data.senderName || null,
-        // ... other fields
+        ...emailSettings,
+        ...featureSettings,
       },
       update: {
         siteName: data.siteName,
+        siteUrl: data.siteUrl,
         tagline: data.tagline,
         description: data.description,
         logoUrl: data.logoUrl,
         faviconUrl: data.faviconUrl,
-        // Add new social image fields
         socialImageUrl: data.socialImageUrl,
         twitterImageUrl: data.twitterImageUrl,
         facebookImageUrl: data.facebookImageUrl,
-        // Rest of your updated fields
-        senderEmail: data.senderEmail,
-        senderName: data.senderName,
-        // ... other fields
+        ...emailSettings,
+        ...featureSettings,
       },
     });
 
