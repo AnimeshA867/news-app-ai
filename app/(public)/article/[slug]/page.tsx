@@ -177,18 +177,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       )}
 
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <AdPosition
-            position="header"
-            pageType="article"
-            pageId={article.id}
-            className="w-full h-[90px] flex items-center justify-center"
-            fallback={
-              <div className="w-full h-[90px] bg-muted/10 rounded-md"></div>
-            }
-          />
-        </div>
-
         <article className="mx-auto max-w-3xl">
           <header className="mb-8">
             <Link
@@ -235,9 +223,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               pageType="article"
               pageId={article.id}
               className="w-full h-[250px] flex items-center justify-center"
-              fallback={
-                <div className="w-full h-[120px] bg-muted/10 rounded-md"></div>
-              }
+              fallback={null}
             />
           </div>
 
@@ -246,15 +232,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             dangerouslySetInnerHTML={{ __html: firstHalf }}
           />
 
-          <div className="my-8 flex justify-center">
+          <div className="my-4 flex justify-center">
             <AdPosition
               position="in-article"
               pageType="article"
               pageId={article.id}
               className="max-w-[600px] h-[250px] flex items-center justify-center"
-              fallback={
-                <div className="w-full h-[250px] bg-muted/10 rounded-md"></div>
-              }
+              fallback={null}
             />
           </div>
 
@@ -269,9 +253,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               pageType="article"
               pageId={article.id}
               className="w-full h-[250px] flex items-center justify-center"
-              fallback={
-                <div className="w-full h-[120px] bg-muted/10 rounded-md"></div>
-              }
+              fallback={null}
             />
           </div>
 

@@ -55,12 +55,7 @@ export async function PUT(
     const body = await request.json();
 
     // Extract fields that need special handling
-    const {
-      zones = [],
-      pageTypes = [],
-      pageIdentifiers = [],
-      ...adData
-    } = body;
+    const { pageTypes = [], pageIdentifiers = [], ...adData } = body;
 
     // Filter out any pageTypes that are empty strings
     const validPageTypes = pageTypes.filter(
@@ -78,11 +73,6 @@ export async function PUT(
       where: { id },
       data: {
         ...adData,
-
-        // Update zones - using set to replace existing connections
-        zones: {
-          set: zones?.map((zoneId: string) => ({ id: zoneId })) || [],
-        },
 
         // Replace pages - delete existing and create new
         pages: {
