@@ -16,6 +16,7 @@ import {
   ExternalLink,
   UserCog,
   Megaphone,
+  Calendar,
 } from "lucide-react";
 import {
   Sidebar,
@@ -29,6 +30,54 @@ import {
 } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
+
+const navigationItems = [
+  {
+    title: "Dashboard",
+    href: "/admin",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Articles",
+    href: "/admin/articles",
+    icon: FileText,
+  },
+  {
+    title: "Scheduled Articles",
+    href: "/admin/scheduled-articles",
+    icon: Calendar,
+  },
+  {
+    title: "Categories",
+    href: "/admin/categories",
+    icon: FolderOpen,
+  },
+  {
+    title: "Tags",
+    href: "/admin/tags",
+    icon: Tag,
+  },
+  {
+    title: "Authors",
+    href: "/admin/authors",
+    icon: Users,
+  },
+  {
+    title: "Advertisements",
+    href: "/admin/advertisements",
+    icon: Megaphone,
+  },
+  {
+    title: "Media",
+    href: "/admin/media",
+    icon: ImageIcon,
+  },
+  {
+    title: "Settings",
+    href: "/admin/settings",
+    icon: Settings,
+  },
+];
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -78,75 +127,16 @@ export function AdminSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/admin")}>
-              <Link href="/admin">
-                <LayoutDashboard className="h-4 w-4" />
-                <span>Dashboard</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/admin/articles")}>
-              <Link href="/admin/articles">
-                <FileText className="h-4 w-4" />
-                <span>Articles</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/admin/categories")}>
-              <Link href="/admin/categories">
-                <FolderOpen className="h-4 w-4" />
-                <span>Categories</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/admin/tags")}>
-              <Link href="/admin/tags">
-                <Tag className="h-4 w-4" />
-                <span>Tags</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/admin/authors")}>
-              <Link href="/admin/authors">
-                <Users className="h-4 w-4" />
-                <span>Authors</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={isActive("/admin/advertisements")}
-            >
-              <Link href="/admin/advertisements">
-                <Megaphone className="h-4 w-4" />
-                <span>Advertisements</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/admin/media")}>
-              <Link href="/admin/media">
-                <ImageIcon className="h-4 w-4" />
-                <span>Media</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/admin/settings")}>
-              <Link href="/admin/settings">
-                <Settings className="h-4 w-4" />
-                <span>Settings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {navigationItems.map((item) => (
+            <SidebarMenuItem key={item.href}>
+              <SidebarMenuButton asChild isActive={isActive(item.href)}>
+                <Link href={item.href}>
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
