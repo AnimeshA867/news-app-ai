@@ -4,6 +4,7 @@ import { TrendingCarousel } from "@/components/trending-carousel";
 import { TopHeadlines } from "@/components/top-headlines";
 import { CategorySection } from "@/components/category-section";
 import { NewsletterSignup } from "@/components/newsletter-signup";
+import { AdPosition } from "@/components/advertisements/ad-position";
 import { prisma } from "@/lib/prisma";
 
 export default async function HomePage() {
@@ -100,6 +101,9 @@ export default async function HomePage() {
   return (
     <main className="container mx-auto px-4 py-6">
       <BreakingNewsBar breakingNews={breakingNews} />
+
+      {/* Featured Homepage Ad - Full Width Banner */}
+
       <div className="grid gap-8 md:grid-cols-12">
         <div className="md:col-span-8">
           <FeaturedGrid articles={featuredArticles} />
@@ -108,15 +112,45 @@ export default async function HomePage() {
           <TopHeadlines headlines={topHeadlines} />
         </div>
       </div>
+
+      {/* Mid-page Homepage Ad */}
+      <div className="my-8 homepage-featured-ad w-full">
+        <AdPosition
+          position="homepage-featured"
+          pageType="homepage"
+          adIndex={1}
+          className="w-full flex items-center justify-center mx-auto"
+          useAdDimensions={true}
+          hideContainer={true}
+          fallback={null}
+        />
+      </div>
+
       <TrendingCarousel articles={trendingArticles} />
+
       <div className="my-12 grid gap-12 md:grid-cols-2">
         <CategorySection category="politics" limit={4} />
         <CategorySection category="business" limit={4} />
       </div>
+
+      {/* Bottom Homepage Ad */}
+      {/* <div className="my-10 homepage-featured-ad">
+        <AdPosition
+          position="homepage-featured"
+          pageType="homepage"
+          adIndex={2}
+          className="w-full flex items-center justify-center"
+          useAdDimensions={true}
+          hideContainer={true}
+          fallback={null}
+        />
+      </div> */}
+
       <div className="my-12 grid gap-12 md:grid-cols-2">
         <CategorySection category="technology" limit={4} />
         <CategorySection category="entertainment" limit={4} />
       </div>
+
       <NewsletterSignup />
     </main>
   );

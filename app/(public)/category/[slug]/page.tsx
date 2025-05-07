@@ -118,9 +118,7 @@ export default async function CategoryPage({
           pageType="category"
           pageId={category.slug}
           className="w-full flex items-center justify-center"
-          fallback={
-            <div className="w-full h-[120px] bg-muted/10 rounded-md"></div>
-          }
+          fallback={null}
         />
       </div>
 
@@ -146,9 +144,7 @@ export default async function CategoryPage({
                         pageType="category"
                         pageId={category.slug}
                         className="w-full h-full min-h-[300px] flex items-center justify-center"
-                        fallback={
-                          <div className="w-full h-[300px] bg-muted/10 rounded-md"></div>
-                        }
+                        fallback={null}
                       />
                     </div>
                   </React.Fragment>
@@ -187,9 +183,7 @@ export default async function CategoryPage({
           pageType="category"
           pageId={category.slug}
           className="w-full flex items-center justify-center"
-          fallback={
-            <div className="w-full h-[120px] bg-muted/10 rounded-md"></div>
-          }
+          fallback={null}
         />
       </div>
 

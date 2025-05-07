@@ -7,16 +7,22 @@ interface AdPositionProps {
   position: string;
   pageType?: string;
   pageId?: string;
+  adIndex?: number; // Add this prop to identify which ad in sequence to show
   className?: string;
   fallback?: React.ReactNode;
+  hideContainer?: boolean;
+  useAdDimensions?: boolean;
 }
 
 export function AdPosition({
   position,
   pageType = "global",
   pageId,
+  adIndex = 0, // Default to first ad
   className,
   fallback,
+  hideContainer = false,
+  useAdDimensions = false,
 }: AdPositionProps) {
   const [ad, setAd] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -28,8 +34,9 @@ export function AdPosition({
     params.append("position", position);
     params.append("pageType", pageType);
     if (pageId) params.append("pageId", pageId);
+    params.append("index", adIndex.toString()); // Add the index parameter
     return params.toString();
-  }, [position, pageType, pageId]);
+  }, [position, pageType, pageId, adIndex]);
 
   useEffect(() => {
     let isMounted = true;
@@ -77,18 +84,46 @@ export function AdPosition({
     };
   }, [queryParams]);
 
+  // If loading and we have a fallback, show the fallback
   if (loading) {
-    return (
-      fallback || (
-        <div className="w-full h-full bg-muted/20 animate-pulse rounded" />
-      )
-    );
+    return fallback || null;
   }
 
+  // If there's an error or no ad and hideContainer is true, return null
+  if ((error || !ad) && hideContainer) {
+    return null;
+  }
+
+  // If there's an error or no ad but hideContainer is false, show fallback
   if (error || !ad) {
     return fallback || null;
   }
 
+  // If we're using the ad's dimensions, apply them to a wrapping div
+  if (useAdDimensions) {
+    return (
+      <div
+        className={className}
+        style={{
+          width: ad.width ? `${ad.width}px` : "auto",
+          maxWidth: "100%",
+          height: ad.height ? `${ad.height}px` : "auto",
+        }}
+      >
+        <AdUnit
+          id={ad.id}
+          imageUrl={ad.imageUrl}
+          linkUrl={ad.linkUrl}
+          adCode={ad.adCode}
+          width={ad.width}
+          height={ad.height}
+          name={ad.name}
+        />
+      </div>
+    );
+  }
+
+  // Original rendering if not using ad dimensions
   return (
     <div className={className}>
       <AdUnit

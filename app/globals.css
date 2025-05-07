@@ -180,3 +180,26 @@
   background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
   background-size: 20px 20px;
 }
+
+.homepage-featured-ad {
+  background: linear-gradient(
+    to right,
+    rgba(var(--muted), 0.05),
+    transparent,
+    rgba(var(--muted), 0.05)
+  );
+  border-radius: var(--radius);
+  padding: 1rem 0;
+  transition: background-color 0.2s;
+  margin: 2rem 0;
+}
+
+.homepage-featured-ad:hover {
+  background-color: rgba(var(--muted), 0.1);
+}
+
+@media (max-width: 768px) {
+  .homepage-featured-ad {
+    padding: 0.5rem 0;
+  }
+}

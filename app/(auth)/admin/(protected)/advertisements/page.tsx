@@ -165,9 +165,6 @@ export default function AdvertisementsPage() {
           </p>
         </div>
         <div className="flex gap-4">
-          <Button variant="outline" asChild>
-            <Link href="/admin/advertisements/zones">Ad Zones</Link>
-          </Button>
           <Button asChild>
             <Link href="/admin/advertisements/new">
               <Plus className="mr-2 h-4 w-4" /> New Ad

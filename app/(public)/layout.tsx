@@ -18,9 +18,7 @@ export default function PublicLayout({
           position="header"
           pageType="global"
           className="w-full h-[90px] flex items-center justify-center"
-          fallback={
-            <div className="w-full h-[90px] bg-muted/10 rounded-md"></div>
-          }
+          fallback={null}
         />
       </div>
 
@@ -32,9 +30,7 @@ export default function PublicLayout({
           position="footer"
           pageType="global"
           className="w-full h-[90px] flex items-center justify-center"
-          fallback={
-            <div className="w-full h-[90px] bg-muted/10 rounded-md"></div>
-          }
+          fallback={null}
         />
       </div>
 
