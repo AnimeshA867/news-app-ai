@@ -36,3 +36,16 @@ export function formatBytes(bytes: number, decimals = 2): string {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
+
+export function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/&/g, "-and-") // Replace & with 'and'
+    .replace(/[^\w\-]+/g, "") // Remove all non-word characters except hyphens
+    .replace(/\-\-+/g, "-") // Replace multiple hyphens with single hyphen
+    .replace(/^-+/, "") // Trim hyphens from start
+    .replace(/-+$/, ""); // Trim hyphens from end
+}

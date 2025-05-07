@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import {
   LayoutDashboard,
+  LayoutGrid,
   FileText,
   Users,
   FolderOpen,
@@ -14,6 +15,7 @@ import {
   LogOut,
   ExternalLink,
   UserCog,
+  Megaphone,
 } from "lucide-react";
 import {
   Sidebar,
@@ -34,7 +36,7 @@ export function AdminSidebar() {
   const { toast } = useToast();
   const { data: session, status } = useSession();
   const isActive = (path: string) => {
-    return pathname === path || pathname?.startsWith(`${path}/`);
+    return pathname === path || pathname === `/${path}`;
   };
 
   const handleSignOut = async () => {
@@ -116,6 +118,29 @@ export function AdminSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive("/admin/advertisements")}
+            >
+              <Link href="/admin/advertisements">
+                <Megaphone className="h-4 w-4" />
+                <span>Advertisements</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive("/admin/advertisements/zones")}
+            >
+              <Link href="/admin/advertisements/zones">
+                <LayoutGrid className="h-4 w-4" />
+                <span>Ad Zones</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/media")}>
               <Link href="/admin/media">
@@ -129,17 +154,6 @@ export function AdminSidebar() {
               <Link href="/admin/settings">
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={isActive("/admin/user-settings")}
-            >
-              <Link href="/admin/user-settings">
-                <UserCog className="h-4 w-4 mr-2" />
-                <span>Account Settings</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

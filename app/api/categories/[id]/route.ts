@@ -5,11 +5,12 @@ import { prisma } from "@/lib/prisma";
 // GET single category
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const category = await prisma.category.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!category) {
@@ -32,9 +33,10 @@ export async function GET(
 // PUT (update) category
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getAuthSession();
 
     if (!session?.user) {
@@ -48,7 +50,7 @@ export async function PUT(
       const existingCategory = await prisma.category.findFirst({
         where: {
           slug,
-          NOT: { id: params.id },
+          NOT: { id: id },
         },
       });
 
@@ -61,7 +63,7 @@ export async function PUT(
     }
 
     const category = await prisma.category.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         name,
         slug,
@@ -82,9 +84,10 @@ export async function PUT(
 // DELETE category
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getAuthSession();
 
     if (!session?.user) {
@@ -94,7 +97,7 @@ export async function DELETE(
     // Check if the category is associated with any articles
     const articlesCount = await prisma.article.count({
       where: {
-        categoryId: params.id,
+        categoryId: id,
       },
     });
 
@@ -106,7 +109,7 @@ export async function DELETE(
     }
 
     await prisma.category.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     return NextResponse.json({ success: true });

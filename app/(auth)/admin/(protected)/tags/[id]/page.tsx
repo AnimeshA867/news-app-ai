@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Tag } from "@prisma/client";
+import { Tag } from "@/lib/generated/client";
 import { useSession } from "next-auth/react";
 import { useSWRConfig } from "swr";
 

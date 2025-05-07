@@ -2,16 +2,15 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-// Removed unused import
-import { ChevronRight } from "lucide-react"; // Removed unused 'Clock'
+import { ChevronRight } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
-// Removed unused import
 import { ArticleCard } from "@/components/article-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdPosition } from "@/components/advertisements/ad-position";
+import React from "react";
 
-// Fix the interface definition
 interface CategoryPageProps {
   params: {
     slug: string;
@@ -24,7 +23,7 @@ interface CategoryPageProps {
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {
-  const { slug } = params; // Removed unnecessary 'await'
+  const { slug } = params;
 
   const category = await prisma.category.findUnique({
     where: { slug },
@@ -48,9 +47,8 @@ export default async function CategoryPage({
   params,
   searchParams,
 }: CategoryPageProps) {
-  // Remove await from these lines
   const { page: pageParam } = searchParams;
-  const { slug } = params; // Removed unnecessary 'await'
+  const { slug } = params;
   const page = Number(pageParam) || 1;
   const pageSize = 9;
 
@@ -113,22 +111,61 @@ export default async function CategoryPage({
         </p>
       )}
 
+      {/* Category Top Ad */}
+      <div className="mb-8">
+        <AdPosition
+          position="category-top"
+          pageType="category"
+          pageId={category.slug}
+          className="w-full flex items-center justify-center"
+          fallback={
+            <div className="w-full h-[120px] bg-muted/10 rounded-md"></div>
+          }
+        />
+      </div>
+
       <Suspense fallback={<ArticlesLoadingSkeleton />}>
         {category.articles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {category.articles.map(
-              (article) =>
-                article && (
-                  <ArticleCard
-                    key={article.id}
-                    article={{
-                      ...article,
-                      excerpt: article.excerpt || "",
-                      publishedAt: article.publishedAt || new Date(0),
-                    }}
-                  />
-                )
-            )}
+            {category.articles.map((article, index) => {
+              // Insert an ad after the 3rd article
+              if (index === 3) {
+                return (
+                  <React.Fragment key={`ad-${article.id}`}>
+                    <ArticleCard
+                      article={{
+                        ...article,
+                        excerpt: article.excerpt || "",
+                        publishedAt: article.publishedAt || new Date(0),
+                      }}
+                    />
+                    {/* In-Grid Ad */}
+                    <div className="col-span-1 flex items-center justify-center">
+                      <AdPosition
+                        position="in-article"
+                        pageType="category"
+                        pageId={category.slug}
+                        className="w-full h-full min-h-[300px] flex items-center justify-center"
+                        fallback={
+                          <div className="w-full h-[300px] bg-muted/10 rounded-md"></div>
+                        }
+                      />
+                    </div>
+                  </React.Fragment>
+                );
+              }
+
+              return (
+                <ArticleCard
+                  key={article.id}
+                  article={{
+                    ...article,
+                    excerpt: article.excerpt || "",
+                    publishedAt: article.publishedAt || new Date(0),
+                  }}
+                />
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-12">
@@ -142,6 +179,19 @@ export default async function CategoryPage({
           </div>
         )}
       </Suspense>
+
+      {/* Bottom Ad - before pagination */}
+      <div className="my-8">
+        <AdPosition
+          position="before-content"
+          pageType="category"
+          pageId={category.slug}
+          className="w-full flex items-center justify-center"
+          fallback={
+            <div className="w-full h-[120px] bg-muted/10 rounded-md"></div>
+          }
+        />
+      </div>
 
       {/* Pagination */}
       {totalPages > 1 && (

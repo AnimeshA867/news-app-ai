@@ -48,6 +48,16 @@ export type Media = $Result.DefaultSelection<Prisma.$MediaPayload>
  * 
  */
 export type Setting = $Result.DefaultSelection<Prisma.$SettingPayload>
+/**
+ * Model Advertisement
+ * 
+ */
+export type Advertisement = $Result.DefaultSelection<Prisma.$AdvertisementPayload>
+/**
+ * Model AdPagePlacement
+ * 
+ */
+export type AdPagePlacement = $Result.DefaultSelection<Prisma.$AdPagePlacementPayload>
 
 /**
  * Enums
@@ -274,6 +284,26 @@ export class PrismaClient<
     * ```
     */
   get setting(): Prisma.SettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.advertisement`: Exposes CRUD operations for the **Advertisement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Advertisements
+    * const advertisements = await prisma.advertisement.findMany()
+    * ```
+    */
+  get advertisement(): Prisma.AdvertisementDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.adPagePlacement`: Exposes CRUD operations for the **AdPagePlacement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdPagePlacements
+    * const adPagePlacements = await prisma.adPagePlacement.findMany()
+    * ```
+    */
+  get adPagePlacement(): Prisma.AdPagePlacementDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -720,7 +750,9 @@ export namespace Prisma {
     Tag: 'Tag',
     Article: 'Article',
     Media: 'Media',
-    Setting: 'Setting'
+    Setting: 'Setting',
+    Advertisement: 'Advertisement',
+    AdPagePlacement: 'AdPagePlacement'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -739,7 +771,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "category" | "tag" | "article" | "media" | "setting"
+      modelProps: "user" | "session" | "category" | "tag" | "article" | "media" | "setting" | "advertisement" | "adPagePlacement"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1261,6 +1293,154 @@ export namespace Prisma {
           }
         }
       }
+      Advertisement: {
+        payload: Prisma.$AdvertisementPayload<ExtArgs>
+        fields: Prisma.AdvertisementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdvertisementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdvertisementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+          }
+          findFirst: {
+            args: Prisma.AdvertisementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdvertisementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+          }
+          findMany: {
+            args: Prisma.AdvertisementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>[]
+          }
+          create: {
+            args: Prisma.AdvertisementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+          }
+          createMany: {
+            args: Prisma.AdvertisementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdvertisementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>[]
+          }
+          delete: {
+            args: Prisma.AdvertisementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+          }
+          update: {
+            args: Prisma.AdvertisementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdvertisementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdvertisementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdvertisementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdvertisementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdvertisementPayload>
+          }
+          aggregate: {
+            args: Prisma.AdvertisementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdvertisement>
+          }
+          groupBy: {
+            args: Prisma.AdvertisementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdvertisementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdvertisementCountArgs<ExtArgs>
+            result: $Utils.Optional<AdvertisementCountAggregateOutputType> | number
+          }
+        }
+      }
+      AdPagePlacement: {
+        payload: Prisma.$AdPagePlacementPayload<ExtArgs>
+        fields: Prisma.AdPagePlacementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdPagePlacementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdPagePlacementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>
+          }
+          findFirst: {
+            args: Prisma.AdPagePlacementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdPagePlacementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>
+          }
+          findMany: {
+            args: Prisma.AdPagePlacementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>[]
+          }
+          create: {
+            args: Prisma.AdPagePlacementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>
+          }
+          createMany: {
+            args: Prisma.AdPagePlacementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdPagePlacementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>[]
+          }
+          delete: {
+            args: Prisma.AdPagePlacementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>
+          }
+          update: {
+            args: Prisma.AdPagePlacementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdPagePlacementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdPagePlacementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdPagePlacementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdPagePlacementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdPagePlacementPayload>
+          }
+          aggregate: {
+            args: Prisma.AdPagePlacementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdPagePlacement>
+          }
+          groupBy: {
+            args: Prisma.AdPagePlacementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdPagePlacementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdPagePlacementCountArgs<ExtArgs>
+            result: $Utils.Optional<AdPagePlacementCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1352,6 +1532,8 @@ export namespace Prisma {
     article?: ArticleOmit
     media?: MediaOmit
     setting?: SettingOmit
+    advertisement?: AdvertisementOmit
+    adPagePlacement?: AdPagePlacementOmit
   }
 
   /* Types for Logging */
@@ -1571,6 +1753,37 @@ export namespace Prisma {
    */
   export type ArticleCountOutputTypeCountTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TagWhereInput
+  }
+
+
+  /**
+   * Count Type AdvertisementCountOutputType
+   */
+
+  export type AdvertisementCountOutputType = {
+    pages: number
+  }
+
+  export type AdvertisementCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pages?: boolean | AdvertisementCountOutputTypeCountPagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AdvertisementCountOutputType without action
+   */
+  export type AdvertisementCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdvertisementCountOutputType
+     */
+    select?: AdvertisementCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AdvertisementCountOutputType without action
+   */
+  export type AdvertisementCountOutputTypeCountPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdPagePlacementWhereInput
   }
 
 
@@ -9510,6 +9723,2327 @@ export namespace Prisma {
 
 
   /**
+   * Model Advertisement
+   */
+
+  export type AggregateAdvertisement = {
+    _count: AdvertisementCountAggregateOutputType | null
+    _avg: AdvertisementAvgAggregateOutputType | null
+    _sum: AdvertisementSumAggregateOutputType | null
+    _min: AdvertisementMinAggregateOutputType | null
+    _max: AdvertisementMaxAggregateOutputType | null
+  }
+
+  export type AdvertisementAvgAggregateOutputType = {
+    width: number | null
+    height: number | null
+    impressions: number | null
+    clicks: number | null
+    priority: number | null
+  }
+
+  export type AdvertisementSumAggregateOutputType = {
+    width: number | null
+    height: number | null
+    impressions: number | null
+    clicks: number | null
+    priority: number | null
+  }
+
+  export type AdvertisementMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    imageUrl: string | null
+    linkUrl: string | null
+    width: number | null
+    height: number | null
+    position: string | null
+    startDate: Date | null
+    endDate: Date | null
+    isActive: boolean | null
+    impressions: number | null
+    clicks: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    adCode: string | null
+    priority: number | null
+  }
+
+  export type AdvertisementMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    imageUrl: string | null
+    linkUrl: string | null
+    width: number | null
+    height: number | null
+    position: string | null
+    startDate: Date | null
+    endDate: Date | null
+    isActive: boolean | null
+    impressions: number | null
+    clicks: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    adCode: string | null
+    priority: number | null
+  }
+
+  export type AdvertisementCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    imageUrl: number
+    linkUrl: number
+    width: number
+    height: number
+    position: number
+    startDate: number
+    endDate: number
+    isActive: number
+    impressions: number
+    clicks: number
+    createdAt: number
+    updatedAt: number
+    adCode: number
+    priority: number
+    _all: number
+  }
+
+
+  export type AdvertisementAvgAggregateInputType = {
+    width?: true
+    height?: true
+    impressions?: true
+    clicks?: true
+    priority?: true
+  }
+
+  export type AdvertisementSumAggregateInputType = {
+    width?: true
+    height?: true
+    impressions?: true
+    clicks?: true
+    priority?: true
+  }
+
+  export type AdvertisementMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    imageUrl?: true
+    linkUrl?: true
+    width?: true
+    height?: true
+    position?: true
+    startDate?: true
+    endDate?: true
+    isActive?: true
+    impressions?: true
+    clicks?: true
+    createdAt?: true
+    updatedAt?: true
+    adCode?: true
+    priority?: true
+  }
+
+  export type AdvertisementMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    imageUrl?: true
+    linkUrl?: true
+    width?: true
+    height?: true
+    position?: true
+    startDate?: true
+    endDate?: true
+    isActive?: true
+    impressions?: true
+    clicks?: true
+    createdAt?: true
+    updatedAt?: true
+    adCode?: true
+    priority?: true
+  }
+
+  export type AdvertisementCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    imageUrl?: true
+    linkUrl?: true
+    width?: true
+    height?: true
+    position?: true
+    startDate?: true
+    endDate?: true
+    isActive?: true
+    impressions?: true
+    clicks?: true
+    createdAt?: true
+    updatedAt?: true
+    adCode?: true
+    priority?: true
+    _all?: true
+  }
+
+  export type AdvertisementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Advertisement to aggregate.
+     */
+    where?: AdvertisementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Advertisements to fetch.
+     */
+    orderBy?: AdvertisementOrderByWithRelationInput | AdvertisementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdvertisementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Advertisements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Advertisements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Advertisements
+    **/
+    _count?: true | AdvertisementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AdvertisementAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AdvertisementSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdvertisementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdvertisementMaxAggregateInputType
+  }
+
+  export type GetAdvertisementAggregateType<T extends AdvertisementAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdvertisement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdvertisement[P]>
+      : GetScalarType<T[P], AggregateAdvertisement[P]>
+  }
+
+
+
+
+  export type AdvertisementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdvertisementWhereInput
+    orderBy?: AdvertisementOrderByWithAggregationInput | AdvertisementOrderByWithAggregationInput[]
+    by: AdvertisementScalarFieldEnum[] | AdvertisementScalarFieldEnum
+    having?: AdvertisementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdvertisementCountAggregateInputType | true
+    _avg?: AdvertisementAvgAggregateInputType
+    _sum?: AdvertisementSumAggregateInputType
+    _min?: AdvertisementMinAggregateInputType
+    _max?: AdvertisementMaxAggregateInputType
+  }
+
+  export type AdvertisementGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    imageUrl: string | null
+    linkUrl: string | null
+    width: number
+    height: number
+    position: string
+    startDate: Date
+    endDate: Date | null
+    isActive: boolean
+    impressions: number
+    clicks: number
+    createdAt: Date
+    updatedAt: Date
+    adCode: string | null
+    priority: number
+    _count: AdvertisementCountAggregateOutputType | null
+    _avg: AdvertisementAvgAggregateOutputType | null
+    _sum: AdvertisementSumAggregateOutputType | null
+    _min: AdvertisementMinAggregateOutputType | null
+    _max: AdvertisementMaxAggregateOutputType | null
+  }
+
+  type GetAdvertisementGroupByPayload<T extends AdvertisementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdvertisementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdvertisementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdvertisementGroupByOutputType[P]>
+            : GetScalarType<T[P], AdvertisementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdvertisementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    linkUrl?: boolean
+    width?: boolean
+    height?: boolean
+    position?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isActive?: boolean
+    impressions?: boolean
+    clicks?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    adCode?: boolean
+    priority?: boolean
+    pages?: boolean | Advertisement$pagesArgs<ExtArgs>
+    _count?: boolean | AdvertisementCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["advertisement"]>
+
+  export type AdvertisementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    linkUrl?: boolean
+    width?: boolean
+    height?: boolean
+    position?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isActive?: boolean
+    impressions?: boolean
+    clicks?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    adCode?: boolean
+    priority?: boolean
+  }, ExtArgs["result"]["advertisement"]>
+
+  export type AdvertisementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    linkUrl?: boolean
+    width?: boolean
+    height?: boolean
+    position?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isActive?: boolean
+    impressions?: boolean
+    clicks?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    adCode?: boolean
+    priority?: boolean
+  }, ExtArgs["result"]["advertisement"]>
+
+  export type AdvertisementSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    imageUrl?: boolean
+    linkUrl?: boolean
+    width?: boolean
+    height?: boolean
+    position?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isActive?: boolean
+    impressions?: boolean
+    clicks?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    adCode?: boolean
+    priority?: boolean
+  }
+
+  export type AdvertisementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "imageUrl" | "linkUrl" | "width" | "height" | "position" | "startDate" | "endDate" | "isActive" | "impressions" | "clicks" | "createdAt" | "updatedAt" | "adCode" | "priority", ExtArgs["result"]["advertisement"]>
+  export type AdvertisementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pages?: boolean | Advertisement$pagesArgs<ExtArgs>
+    _count?: boolean | AdvertisementCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AdvertisementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type AdvertisementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $AdvertisementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Advertisement"
+    objects: {
+      pages: Prisma.$AdPagePlacementPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      imageUrl: string | null
+      linkUrl: string | null
+      width: number
+      height: number
+      position: string
+      startDate: Date
+      endDate: Date | null
+      isActive: boolean
+      impressions: number
+      clicks: number
+      createdAt: Date
+      updatedAt: Date
+      adCode: string | null
+      priority: number
+    }, ExtArgs["result"]["advertisement"]>
+    composites: {}
+  }
+
+  type AdvertisementGetPayload<S extends boolean | null | undefined | AdvertisementDefaultArgs> = $Result.GetResult<Prisma.$AdvertisementPayload, S>
+
+  type AdvertisementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdvertisementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdvertisementCountAggregateInputType | true
+    }
+
+  export interface AdvertisementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Advertisement'], meta: { name: 'Advertisement' } }
+    /**
+     * Find zero or one Advertisement that matches the filter.
+     * @param {AdvertisementFindUniqueArgs} args - Arguments to find a Advertisement
+     * @example
+     * // Get one Advertisement
+     * const advertisement = await prisma.advertisement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdvertisementFindUniqueArgs>(args: SelectSubset<T, AdvertisementFindUniqueArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Advertisement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdvertisementFindUniqueOrThrowArgs} args - Arguments to find a Advertisement
+     * @example
+     * // Get one Advertisement
+     * const advertisement = await prisma.advertisement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdvertisementFindUniqueOrThrowArgs>(args: SelectSubset<T, AdvertisementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Advertisement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdvertisementFindFirstArgs} args - Arguments to find a Advertisement
+     * @example
+     * // Get one Advertisement
+     * const advertisement = await prisma.advertisement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdvertisementFindFirstArgs>(args?: SelectSubset<T, AdvertisementFindFirstArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Advertisement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdvertisementFindFirstOrThrowArgs} args - Arguments to find a Advertisement
+     * @example
+     * // Get one Advertisement
+     * const advertisement = await prisma.advertisement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdvertisementFindFirstOrThrowArgs>(args?: SelectSubset<T, AdvertisementFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Advertisements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdvertisementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Advertisements
+     * const advertisements = await prisma.advertisement.findMany()
+     * 
+     * // Get first 10 Advertisements
+     * const advertisements = await prisma.advertisement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const advertisementWithIdOnly = await prisma.advertisement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdvertisementFindManyArgs>(args?: SelectSubset<T, AdvertisementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Advertisement.
+     * @param {AdvertisementCreateArgs} args - Arguments to create a Advertisement.
+     * @example
+     * // Create one Advertisement
+     * const Advertisement = await prisma.advertisement.create({
+     *   data: {
+     *     // ... data to create a Advertisement
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdvertisementCreateArgs>(args: SelectSubset<T, AdvertisementCreateArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Advertisements.
+     * @param {AdvertisementCreateManyArgs} args - Arguments to create many Advertisements.
+     * @example
+     * // Create many Advertisements
+     * const advertisement = await prisma.advertisement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdvertisementCreateManyArgs>(args?: SelectSubset<T, AdvertisementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Advertisements and returns the data saved in the database.
+     * @param {AdvertisementCreateManyAndReturnArgs} args - Arguments to create many Advertisements.
+     * @example
+     * // Create many Advertisements
+     * const advertisement = await prisma.advertisement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Advertisements and only return the `id`
+     * const advertisementWithIdOnly = await prisma.advertisement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdvertisementCreateManyAndReturnArgs>(args?: SelectSubset<T, AdvertisementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Advertisement.
+     * @param {AdvertisementDeleteArgs} args - Arguments to delete one Advertisement.
+     * @example
+     * // Delete one Advertisement
+     * const Advertisement = await prisma.advertisement.delete({
+     *   where: {
+     *     // ... filter to delete one Advertisement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdvertisementDeleteArgs>(args: SelectSubset<T, AdvertisementDeleteArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Advertisement.
+     * @param {AdvertisementUpdateArgs} args - Arguments to update one Advertisement.
+     * @example
+     * // Update one Advertisement
+     * const advertisement = await prisma.advertisement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdvertisementUpdateArgs>(args: SelectSubset<T, AdvertisementUpdateArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Advertisements.
+     * @param {AdvertisementDeleteManyArgs} args - Arguments to filter Advertisements to delete.
+     * @example
+     * // Delete a few Advertisements
+     * const { count } = await prisma.advertisement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdvertisementDeleteManyArgs>(args?: SelectSubset<T, AdvertisementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Advertisements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdvertisementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Advertisements
+     * const advertisement = await prisma.advertisement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdvertisementUpdateManyArgs>(args: SelectSubset<T, AdvertisementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Advertisements and returns the data updated in the database.
+     * @param {AdvertisementUpdateManyAndReturnArgs} args - Arguments to update many Advertisements.
+     * @example
+     * // Update many Advertisements
+     * const advertisement = await prisma.advertisement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Advertisements and only return the `id`
+     * const advertisementWithIdOnly = await prisma.advertisement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdvertisementUpdateManyAndReturnArgs>(args: SelectSubset<T, AdvertisementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Advertisement.
+     * @param {AdvertisementUpsertArgs} args - Arguments to update or create a Advertisement.
+     * @example
+     * // Update or create a Advertisement
+     * const advertisement = await prisma.advertisement.upsert({
+     *   create: {
+     *     // ... data to create a Advertisement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Advertisement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdvertisementUpsertArgs>(args: SelectSubset<T, AdvertisementUpsertArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Advertisements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdvertisementCountArgs} args - Arguments to filter Advertisements to count.
+     * @example
+     * // Count the number of Advertisements
+     * const count = await prisma.advertisement.count({
+     *   where: {
+     *     // ... the filter for the Advertisements we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdvertisementCountArgs>(
+      args?: Subset<T, AdvertisementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdvertisementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Advertisement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdvertisementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdvertisementAggregateArgs>(args: Subset<T, AdvertisementAggregateArgs>): Prisma.PrismaPromise<GetAdvertisementAggregateType<T>>
+
+    /**
+     * Group by Advertisement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdvertisementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdvertisementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdvertisementGroupByArgs['orderBy'] }
+        : { orderBy?: AdvertisementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdvertisementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdvertisementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Advertisement model
+   */
+  readonly fields: AdvertisementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Advertisement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdvertisementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    pages<T extends Advertisement$pagesArgs<ExtArgs> = {}>(args?: Subset<T, Advertisement$pagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Advertisement model
+   */
+  interface AdvertisementFieldRefs {
+    readonly id: FieldRef<"Advertisement", 'String'>
+    readonly name: FieldRef<"Advertisement", 'String'>
+    readonly description: FieldRef<"Advertisement", 'String'>
+    readonly imageUrl: FieldRef<"Advertisement", 'String'>
+    readonly linkUrl: FieldRef<"Advertisement", 'String'>
+    readonly width: FieldRef<"Advertisement", 'Int'>
+    readonly height: FieldRef<"Advertisement", 'Int'>
+    readonly position: FieldRef<"Advertisement", 'String'>
+    readonly startDate: FieldRef<"Advertisement", 'DateTime'>
+    readonly endDate: FieldRef<"Advertisement", 'DateTime'>
+    readonly isActive: FieldRef<"Advertisement", 'Boolean'>
+    readonly impressions: FieldRef<"Advertisement", 'Int'>
+    readonly clicks: FieldRef<"Advertisement", 'Int'>
+    readonly createdAt: FieldRef<"Advertisement", 'DateTime'>
+    readonly updatedAt: FieldRef<"Advertisement", 'DateTime'>
+    readonly adCode: FieldRef<"Advertisement", 'String'>
+    readonly priority: FieldRef<"Advertisement", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Advertisement findUnique
+   */
+  export type AdvertisementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * Filter, which Advertisement to fetch.
+     */
+    where: AdvertisementWhereUniqueInput
+  }
+
+  /**
+   * Advertisement findUniqueOrThrow
+   */
+  export type AdvertisementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * Filter, which Advertisement to fetch.
+     */
+    where: AdvertisementWhereUniqueInput
+  }
+
+  /**
+   * Advertisement findFirst
+   */
+  export type AdvertisementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * Filter, which Advertisement to fetch.
+     */
+    where?: AdvertisementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Advertisements to fetch.
+     */
+    orderBy?: AdvertisementOrderByWithRelationInput | AdvertisementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Advertisements.
+     */
+    cursor?: AdvertisementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Advertisements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Advertisements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Advertisements.
+     */
+    distinct?: AdvertisementScalarFieldEnum | AdvertisementScalarFieldEnum[]
+  }
+
+  /**
+   * Advertisement findFirstOrThrow
+   */
+  export type AdvertisementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * Filter, which Advertisement to fetch.
+     */
+    where?: AdvertisementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Advertisements to fetch.
+     */
+    orderBy?: AdvertisementOrderByWithRelationInput | AdvertisementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Advertisements.
+     */
+    cursor?: AdvertisementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Advertisements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Advertisements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Advertisements.
+     */
+    distinct?: AdvertisementScalarFieldEnum | AdvertisementScalarFieldEnum[]
+  }
+
+  /**
+   * Advertisement findMany
+   */
+  export type AdvertisementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * Filter, which Advertisements to fetch.
+     */
+    where?: AdvertisementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Advertisements to fetch.
+     */
+    orderBy?: AdvertisementOrderByWithRelationInput | AdvertisementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Advertisements.
+     */
+    cursor?: AdvertisementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Advertisements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Advertisements.
+     */
+    skip?: number
+    distinct?: AdvertisementScalarFieldEnum | AdvertisementScalarFieldEnum[]
+  }
+
+  /**
+   * Advertisement create
+   */
+  export type AdvertisementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Advertisement.
+     */
+    data: XOR<AdvertisementCreateInput, AdvertisementUncheckedCreateInput>
+  }
+
+  /**
+   * Advertisement createMany
+   */
+  export type AdvertisementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Advertisements.
+     */
+    data: AdvertisementCreateManyInput | AdvertisementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Advertisement createManyAndReturn
+   */
+  export type AdvertisementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * The data used to create many Advertisements.
+     */
+    data: AdvertisementCreateManyInput | AdvertisementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Advertisement update
+   */
+  export type AdvertisementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Advertisement.
+     */
+    data: XOR<AdvertisementUpdateInput, AdvertisementUncheckedUpdateInput>
+    /**
+     * Choose, which Advertisement to update.
+     */
+    where: AdvertisementWhereUniqueInput
+  }
+
+  /**
+   * Advertisement updateMany
+   */
+  export type AdvertisementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Advertisements.
+     */
+    data: XOR<AdvertisementUpdateManyMutationInput, AdvertisementUncheckedUpdateManyInput>
+    /**
+     * Filter which Advertisements to update
+     */
+    where?: AdvertisementWhereInput
+    /**
+     * Limit how many Advertisements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Advertisement updateManyAndReturn
+   */
+  export type AdvertisementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * The data used to update Advertisements.
+     */
+    data: XOR<AdvertisementUpdateManyMutationInput, AdvertisementUncheckedUpdateManyInput>
+    /**
+     * Filter which Advertisements to update
+     */
+    where?: AdvertisementWhereInput
+    /**
+     * Limit how many Advertisements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Advertisement upsert
+   */
+  export type AdvertisementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Advertisement to update in case it exists.
+     */
+    where: AdvertisementWhereUniqueInput
+    /**
+     * In case the Advertisement found by the `where` argument doesn't exist, create a new Advertisement with this data.
+     */
+    create: XOR<AdvertisementCreateInput, AdvertisementUncheckedCreateInput>
+    /**
+     * In case the Advertisement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdvertisementUpdateInput, AdvertisementUncheckedUpdateInput>
+  }
+
+  /**
+   * Advertisement delete
+   */
+  export type AdvertisementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+    /**
+     * Filter which Advertisement to delete.
+     */
+    where: AdvertisementWhereUniqueInput
+  }
+
+  /**
+   * Advertisement deleteMany
+   */
+  export type AdvertisementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Advertisements to delete
+     */
+    where?: AdvertisementWhereInput
+    /**
+     * Limit how many Advertisements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Advertisement.pages
+   */
+  export type Advertisement$pagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    where?: AdPagePlacementWhereInput
+    orderBy?: AdPagePlacementOrderByWithRelationInput | AdPagePlacementOrderByWithRelationInput[]
+    cursor?: AdPagePlacementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdPagePlacementScalarFieldEnum | AdPagePlacementScalarFieldEnum[]
+  }
+
+  /**
+   * Advertisement without action
+   */
+  export type AdvertisementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Advertisement
+     */
+    select?: AdvertisementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Advertisement
+     */
+    omit?: AdvertisementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdvertisementInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AdPagePlacement
+   */
+
+  export type AggregateAdPagePlacement = {
+    _count: AdPagePlacementCountAggregateOutputType | null
+    _min: AdPagePlacementMinAggregateOutputType | null
+    _max: AdPagePlacementMaxAggregateOutputType | null
+  }
+
+  export type AdPagePlacementMinAggregateOutputType = {
+    id: string | null
+    pageType: string | null
+    pageIdentifier: string | null
+    advertisementId: string | null
+  }
+
+  export type AdPagePlacementMaxAggregateOutputType = {
+    id: string | null
+    pageType: string | null
+    pageIdentifier: string | null
+    advertisementId: string | null
+  }
+
+  export type AdPagePlacementCountAggregateOutputType = {
+    id: number
+    pageType: number
+    pageIdentifier: number
+    advertisementId: number
+    _all: number
+  }
+
+
+  export type AdPagePlacementMinAggregateInputType = {
+    id?: true
+    pageType?: true
+    pageIdentifier?: true
+    advertisementId?: true
+  }
+
+  export type AdPagePlacementMaxAggregateInputType = {
+    id?: true
+    pageType?: true
+    pageIdentifier?: true
+    advertisementId?: true
+  }
+
+  export type AdPagePlacementCountAggregateInputType = {
+    id?: true
+    pageType?: true
+    pageIdentifier?: true
+    advertisementId?: true
+    _all?: true
+  }
+
+  export type AdPagePlacementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdPagePlacement to aggregate.
+     */
+    where?: AdPagePlacementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdPagePlacements to fetch.
+     */
+    orderBy?: AdPagePlacementOrderByWithRelationInput | AdPagePlacementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdPagePlacementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdPagePlacements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdPagePlacements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdPagePlacements
+    **/
+    _count?: true | AdPagePlacementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdPagePlacementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdPagePlacementMaxAggregateInputType
+  }
+
+  export type GetAdPagePlacementAggregateType<T extends AdPagePlacementAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdPagePlacement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdPagePlacement[P]>
+      : GetScalarType<T[P], AggregateAdPagePlacement[P]>
+  }
+
+
+
+
+  export type AdPagePlacementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdPagePlacementWhereInput
+    orderBy?: AdPagePlacementOrderByWithAggregationInput | AdPagePlacementOrderByWithAggregationInput[]
+    by: AdPagePlacementScalarFieldEnum[] | AdPagePlacementScalarFieldEnum
+    having?: AdPagePlacementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdPagePlacementCountAggregateInputType | true
+    _min?: AdPagePlacementMinAggregateInputType
+    _max?: AdPagePlacementMaxAggregateInputType
+  }
+
+  export type AdPagePlacementGroupByOutputType = {
+    id: string
+    pageType: string
+    pageIdentifier: string | null
+    advertisementId: string
+    _count: AdPagePlacementCountAggregateOutputType | null
+    _min: AdPagePlacementMinAggregateOutputType | null
+    _max: AdPagePlacementMaxAggregateOutputType | null
+  }
+
+  type GetAdPagePlacementGroupByPayload<T extends AdPagePlacementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdPagePlacementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdPagePlacementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdPagePlacementGroupByOutputType[P]>
+            : GetScalarType<T[P], AdPagePlacementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdPagePlacementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pageType?: boolean
+    pageIdentifier?: boolean
+    advertisementId?: boolean
+    advertisement?: boolean | AdvertisementDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adPagePlacement"]>
+
+  export type AdPagePlacementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pageType?: boolean
+    pageIdentifier?: boolean
+    advertisementId?: boolean
+    advertisement?: boolean | AdvertisementDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adPagePlacement"]>
+
+  export type AdPagePlacementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pageType?: boolean
+    pageIdentifier?: boolean
+    advertisementId?: boolean
+    advertisement?: boolean | AdvertisementDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["adPagePlacement"]>
+
+  export type AdPagePlacementSelectScalar = {
+    id?: boolean
+    pageType?: boolean
+    pageIdentifier?: boolean
+    advertisementId?: boolean
+  }
+
+  export type AdPagePlacementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pageType" | "pageIdentifier" | "advertisementId", ExtArgs["result"]["adPagePlacement"]>
+  export type AdPagePlacementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    advertisement?: boolean | AdvertisementDefaultArgs<ExtArgs>
+  }
+  export type AdPagePlacementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    advertisement?: boolean | AdvertisementDefaultArgs<ExtArgs>
+  }
+  export type AdPagePlacementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    advertisement?: boolean | AdvertisementDefaultArgs<ExtArgs>
+  }
+
+  export type $AdPagePlacementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdPagePlacement"
+    objects: {
+      advertisement: Prisma.$AdvertisementPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      pageType: string
+      pageIdentifier: string | null
+      advertisementId: string
+    }, ExtArgs["result"]["adPagePlacement"]>
+    composites: {}
+  }
+
+  type AdPagePlacementGetPayload<S extends boolean | null | undefined | AdPagePlacementDefaultArgs> = $Result.GetResult<Prisma.$AdPagePlacementPayload, S>
+
+  type AdPagePlacementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdPagePlacementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdPagePlacementCountAggregateInputType | true
+    }
+
+  export interface AdPagePlacementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdPagePlacement'], meta: { name: 'AdPagePlacement' } }
+    /**
+     * Find zero or one AdPagePlacement that matches the filter.
+     * @param {AdPagePlacementFindUniqueArgs} args - Arguments to find a AdPagePlacement
+     * @example
+     * // Get one AdPagePlacement
+     * const adPagePlacement = await prisma.adPagePlacement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdPagePlacementFindUniqueArgs>(args: SelectSubset<T, AdPagePlacementFindUniqueArgs<ExtArgs>>): Prisma__AdPagePlacementClient<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AdPagePlacement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdPagePlacementFindUniqueOrThrowArgs} args - Arguments to find a AdPagePlacement
+     * @example
+     * // Get one AdPagePlacement
+     * const adPagePlacement = await prisma.adPagePlacement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdPagePlacementFindUniqueOrThrowArgs>(args: SelectSubset<T, AdPagePlacementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdPagePlacementClient<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdPagePlacement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdPagePlacementFindFirstArgs} args - Arguments to find a AdPagePlacement
+     * @example
+     * // Get one AdPagePlacement
+     * const adPagePlacement = await prisma.adPagePlacement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdPagePlacementFindFirstArgs>(args?: SelectSubset<T, AdPagePlacementFindFirstArgs<ExtArgs>>): Prisma__AdPagePlacementClient<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdPagePlacement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdPagePlacementFindFirstOrThrowArgs} args - Arguments to find a AdPagePlacement
+     * @example
+     * // Get one AdPagePlacement
+     * const adPagePlacement = await prisma.adPagePlacement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdPagePlacementFindFirstOrThrowArgs>(args?: SelectSubset<T, AdPagePlacementFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdPagePlacementClient<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AdPagePlacements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdPagePlacementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdPagePlacements
+     * const adPagePlacements = await prisma.adPagePlacement.findMany()
+     * 
+     * // Get first 10 AdPagePlacements
+     * const adPagePlacements = await prisma.adPagePlacement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adPagePlacementWithIdOnly = await prisma.adPagePlacement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdPagePlacementFindManyArgs>(args?: SelectSubset<T, AdPagePlacementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AdPagePlacement.
+     * @param {AdPagePlacementCreateArgs} args - Arguments to create a AdPagePlacement.
+     * @example
+     * // Create one AdPagePlacement
+     * const AdPagePlacement = await prisma.adPagePlacement.create({
+     *   data: {
+     *     // ... data to create a AdPagePlacement
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdPagePlacementCreateArgs>(args: SelectSubset<T, AdPagePlacementCreateArgs<ExtArgs>>): Prisma__AdPagePlacementClient<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AdPagePlacements.
+     * @param {AdPagePlacementCreateManyArgs} args - Arguments to create many AdPagePlacements.
+     * @example
+     * // Create many AdPagePlacements
+     * const adPagePlacement = await prisma.adPagePlacement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdPagePlacementCreateManyArgs>(args?: SelectSubset<T, AdPagePlacementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdPagePlacements and returns the data saved in the database.
+     * @param {AdPagePlacementCreateManyAndReturnArgs} args - Arguments to create many AdPagePlacements.
+     * @example
+     * // Create many AdPagePlacements
+     * const adPagePlacement = await prisma.adPagePlacement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdPagePlacements and only return the `id`
+     * const adPagePlacementWithIdOnly = await prisma.adPagePlacement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdPagePlacementCreateManyAndReturnArgs>(args?: SelectSubset<T, AdPagePlacementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AdPagePlacement.
+     * @param {AdPagePlacementDeleteArgs} args - Arguments to delete one AdPagePlacement.
+     * @example
+     * // Delete one AdPagePlacement
+     * const AdPagePlacement = await prisma.adPagePlacement.delete({
+     *   where: {
+     *     // ... filter to delete one AdPagePlacement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdPagePlacementDeleteArgs>(args: SelectSubset<T, AdPagePlacementDeleteArgs<ExtArgs>>): Prisma__AdPagePlacementClient<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AdPagePlacement.
+     * @param {AdPagePlacementUpdateArgs} args - Arguments to update one AdPagePlacement.
+     * @example
+     * // Update one AdPagePlacement
+     * const adPagePlacement = await prisma.adPagePlacement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdPagePlacementUpdateArgs>(args: SelectSubset<T, AdPagePlacementUpdateArgs<ExtArgs>>): Prisma__AdPagePlacementClient<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AdPagePlacements.
+     * @param {AdPagePlacementDeleteManyArgs} args - Arguments to filter AdPagePlacements to delete.
+     * @example
+     * // Delete a few AdPagePlacements
+     * const { count } = await prisma.adPagePlacement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdPagePlacementDeleteManyArgs>(args?: SelectSubset<T, AdPagePlacementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdPagePlacements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdPagePlacementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdPagePlacements
+     * const adPagePlacement = await prisma.adPagePlacement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdPagePlacementUpdateManyArgs>(args: SelectSubset<T, AdPagePlacementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdPagePlacements and returns the data updated in the database.
+     * @param {AdPagePlacementUpdateManyAndReturnArgs} args - Arguments to update many AdPagePlacements.
+     * @example
+     * // Update many AdPagePlacements
+     * const adPagePlacement = await prisma.adPagePlacement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AdPagePlacements and only return the `id`
+     * const adPagePlacementWithIdOnly = await prisma.adPagePlacement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdPagePlacementUpdateManyAndReturnArgs>(args: SelectSubset<T, AdPagePlacementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AdPagePlacement.
+     * @param {AdPagePlacementUpsertArgs} args - Arguments to update or create a AdPagePlacement.
+     * @example
+     * // Update or create a AdPagePlacement
+     * const adPagePlacement = await prisma.adPagePlacement.upsert({
+     *   create: {
+     *     // ... data to create a AdPagePlacement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdPagePlacement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdPagePlacementUpsertArgs>(args: SelectSubset<T, AdPagePlacementUpsertArgs<ExtArgs>>): Prisma__AdPagePlacementClient<$Result.GetResult<Prisma.$AdPagePlacementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AdPagePlacements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdPagePlacementCountArgs} args - Arguments to filter AdPagePlacements to count.
+     * @example
+     * // Count the number of AdPagePlacements
+     * const count = await prisma.adPagePlacement.count({
+     *   where: {
+     *     // ... the filter for the AdPagePlacements we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdPagePlacementCountArgs>(
+      args?: Subset<T, AdPagePlacementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdPagePlacementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdPagePlacement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdPagePlacementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdPagePlacementAggregateArgs>(args: Subset<T, AdPagePlacementAggregateArgs>): Prisma.PrismaPromise<GetAdPagePlacementAggregateType<T>>
+
+    /**
+     * Group by AdPagePlacement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdPagePlacementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdPagePlacementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdPagePlacementGroupByArgs['orderBy'] }
+        : { orderBy?: AdPagePlacementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdPagePlacementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdPagePlacementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdPagePlacement model
+   */
+  readonly fields: AdPagePlacementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdPagePlacement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdPagePlacementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    advertisement<T extends AdvertisementDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AdvertisementDefaultArgs<ExtArgs>>): Prisma__AdvertisementClient<$Result.GetResult<Prisma.$AdvertisementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdPagePlacement model
+   */
+  interface AdPagePlacementFieldRefs {
+    readonly id: FieldRef<"AdPagePlacement", 'String'>
+    readonly pageType: FieldRef<"AdPagePlacement", 'String'>
+    readonly pageIdentifier: FieldRef<"AdPagePlacement", 'String'>
+    readonly advertisementId: FieldRef<"AdPagePlacement", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdPagePlacement findUnique
+   */
+  export type AdPagePlacementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * Filter, which AdPagePlacement to fetch.
+     */
+    where: AdPagePlacementWhereUniqueInput
+  }
+
+  /**
+   * AdPagePlacement findUniqueOrThrow
+   */
+  export type AdPagePlacementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * Filter, which AdPagePlacement to fetch.
+     */
+    where: AdPagePlacementWhereUniqueInput
+  }
+
+  /**
+   * AdPagePlacement findFirst
+   */
+  export type AdPagePlacementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * Filter, which AdPagePlacement to fetch.
+     */
+    where?: AdPagePlacementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdPagePlacements to fetch.
+     */
+    orderBy?: AdPagePlacementOrderByWithRelationInput | AdPagePlacementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdPagePlacements.
+     */
+    cursor?: AdPagePlacementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdPagePlacements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdPagePlacements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdPagePlacements.
+     */
+    distinct?: AdPagePlacementScalarFieldEnum | AdPagePlacementScalarFieldEnum[]
+  }
+
+  /**
+   * AdPagePlacement findFirstOrThrow
+   */
+  export type AdPagePlacementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * Filter, which AdPagePlacement to fetch.
+     */
+    where?: AdPagePlacementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdPagePlacements to fetch.
+     */
+    orderBy?: AdPagePlacementOrderByWithRelationInput | AdPagePlacementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdPagePlacements.
+     */
+    cursor?: AdPagePlacementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdPagePlacements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdPagePlacements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdPagePlacements.
+     */
+    distinct?: AdPagePlacementScalarFieldEnum | AdPagePlacementScalarFieldEnum[]
+  }
+
+  /**
+   * AdPagePlacement findMany
+   */
+  export type AdPagePlacementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * Filter, which AdPagePlacements to fetch.
+     */
+    where?: AdPagePlacementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdPagePlacements to fetch.
+     */
+    orderBy?: AdPagePlacementOrderByWithRelationInput | AdPagePlacementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdPagePlacements.
+     */
+    cursor?: AdPagePlacementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdPagePlacements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdPagePlacements.
+     */
+    skip?: number
+    distinct?: AdPagePlacementScalarFieldEnum | AdPagePlacementScalarFieldEnum[]
+  }
+
+  /**
+   * AdPagePlacement create
+   */
+  export type AdPagePlacementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AdPagePlacement.
+     */
+    data: XOR<AdPagePlacementCreateInput, AdPagePlacementUncheckedCreateInput>
+  }
+
+  /**
+   * AdPagePlacement createMany
+   */
+  export type AdPagePlacementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdPagePlacements.
+     */
+    data: AdPagePlacementCreateManyInput | AdPagePlacementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdPagePlacement createManyAndReturn
+   */
+  export type AdPagePlacementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * The data used to create many AdPagePlacements.
+     */
+    data: AdPagePlacementCreateManyInput | AdPagePlacementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AdPagePlacement update
+   */
+  export type AdPagePlacementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AdPagePlacement.
+     */
+    data: XOR<AdPagePlacementUpdateInput, AdPagePlacementUncheckedUpdateInput>
+    /**
+     * Choose, which AdPagePlacement to update.
+     */
+    where: AdPagePlacementWhereUniqueInput
+  }
+
+  /**
+   * AdPagePlacement updateMany
+   */
+  export type AdPagePlacementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdPagePlacements.
+     */
+    data: XOR<AdPagePlacementUpdateManyMutationInput, AdPagePlacementUncheckedUpdateManyInput>
+    /**
+     * Filter which AdPagePlacements to update
+     */
+    where?: AdPagePlacementWhereInput
+    /**
+     * Limit how many AdPagePlacements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdPagePlacement updateManyAndReturn
+   */
+  export type AdPagePlacementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * The data used to update AdPagePlacements.
+     */
+    data: XOR<AdPagePlacementUpdateManyMutationInput, AdPagePlacementUncheckedUpdateManyInput>
+    /**
+     * Filter which AdPagePlacements to update
+     */
+    where?: AdPagePlacementWhereInput
+    /**
+     * Limit how many AdPagePlacements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AdPagePlacement upsert
+   */
+  export type AdPagePlacementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AdPagePlacement to update in case it exists.
+     */
+    where: AdPagePlacementWhereUniqueInput
+    /**
+     * In case the AdPagePlacement found by the `where` argument doesn't exist, create a new AdPagePlacement with this data.
+     */
+    create: XOR<AdPagePlacementCreateInput, AdPagePlacementUncheckedCreateInput>
+    /**
+     * In case the AdPagePlacement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdPagePlacementUpdateInput, AdPagePlacementUncheckedUpdateInput>
+  }
+
+  /**
+   * AdPagePlacement delete
+   */
+  export type AdPagePlacementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+    /**
+     * Filter which AdPagePlacement to delete.
+     */
+    where: AdPagePlacementWhereUniqueInput
+  }
+
+  /**
+   * AdPagePlacement deleteMany
+   */
+  export type AdPagePlacementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdPagePlacements to delete
+     */
+    where?: AdPagePlacementWhereInput
+    /**
+     * Limit how many AdPagePlacements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdPagePlacement without action
+   */
+  export type AdPagePlacementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdPagePlacement
+     */
+    select?: AdPagePlacementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdPagePlacement
+     */
+    omit?: AdPagePlacementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdPagePlacementInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9635,6 +12169,39 @@ export namespace Prisma {
   };
 
   export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+  export const AdvertisementScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    imageUrl: 'imageUrl',
+    linkUrl: 'linkUrl',
+    width: 'width',
+    height: 'height',
+    position: 'position',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    isActive: 'isActive',
+    impressions: 'impressions',
+    clicks: 'clicks',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    adCode: 'adCode',
+    priority: 'priority'
+  };
+
+  export type AdvertisementScalarFieldEnum = (typeof AdvertisementScalarFieldEnum)[keyof typeof AdvertisementScalarFieldEnum]
+
+
+  export const AdPagePlacementScalarFieldEnum: {
+    id: 'id',
+    pageType: 'pageType',
+    pageIdentifier: 'pageIdentifier',
+    advertisementId: 'advertisementId'
+  };
+
+  export type AdPagePlacementScalarFieldEnum = (typeof AdPagePlacementScalarFieldEnum)[keyof typeof AdPagePlacementScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -10368,6 +12935,174 @@ export namespace Prisma {
     enableRelatedArticles?: BoolWithAggregatesFilter<"Setting"> | boolean
   }
 
+  export type AdvertisementWhereInput = {
+    AND?: AdvertisementWhereInput | AdvertisementWhereInput[]
+    OR?: AdvertisementWhereInput[]
+    NOT?: AdvertisementWhereInput | AdvertisementWhereInput[]
+    id?: StringFilter<"Advertisement"> | string
+    name?: StringFilter<"Advertisement"> | string
+    description?: StringNullableFilter<"Advertisement"> | string | null
+    imageUrl?: StringNullableFilter<"Advertisement"> | string | null
+    linkUrl?: StringNullableFilter<"Advertisement"> | string | null
+    width?: IntFilter<"Advertisement"> | number
+    height?: IntFilter<"Advertisement"> | number
+    position?: StringFilter<"Advertisement"> | string
+    startDate?: DateTimeFilter<"Advertisement"> | Date | string
+    endDate?: DateTimeNullableFilter<"Advertisement"> | Date | string | null
+    isActive?: BoolFilter<"Advertisement"> | boolean
+    impressions?: IntFilter<"Advertisement"> | number
+    clicks?: IntFilter<"Advertisement"> | number
+    createdAt?: DateTimeFilter<"Advertisement"> | Date | string
+    updatedAt?: DateTimeFilter<"Advertisement"> | Date | string
+    adCode?: StringNullableFilter<"Advertisement"> | string | null
+    priority?: IntFilter<"Advertisement"> | number
+    pages?: AdPagePlacementListRelationFilter
+  }
+
+  export type AdvertisementOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    linkUrl?: SortOrderInput | SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    position?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    impressions?: SortOrder
+    clicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    adCode?: SortOrderInput | SortOrder
+    priority?: SortOrder
+    pages?: AdPagePlacementOrderByRelationAggregateInput
+  }
+
+  export type AdvertisementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AdvertisementWhereInput | AdvertisementWhereInput[]
+    OR?: AdvertisementWhereInput[]
+    NOT?: AdvertisementWhereInput | AdvertisementWhereInput[]
+    name?: StringFilter<"Advertisement"> | string
+    description?: StringNullableFilter<"Advertisement"> | string | null
+    imageUrl?: StringNullableFilter<"Advertisement"> | string | null
+    linkUrl?: StringNullableFilter<"Advertisement"> | string | null
+    width?: IntFilter<"Advertisement"> | number
+    height?: IntFilter<"Advertisement"> | number
+    position?: StringFilter<"Advertisement"> | string
+    startDate?: DateTimeFilter<"Advertisement"> | Date | string
+    endDate?: DateTimeNullableFilter<"Advertisement"> | Date | string | null
+    isActive?: BoolFilter<"Advertisement"> | boolean
+    impressions?: IntFilter<"Advertisement"> | number
+    clicks?: IntFilter<"Advertisement"> | number
+    createdAt?: DateTimeFilter<"Advertisement"> | Date | string
+    updatedAt?: DateTimeFilter<"Advertisement"> | Date | string
+    adCode?: StringNullableFilter<"Advertisement"> | string | null
+    priority?: IntFilter<"Advertisement"> | number
+    pages?: AdPagePlacementListRelationFilter
+  }, "id">
+
+  export type AdvertisementOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    linkUrl?: SortOrderInput | SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    position?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    impressions?: SortOrder
+    clicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    adCode?: SortOrderInput | SortOrder
+    priority?: SortOrder
+    _count?: AdvertisementCountOrderByAggregateInput
+    _avg?: AdvertisementAvgOrderByAggregateInput
+    _max?: AdvertisementMaxOrderByAggregateInput
+    _min?: AdvertisementMinOrderByAggregateInput
+    _sum?: AdvertisementSumOrderByAggregateInput
+  }
+
+  export type AdvertisementScalarWhereWithAggregatesInput = {
+    AND?: AdvertisementScalarWhereWithAggregatesInput | AdvertisementScalarWhereWithAggregatesInput[]
+    OR?: AdvertisementScalarWhereWithAggregatesInput[]
+    NOT?: AdvertisementScalarWhereWithAggregatesInput | AdvertisementScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Advertisement"> | string
+    name?: StringWithAggregatesFilter<"Advertisement"> | string
+    description?: StringNullableWithAggregatesFilter<"Advertisement"> | string | null
+    imageUrl?: StringNullableWithAggregatesFilter<"Advertisement"> | string | null
+    linkUrl?: StringNullableWithAggregatesFilter<"Advertisement"> | string | null
+    width?: IntWithAggregatesFilter<"Advertisement"> | number
+    height?: IntWithAggregatesFilter<"Advertisement"> | number
+    position?: StringWithAggregatesFilter<"Advertisement"> | string
+    startDate?: DateTimeWithAggregatesFilter<"Advertisement"> | Date | string
+    endDate?: DateTimeNullableWithAggregatesFilter<"Advertisement"> | Date | string | null
+    isActive?: BoolWithAggregatesFilter<"Advertisement"> | boolean
+    impressions?: IntWithAggregatesFilter<"Advertisement"> | number
+    clicks?: IntWithAggregatesFilter<"Advertisement"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Advertisement"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Advertisement"> | Date | string
+    adCode?: StringNullableWithAggregatesFilter<"Advertisement"> | string | null
+    priority?: IntWithAggregatesFilter<"Advertisement"> | number
+  }
+
+  export type AdPagePlacementWhereInput = {
+    AND?: AdPagePlacementWhereInput | AdPagePlacementWhereInput[]
+    OR?: AdPagePlacementWhereInput[]
+    NOT?: AdPagePlacementWhereInput | AdPagePlacementWhereInput[]
+    id?: StringFilter<"AdPagePlacement"> | string
+    pageType?: StringFilter<"AdPagePlacement"> | string
+    pageIdentifier?: StringNullableFilter<"AdPagePlacement"> | string | null
+    advertisementId?: StringFilter<"AdPagePlacement"> | string
+    advertisement?: XOR<AdvertisementScalarRelationFilter, AdvertisementWhereInput>
+  }
+
+  export type AdPagePlacementOrderByWithRelationInput = {
+    id?: SortOrder
+    pageType?: SortOrder
+    pageIdentifier?: SortOrderInput | SortOrder
+    advertisementId?: SortOrder
+    advertisement?: AdvertisementOrderByWithRelationInput
+  }
+
+  export type AdPagePlacementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    pageType_pageIdentifier_advertisementId?: AdPagePlacementPageTypePageIdentifierAdvertisementIdCompoundUniqueInput
+    AND?: AdPagePlacementWhereInput | AdPagePlacementWhereInput[]
+    OR?: AdPagePlacementWhereInput[]
+    NOT?: AdPagePlacementWhereInput | AdPagePlacementWhereInput[]
+    pageType?: StringFilter<"AdPagePlacement"> | string
+    pageIdentifier?: StringNullableFilter<"AdPagePlacement"> | string | null
+    advertisementId?: StringFilter<"AdPagePlacement"> | string
+    advertisement?: XOR<AdvertisementScalarRelationFilter, AdvertisementWhereInput>
+  }, "id" | "pageType_pageIdentifier_advertisementId">
+
+  export type AdPagePlacementOrderByWithAggregationInput = {
+    id?: SortOrder
+    pageType?: SortOrder
+    pageIdentifier?: SortOrderInput | SortOrder
+    advertisementId?: SortOrder
+    _count?: AdPagePlacementCountOrderByAggregateInput
+    _max?: AdPagePlacementMaxOrderByAggregateInput
+    _min?: AdPagePlacementMinOrderByAggregateInput
+  }
+
+  export type AdPagePlacementScalarWhereWithAggregatesInput = {
+    AND?: AdPagePlacementScalarWhereWithAggregatesInput | AdPagePlacementScalarWhereWithAggregatesInput[]
+    OR?: AdPagePlacementScalarWhereWithAggregatesInput[]
+    NOT?: AdPagePlacementScalarWhereWithAggregatesInput | AdPagePlacementScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdPagePlacement"> | string
+    pageType?: StringWithAggregatesFilter<"AdPagePlacement"> | string
+    pageIdentifier?: StringNullableWithAggregatesFilter<"AdPagePlacement"> | string | null
+    advertisementId?: StringWithAggregatesFilter<"AdPagePlacement"> | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -11036,6 +13771,198 @@ export namespace Prisma {
     enableRelatedArticles?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type AdvertisementCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    imageUrl?: string | null
+    linkUrl?: string | null
+    width?: number
+    height?: number
+    position: string
+    startDate?: Date | string
+    endDate?: Date | string | null
+    isActive?: boolean
+    impressions?: number
+    clicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adCode?: string | null
+    priority?: number
+    pages?: AdPagePlacementCreateNestedManyWithoutAdvertisementInput
+  }
+
+  export type AdvertisementUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    imageUrl?: string | null
+    linkUrl?: string | null
+    width?: number
+    height?: number
+    position: string
+    startDate?: Date | string
+    endDate?: Date | string | null
+    isActive?: boolean
+    impressions?: number
+    clicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adCode?: string | null
+    priority?: number
+    pages?: AdPagePlacementUncheckedCreateNestedManyWithoutAdvertisementInput
+  }
+
+  export type AdvertisementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: IntFieldUpdateOperationsInput | number
+    height?: IntFieldUpdateOperationsInput | number
+    position?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    impressions?: IntFieldUpdateOperationsInput | number
+    clicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adCode?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: IntFieldUpdateOperationsInput | number
+    pages?: AdPagePlacementUpdateManyWithoutAdvertisementNestedInput
+  }
+
+  export type AdvertisementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: IntFieldUpdateOperationsInput | number
+    height?: IntFieldUpdateOperationsInput | number
+    position?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    impressions?: IntFieldUpdateOperationsInput | number
+    clicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adCode?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: IntFieldUpdateOperationsInput | number
+    pages?: AdPagePlacementUncheckedUpdateManyWithoutAdvertisementNestedInput
+  }
+
+  export type AdvertisementCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    imageUrl?: string | null
+    linkUrl?: string | null
+    width?: number
+    height?: number
+    position: string
+    startDate?: Date | string
+    endDate?: Date | string | null
+    isActive?: boolean
+    impressions?: number
+    clicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adCode?: string | null
+    priority?: number
+  }
+
+  export type AdvertisementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: IntFieldUpdateOperationsInput | number
+    height?: IntFieldUpdateOperationsInput | number
+    position?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    impressions?: IntFieldUpdateOperationsInput | number
+    clicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adCode?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type AdvertisementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: IntFieldUpdateOperationsInput | number
+    height?: IntFieldUpdateOperationsInput | number
+    position?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    impressions?: IntFieldUpdateOperationsInput | number
+    clicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adCode?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type AdPagePlacementCreateInput = {
+    id?: string
+    pageType: string
+    pageIdentifier?: string | null
+    advertisement: AdvertisementCreateNestedOneWithoutPagesInput
+  }
+
+  export type AdPagePlacementUncheckedCreateInput = {
+    id?: string
+    pageType: string
+    pageIdentifier?: string | null
+    advertisementId: string
+  }
+
+  export type AdPagePlacementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pageType?: StringFieldUpdateOperationsInput | string
+    pageIdentifier?: NullableStringFieldUpdateOperationsInput | string | null
+    advertisement?: AdvertisementUpdateOneRequiredWithoutPagesNestedInput
+  }
+
+  export type AdPagePlacementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pageType?: StringFieldUpdateOperationsInput | string
+    pageIdentifier?: NullableStringFieldUpdateOperationsInput | string | null
+    advertisementId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AdPagePlacementCreateManyInput = {
+    id?: string
+    pageType: string
+    pageIdentifier?: string | null
+    advertisementId: string
+  }
+
+  export type AdPagePlacementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pageType?: StringFieldUpdateOperationsInput | string
+    pageIdentifier?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AdPagePlacementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pageType?: StringFieldUpdateOperationsInput | string
+    pageIdentifier?: NullableStringFieldUpdateOperationsInput | string | null
+    advertisementId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -11642,6 +14569,124 @@ export namespace Prisma {
     enableRelatedArticles?: SortOrder
   }
 
+  export type AdPagePlacementListRelationFilter = {
+    every?: AdPagePlacementWhereInput
+    some?: AdPagePlacementWhereInput
+    none?: AdPagePlacementWhereInput
+  }
+
+  export type AdPagePlacementOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AdvertisementCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    linkUrl?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    position?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isActive?: SortOrder
+    impressions?: SortOrder
+    clicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    adCode?: SortOrder
+    priority?: SortOrder
+  }
+
+  export type AdvertisementAvgOrderByAggregateInput = {
+    width?: SortOrder
+    height?: SortOrder
+    impressions?: SortOrder
+    clicks?: SortOrder
+    priority?: SortOrder
+  }
+
+  export type AdvertisementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    linkUrl?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    position?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isActive?: SortOrder
+    impressions?: SortOrder
+    clicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    adCode?: SortOrder
+    priority?: SortOrder
+  }
+
+  export type AdvertisementMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    imageUrl?: SortOrder
+    linkUrl?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    position?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isActive?: SortOrder
+    impressions?: SortOrder
+    clicks?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    adCode?: SortOrder
+    priority?: SortOrder
+  }
+
+  export type AdvertisementSumOrderByAggregateInput = {
+    width?: SortOrder
+    height?: SortOrder
+    impressions?: SortOrder
+    clicks?: SortOrder
+    priority?: SortOrder
+  }
+
+  export type AdvertisementScalarRelationFilter = {
+    is?: AdvertisementWhereInput
+    isNot?: AdvertisementWhereInput
+  }
+
+  export type AdPagePlacementPageTypePageIdentifierAdvertisementIdCompoundUniqueInput = {
+    pageType: string
+    pageIdentifier: string
+    advertisementId: string
+  }
+
+  export type AdPagePlacementCountOrderByAggregateInput = {
+    id?: SortOrder
+    pageType?: SortOrder
+    pageIdentifier?: SortOrder
+    advertisementId?: SortOrder
+  }
+
+  export type AdPagePlacementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pageType?: SortOrder
+    pageIdentifier?: SortOrder
+    advertisementId?: SortOrder
+  }
+
+  export type AdPagePlacementMinOrderByAggregateInput = {
+    id?: SortOrder
+    pageType?: SortOrder
+    pageIdentifier?: SortOrder
+    advertisementId?: SortOrder
+  }
+
   export type ArticleCreateNestedManyWithoutAuthorInput = {
     create?: XOR<ArticleCreateWithoutAuthorInput, ArticleUncheckedCreateWithoutAuthorInput> | ArticleCreateWithoutAuthorInput[] | ArticleUncheckedCreateWithoutAuthorInput[]
     connectOrCreate?: ArticleCreateOrConnectWithoutAuthorInput | ArticleCreateOrConnectWithoutAuthorInput[]
@@ -11928,6 +14973,62 @@ export namespace Prisma {
     update?: TagUpdateWithWhereUniqueWithoutArticlesInput | TagUpdateWithWhereUniqueWithoutArticlesInput[]
     updateMany?: TagUpdateManyWithWhereWithoutArticlesInput | TagUpdateManyWithWhereWithoutArticlesInput[]
     deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  }
+
+  export type AdPagePlacementCreateNestedManyWithoutAdvertisementInput = {
+    create?: XOR<AdPagePlacementCreateWithoutAdvertisementInput, AdPagePlacementUncheckedCreateWithoutAdvertisementInput> | AdPagePlacementCreateWithoutAdvertisementInput[] | AdPagePlacementUncheckedCreateWithoutAdvertisementInput[]
+    connectOrCreate?: AdPagePlacementCreateOrConnectWithoutAdvertisementInput | AdPagePlacementCreateOrConnectWithoutAdvertisementInput[]
+    createMany?: AdPagePlacementCreateManyAdvertisementInputEnvelope
+    connect?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+  }
+
+  export type AdPagePlacementUncheckedCreateNestedManyWithoutAdvertisementInput = {
+    create?: XOR<AdPagePlacementCreateWithoutAdvertisementInput, AdPagePlacementUncheckedCreateWithoutAdvertisementInput> | AdPagePlacementCreateWithoutAdvertisementInput[] | AdPagePlacementUncheckedCreateWithoutAdvertisementInput[]
+    connectOrCreate?: AdPagePlacementCreateOrConnectWithoutAdvertisementInput | AdPagePlacementCreateOrConnectWithoutAdvertisementInput[]
+    createMany?: AdPagePlacementCreateManyAdvertisementInputEnvelope
+    connect?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+  }
+
+  export type AdPagePlacementUpdateManyWithoutAdvertisementNestedInput = {
+    create?: XOR<AdPagePlacementCreateWithoutAdvertisementInput, AdPagePlacementUncheckedCreateWithoutAdvertisementInput> | AdPagePlacementCreateWithoutAdvertisementInput[] | AdPagePlacementUncheckedCreateWithoutAdvertisementInput[]
+    connectOrCreate?: AdPagePlacementCreateOrConnectWithoutAdvertisementInput | AdPagePlacementCreateOrConnectWithoutAdvertisementInput[]
+    upsert?: AdPagePlacementUpsertWithWhereUniqueWithoutAdvertisementInput | AdPagePlacementUpsertWithWhereUniqueWithoutAdvertisementInput[]
+    createMany?: AdPagePlacementCreateManyAdvertisementInputEnvelope
+    set?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+    disconnect?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+    delete?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+    connect?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+    update?: AdPagePlacementUpdateWithWhereUniqueWithoutAdvertisementInput | AdPagePlacementUpdateWithWhereUniqueWithoutAdvertisementInput[]
+    updateMany?: AdPagePlacementUpdateManyWithWhereWithoutAdvertisementInput | AdPagePlacementUpdateManyWithWhereWithoutAdvertisementInput[]
+    deleteMany?: AdPagePlacementScalarWhereInput | AdPagePlacementScalarWhereInput[]
+  }
+
+  export type AdPagePlacementUncheckedUpdateManyWithoutAdvertisementNestedInput = {
+    create?: XOR<AdPagePlacementCreateWithoutAdvertisementInput, AdPagePlacementUncheckedCreateWithoutAdvertisementInput> | AdPagePlacementCreateWithoutAdvertisementInput[] | AdPagePlacementUncheckedCreateWithoutAdvertisementInput[]
+    connectOrCreate?: AdPagePlacementCreateOrConnectWithoutAdvertisementInput | AdPagePlacementCreateOrConnectWithoutAdvertisementInput[]
+    upsert?: AdPagePlacementUpsertWithWhereUniqueWithoutAdvertisementInput | AdPagePlacementUpsertWithWhereUniqueWithoutAdvertisementInput[]
+    createMany?: AdPagePlacementCreateManyAdvertisementInputEnvelope
+    set?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+    disconnect?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+    delete?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+    connect?: AdPagePlacementWhereUniqueInput | AdPagePlacementWhereUniqueInput[]
+    update?: AdPagePlacementUpdateWithWhereUniqueWithoutAdvertisementInput | AdPagePlacementUpdateWithWhereUniqueWithoutAdvertisementInput[]
+    updateMany?: AdPagePlacementUpdateManyWithWhereWithoutAdvertisementInput | AdPagePlacementUpdateManyWithWhereWithoutAdvertisementInput[]
+    deleteMany?: AdPagePlacementScalarWhereInput | AdPagePlacementScalarWhereInput[]
+  }
+
+  export type AdvertisementCreateNestedOneWithoutPagesInput = {
+    create?: XOR<AdvertisementCreateWithoutPagesInput, AdvertisementUncheckedCreateWithoutPagesInput>
+    connectOrCreate?: AdvertisementCreateOrConnectWithoutPagesInput
+    connect?: AdvertisementWhereUniqueInput
+  }
+
+  export type AdvertisementUpdateOneRequiredWithoutPagesNestedInput = {
+    create?: XOR<AdvertisementCreateWithoutPagesInput, AdvertisementUncheckedCreateWithoutPagesInput>
+    connectOrCreate?: AdvertisementCreateOrConnectWithoutPagesInput
+    upsert?: AdvertisementUpsertWithoutPagesInput
+    connect?: AdvertisementWhereUniqueInput
+    update?: XOR<XOR<AdvertisementUpdateToOneWithWhereWithoutPagesInput, AdvertisementUpdateWithoutPagesInput>, AdvertisementUncheckedUpdateWithoutPagesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -12737,6 +15838,150 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Tag"> | Date | string
   }
 
+  export type AdPagePlacementCreateWithoutAdvertisementInput = {
+    id?: string
+    pageType: string
+    pageIdentifier?: string | null
+  }
+
+  export type AdPagePlacementUncheckedCreateWithoutAdvertisementInput = {
+    id?: string
+    pageType: string
+    pageIdentifier?: string | null
+  }
+
+  export type AdPagePlacementCreateOrConnectWithoutAdvertisementInput = {
+    where: AdPagePlacementWhereUniqueInput
+    create: XOR<AdPagePlacementCreateWithoutAdvertisementInput, AdPagePlacementUncheckedCreateWithoutAdvertisementInput>
+  }
+
+  export type AdPagePlacementCreateManyAdvertisementInputEnvelope = {
+    data: AdPagePlacementCreateManyAdvertisementInput | AdPagePlacementCreateManyAdvertisementInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AdPagePlacementUpsertWithWhereUniqueWithoutAdvertisementInput = {
+    where: AdPagePlacementWhereUniqueInput
+    update: XOR<AdPagePlacementUpdateWithoutAdvertisementInput, AdPagePlacementUncheckedUpdateWithoutAdvertisementInput>
+    create: XOR<AdPagePlacementCreateWithoutAdvertisementInput, AdPagePlacementUncheckedCreateWithoutAdvertisementInput>
+  }
+
+  export type AdPagePlacementUpdateWithWhereUniqueWithoutAdvertisementInput = {
+    where: AdPagePlacementWhereUniqueInput
+    data: XOR<AdPagePlacementUpdateWithoutAdvertisementInput, AdPagePlacementUncheckedUpdateWithoutAdvertisementInput>
+  }
+
+  export type AdPagePlacementUpdateManyWithWhereWithoutAdvertisementInput = {
+    where: AdPagePlacementScalarWhereInput
+    data: XOR<AdPagePlacementUpdateManyMutationInput, AdPagePlacementUncheckedUpdateManyWithoutAdvertisementInput>
+  }
+
+  export type AdPagePlacementScalarWhereInput = {
+    AND?: AdPagePlacementScalarWhereInput | AdPagePlacementScalarWhereInput[]
+    OR?: AdPagePlacementScalarWhereInput[]
+    NOT?: AdPagePlacementScalarWhereInput | AdPagePlacementScalarWhereInput[]
+    id?: StringFilter<"AdPagePlacement"> | string
+    pageType?: StringFilter<"AdPagePlacement"> | string
+    pageIdentifier?: StringNullableFilter<"AdPagePlacement"> | string | null
+    advertisementId?: StringFilter<"AdPagePlacement"> | string
+  }
+
+  export type AdvertisementCreateWithoutPagesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    imageUrl?: string | null
+    linkUrl?: string | null
+    width?: number
+    height?: number
+    position: string
+    startDate?: Date | string
+    endDate?: Date | string | null
+    isActive?: boolean
+    impressions?: number
+    clicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adCode?: string | null
+    priority?: number
+  }
+
+  export type AdvertisementUncheckedCreateWithoutPagesInput = {
+    id?: string
+    name: string
+    description?: string | null
+    imageUrl?: string | null
+    linkUrl?: string | null
+    width?: number
+    height?: number
+    position: string
+    startDate?: Date | string
+    endDate?: Date | string | null
+    isActive?: boolean
+    impressions?: number
+    clicks?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    adCode?: string | null
+    priority?: number
+  }
+
+  export type AdvertisementCreateOrConnectWithoutPagesInput = {
+    where: AdvertisementWhereUniqueInput
+    create: XOR<AdvertisementCreateWithoutPagesInput, AdvertisementUncheckedCreateWithoutPagesInput>
+  }
+
+  export type AdvertisementUpsertWithoutPagesInput = {
+    update: XOR<AdvertisementUpdateWithoutPagesInput, AdvertisementUncheckedUpdateWithoutPagesInput>
+    create: XOR<AdvertisementCreateWithoutPagesInput, AdvertisementUncheckedCreateWithoutPagesInput>
+    where?: AdvertisementWhereInput
+  }
+
+  export type AdvertisementUpdateToOneWithWhereWithoutPagesInput = {
+    where?: AdvertisementWhereInput
+    data: XOR<AdvertisementUpdateWithoutPagesInput, AdvertisementUncheckedUpdateWithoutPagesInput>
+  }
+
+  export type AdvertisementUpdateWithoutPagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: IntFieldUpdateOperationsInput | number
+    height?: IntFieldUpdateOperationsInput | number
+    position?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    impressions?: IntFieldUpdateOperationsInput | number
+    clicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adCode?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type AdvertisementUncheckedUpdateWithoutPagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: IntFieldUpdateOperationsInput | number
+    height?: IntFieldUpdateOperationsInput | number
+    position?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    impressions?: IntFieldUpdateOperationsInput | number
+    clicks?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    adCode?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: IntFieldUpdateOperationsInput | number
+  }
+
   export type ArticleCreateManyAuthorInput = {
     id?: string
     title: string
@@ -13062,6 +16307,30 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdPagePlacementCreateManyAdvertisementInput = {
+    id?: string
+    pageType: string
+    pageIdentifier?: string | null
+  }
+
+  export type AdPagePlacementUpdateWithoutAdvertisementInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pageType?: StringFieldUpdateOperationsInput | string
+    pageIdentifier?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AdPagePlacementUncheckedUpdateWithoutAdvertisementInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pageType?: StringFieldUpdateOperationsInput | string
+    pageIdentifier?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AdPagePlacementUncheckedUpdateManyWithoutAdvertisementInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pageType?: StringFieldUpdateOperationsInput | string
+    pageIdentifier?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

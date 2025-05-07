@@ -54,7 +54,7 @@ export async function PUT(
         console.error("Invalid JSON-LD data:", err);
       }
     }
-    const id = await params;
+    const { id } = await params;
 
     const article = await prisma.article.update({
       where: {

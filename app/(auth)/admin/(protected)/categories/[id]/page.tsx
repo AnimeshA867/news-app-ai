@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { categorySchema } from "@/lib/validations/category";
-import { Category } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSWRConfig } from "swr";
+import { Category } from "@/lib/generated";
 
 const schema = categorySchema.extend({
   parentId: z.string().optional(),

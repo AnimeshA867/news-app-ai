@@ -1,17 +1,44 @@
 import React from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { CookieConsent } from "@/components/cookie-consent";
+import { AdPositionWrapper } from "@/components/advertisements/ad-position-wrapper";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function PublicLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <main className="min-h-screen flex flex-col">
-      <div className="relative flex min-h-screen flex-col">
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+    <>
+      <SiteHeader />
+
+      {/* Header banner ad */}
+      <div className="container mx-auto my-4">
+        <AdPositionWrapper
+          position="header"
+          pageType="global"
+          className="w-full h-[90px] flex items-center justify-center"
+          fallback={
+            <div className="w-full h-[90px] bg-muted/10 rounded-md"></div>
+          }
+        />
       </div>
-      <CookieConsent />
-    </main>
+
+      <main>{children}</main>
+
+      {/* Footer banner ad */}
+      <div className="container mx-auto my-4">
+        <AdPositionWrapper
+          position="footer"
+          pageType="global"
+          className="w-full h-[90px] flex items-center justify-center"
+          fallback={
+            <div className="w-full h-[90px] bg-muted/10 rounded-md"></div>
+          }
+        />
+      </div>
+
+      <SiteFooter />
+    </>
   );
 }
