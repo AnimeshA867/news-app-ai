@@ -130,17 +130,7 @@ export function AdminSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              isActive={isActive("/admin/advertisements/zones")}
-            >
-              <Link href="/admin/advertisements/zones">
-                <LayoutGrid className="h-4 w-4" />
-                <span>Ad Zones</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/admin/media")}>
               <Link href="/admin/media">
