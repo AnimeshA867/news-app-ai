@@ -1,16 +1,29 @@
 import { NextResponse } from "next/server";
-import { getAuthSession } from "@/lib/auth";
+import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 
-// GET single category
+// GET a single category
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = params;
     const category = await prisma.category.findUnique({
-      where: { id: id },
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            articles: true,
+          },
+        },
+      },
     });
 
     if (!category) {
@@ -20,41 +33,62 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(category);
+    return NextResponse.json({ category });
   } catch (error) {
     console.error("Error fetching category:", error);
     return NextResponse.json(
-      { error: "Failed to fetch category" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
 }
 
-// PUT (update) category
+// UPDATE a category
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-    const session = await getAuthSession();
-
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, slug, description } = await req.json();
+    const { id } = params;
+    const json = await req.json();
 
-    // Check if slug is already taken by a different category
-    if (slug) {
-      const existingCategory = await prisma.category.findFirst({
-        where: {
-          slug,
-          NOT: { id: id },
-        },
+    // Check if category exists
+    const existingCategory = await prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!existingCategory) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      );
+    }
+
+    // Check for name/slug conflicts
+    if (json.name !== existingCategory.name) {
+      const nameExists = await prisma.category.findUnique({
+        where: { name: json.name },
       });
 
-      if (existingCategory) {
+      if (nameExists) {
+        return NextResponse.json(
+          { error: "A category with this name already exists" },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (json.slug !== existingCategory.slug) {
+      const slugExists = await prisma.category.findUnique({
+        where: { slug: json.slug },
+      });
+
+      if (slugExists) {
         return NextResponse.json(
           { error: "A category with this slug already exists" },
           { status: 400 }
@@ -62,61 +96,79 @@ export async function PUT(
       }
     }
 
+    // Update category
     const category = await prisma.category.update({
-      where: { id: id },
+      where: { id },
       data: {
-        name,
-        slug,
-        description,
+        name: json.name,
+        slug: json.slug,
+        description: json.description || null,
       },
     });
 
-    return NextResponse.json(category);
+    return NextResponse.json({ category });
   } catch (error) {
     console.error("Error updating category:", error);
     return NextResponse.json(
-      { error: "Failed to update category" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
 }
 
-// DELETE category
+// DELETE a category
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-    const session = await getAuthSession();
-
+    const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if the category is associated with any articles
-    const articlesCount = await prisma.article.count({
-      where: {
-        categoryId: id,
+    const { id } = params;
+
+    // Check if category exists
+    const category = await prisma.category.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            articles: true,
+          },
+        },
       },
     });
 
-    if (articlesCount > 0) {
+    if (!category) {
       return NextResponse.json(
-        { error: "Cannot delete category that is used by articles" },
+        { error: "Category not found" },
+        { status: 404 }
+      );
+    }
+
+    // Don't allow deleting categories with articles
+    if (category._count.articles > 0) {
+      return NextResponse.json(
+        {
+          error:
+            "Cannot delete a category that contains articles. Please reassign or delete the articles first.",
+        },
         { status: 400 }
       );
     }
 
+    // Delete category
     await prisma.category.delete({
-      where: { id: id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting category:", error);
     return NextResponse.json(
-      { error: "Failed to delete category" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
