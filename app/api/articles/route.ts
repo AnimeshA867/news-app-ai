@@ -3,6 +3,7 @@ import { getAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { slugify } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
   try {
@@ -16,9 +17,16 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get("category") || "";
     const tag = searchParams.get("tag") || "";
     const author = searchParams.get("author") || "";
+    const status = searchParams.get("status");
 
     // Build where conditions
-    const where: Record<string, unknown> = { status: "PUBLISHED" };
+    const where: Record<string, unknown> = {};
+
+    if (status) {
+      where.status = status;
+    } else {
+      where.status = "PUBLISHED";
+    }
 
     if (query) {
       where.OR = [
@@ -124,25 +132,25 @@ export async function POST(req: Request) {
 
     const data = await req.json();
 
-    // Process JSON-LD data
-    let jsonLdData = {};
-    if (data.structuredData) {
-      try {
-        jsonLdData = JSON.parse(data.structuredData);
-      } catch (err) {
-        console.error("Invalid JSON-LD data:", err);
-      }
+    // Set publishedAt based on status
+    let publishedAt: Date | null = null;
+    if (data.status === "PUBLISHED") {
+      publishedAt = new Date();
     }
+
+    const jsonLdData = data.structuredData || null;
 
     const article = await prisma.article.create({
       data: {
         title: data.title,
-        slug: data.slug,
-        excerpt: data.excerpt || null,
+        slug: data.slug || slugify(data.title),
+        excerpt: data.excerpt,
         content: data.content,
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || "",
         status: data.status,
+        publishedAt: publishedAt,
+        scheduledAt: data.status === "SCHEDULED" ? data.scheduledAt : null,
         author: {
           connect: { id: user.id }, // Connect to the authenticated user
         },
@@ -159,7 +167,7 @@ export async function POST(req: Request) {
         metaKeywords: data.metaKeywords || null,
         noIndex: data.noIndex || false,
         structuredData: data.structuredData || null,
-        jsonLd: jsonLdData, // Add this line
+        jsonLd: jsonLdData,
       },
       include: {
         author: true,

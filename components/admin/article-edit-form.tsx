@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Plus, Trash2, Upload, X } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, X, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +23,14 @@ import { articleSchema } from "@/lib/validations/article";
 import React from "react";
 import { TipTapEditor } from "@/components/editor/tiptap-editor";
 import { UploadDropzone } from "@/utils/uploadthing";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { DayPicker } from "react-day-picker";
 
 // Schema extension for form
 // Update your schema
@@ -30,6 +38,7 @@ const schema = articleSchema.extend({
   categoryId: z.string().nonempty("Category is required"),
   tagIds: z.array(z.string()).optional(),
   status: z.enum(["DRAFT", "PUBLISHED", "SCHEDULED"]),
+  scheduledAt: z.date().nullable().optional(),
   featuredImageAlt: z.string().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
@@ -96,6 +105,7 @@ export default function ArticleEditForm({
           content: "",
           excerpt: "",
           status: "DRAFT",
+          scheduledAt: null,
           featuredImage: "",
           featuredImageAlt: "",
           categoryId: "",
@@ -113,6 +123,9 @@ export default function ArticleEditForm({
           content: initialArticle?.content || "",
           excerpt: initialArticle?.excerpt || "",
           status: initialArticle?.status || "DRAFT",
+          scheduledAt: initialArticle?.scheduledAt
+            ? new Date(initialArticle.scheduledAt)
+            : null,
           featuredImage: initialArticle?.featuredImage || "",
           featuredImageAlt: initialArticle?.featuredImageAlt || "",
           categoryId: initialArticle?.categoryId || "",
@@ -132,6 +145,7 @@ export default function ArticleEditForm({
 
   const featuredImageUrl = watch("featuredImage");
   const title = watch("title");
+  const watchStatus = watch("status");
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
@@ -176,22 +190,26 @@ export default function ArticleEditForm({
   };
 
   const onSubmit = async (data: FormData) => {
-    // Validate JSON-LD if needed
     try {
-      if (data.structuredData && data.structuredData.trim() !== "") {
-        JSON.parse(data.structuredData);
-      }
-    } catch (err) {
-      toast({
-        title: "Invalid JSON-LD",
-        description: "Please fix the JSON-LD syntax before submitting",
-        variant: "destructive",
-      });
-      return;
-    }
+      setIsSaving(true);
 
-    setIsSaving(true);
-    try {
+      // Add validation for scheduled articles
+      if (data.status === "SCHEDULED" && !data.scheduledAt) {
+        toast({
+          title: "Error",
+          description:
+            "Please select a publication date for scheduled articles",
+          variant: "destructive",
+        });
+        setIsSaving(false);
+        return;
+      }
+
+      // If publishing directly, set publishedAt to now
+      if (data.status === "PUBLISHED") {
+        data.publishedAt = new Date();
+      }
+
       const url = isNewArticle ? "/api/articles" : `/api/articles/${articleId}`;
       const method = isNewArticle ? "POST" : "PUT";
 
@@ -200,7 +218,10 @@ export default function ArticleEditForm({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          scheduledAt: data.status === "SCHEDULED" ? data.scheduledAt : null,
+        }),
       });
 
       if (!response.ok) {
@@ -503,6 +524,87 @@ export default function ArticleEditForm({
             )}
           </div>
         </div>
+
+        {watchStatus === "SCHEDULED" && (
+          <div className="mt-4 space-y-2">
+            <Controller
+              name="scheduledAt"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="scheduledAt"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Scheduled Publication Date
+                  </label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP HH:mm")
+                        ) : (
+                          <span>Select date and time</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <div>
+                        <DayPicker
+                          classNames={{
+                            today: "bg-primary text-primary-foreground",
+                          }}
+                          mode="single"
+                          selected={field.value || undefined}
+                          onSelect={field.onChange}
+                          initialFocus
+                          disabled={(date) => date < new Date()}
+                        />
+                      </div>
+                      <div className="p-3 border-t border-gray-200">
+                        <div className="flex items-center space-x-2">
+                          <label
+                            htmlFor="scheduledTime"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Time:
+                          </label>
+                          <Input
+                            id="scheduledTime"
+                            type="time"
+                            value={
+                              field.value ? format(field.value, "HH:mm") : ""
+                            }
+                            onChange={(e) => {
+                              const [hours, minutes] = e.target.value
+                                .split(":")
+                                .map(Number);
+                              const newDate = field.value || new Date();
+                              newDate.setHours(hours);
+                              newDate.setMinutes(minutes);
+                              field.onChange(newDate);
+                            }}
+                            className="w-24"
+                          />
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Select when this article should be published automatically
+                  </p>
+                </div>
+              )}
+            />
+          </div>
+        )}
 
         <div>
           <label

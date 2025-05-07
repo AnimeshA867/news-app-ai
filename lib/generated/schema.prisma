@@ -68,6 +68,7 @@ model Article {
   readTime         Int?
   viewCount        Int       @default(0)
   publishedAt      DateTime?
+  scheduledAt      DateTime? // Add this field
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   authorId         String

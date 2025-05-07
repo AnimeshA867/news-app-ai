@@ -6,7 +6,7 @@ import { authOptions } from "@/lib/auth";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -44,38 +44,45 @@ export async function PUT(
     }
 
     const data = await req.json();
-
-    // Process JSON-LD data
-    let jsonLdData = {};
-    if (data.structuredData) {
-      try {
-        jsonLdData = JSON.parse(data.structuredData);
-      } catch (err) {
-        console.error("Invalid JSON-LD data:", err);
-      }
-    }
     const { id } = await params;
 
+    // Get the existing article to check for status changes
+    const existingArticle = await prisma.article.findUnique({
+      where: { id },
+    });
+
+    if (!existingArticle) {
+      return NextResponse.json({ error: "Article not found" }, { status: 404 });
+    }
+
+    // Determine if we need to update publishedAt
+    let publishedAt = existingArticle.publishedAt;
+
+    // If changing status to PUBLISHED from another status
+    if (data.status === "PUBLISHED" && existingArticle.status !== "PUBLISHED") {
+      publishedAt = new Date();
+    }
+
+    const jsonLdData = data.structuredData || null;
+
     const article = await prisma.article.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: {
         title: data.title,
         slug: data.slug,
-        excerpt: data.excerpt || null,
+        excerpt: data.excerpt,
         content: data.content,
         status: data.status,
-        featuredImage: data.featuredImage || null,
+        featuredImage: data.featuredImage,
         featuredImageAlt: data.featuredImageAlt || null,
-        // ... other fields
+        publishedAt: publishedAt,
+        scheduledAt: data.status === "SCHEDULED" ? data.scheduledAt : null,
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,
         metaKeywords: data.metaKeywords || null,
         noIndex: data.noIndex || false,
         structuredData: data.structuredData || null,
-        jsonLd: jsonLdData, // Add this line
-        // Relations
+        jsonLd: jsonLdData,
         category: data.categoryId
           ? {
               connect: {
@@ -107,7 +114,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getAuthSession();
