@@ -26,15 +26,6 @@ import { UploadButton } from "@/utils/uploadthing";
 import { UploadProfilePicture } from "./upload-image";
 
 // Create a schema for author form validation
-const authorSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  role: z.enum(["USER", "ADMIN", "AUTHOR"]),
-  bio: z.string().optional().nullable(),
-  image: z.string().optional().optional(),
-});
-
-type FormData = z.infer<typeof authorSchema>;
 
 interface AuthorEditFormProps {
   authorId: string;
@@ -47,6 +38,34 @@ export default function AuthorEditForm({
   initialAuthor,
   isNew,
 }: AuthorEditFormProps) {
+  const authorSchema = z
+    .object({
+      name: z.string().min(2, "Name must be at least 2 characters"),
+      email: z.string().email("Invalid email address"),
+      role: z.enum(["USER", "ADMIN", "AUTHOR"]),
+      bio: z.string().optional().nullable(),
+      image: z.string().optional(),
+      // Add password fields
+      password: z
+        .string()
+        .min(6, "Password must be at least 6 characters")
+        // Make password optional for existing users
+        .optional()
+        .refine((val) => !isNew || val, {
+          message: "Password is required for new users",
+        }),
+      confirmPassword: z.string().optional(),
+    })
+    .refine(
+      (data) => !data.password || data.password === data.confirmPassword,
+      {
+        message: "Passwords don't match",
+        path: ["confirmPassword"],
+      }
+    );
+
+  type FormData = z.infer<typeof authorSchema>;
+
   const router = useRouter();
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
@@ -70,6 +89,8 @@ export default function AuthorEditForm({
           role: "AUTHOR",
           bio: "",
           image: "",
+          password: "",
+          confirmPassword: "",
         }
       : {
           name: initialAuthor?.name || "",
@@ -77,6 +98,8 @@ export default function AuthorEditForm({
           role: initialAuthor?.role || "AUTHOR",
           bio: initialAuthor?.authorProfile?.bio || "",
           image: initialAuthor?.authorProfile?.image || "",
+          password: "", // Default to empty for existing users
+          confirmPassword: "",
         },
   });
 
@@ -193,12 +216,22 @@ export default function AuthorEditForm({
       const url = isNew ? "/api/authors" : `/api/authors/${authorId}`;
       const method = isNew ? "POST" : "PUT";
 
+      // Prepare payload - only include password if provided
+      const payload = {
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        bio: data.bio,
+        image: data.image,
+        ...(data.password ? { password: data.password } : {}),
+      };
+
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -415,6 +448,69 @@ export default function AuthorEditForm({
               />
             )}
           />
+        </div>
+
+        {/* Password fields - only show when creating new author or explicitly changing password */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              {isNew ? "Password" : "New Password"}
+              {!isNew && (
+                <span className="text-xs text-muted-foreground ml-1">
+                  (leave blank to keep unchanged)
+                </span>
+              )}
+            </label>
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="password"
+                  type="password"
+                  placeholder={
+                    isNew ? "Enter password" : "Enter new password (optional)"
+                  }
+                />
+              )}
+            />
+            {errors.password && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirm Password
+            </label>
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm password"
+                  disabled={!watch("password")}
+                />
+              )}
+            />
+            {errors.confirmPassword && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-end">

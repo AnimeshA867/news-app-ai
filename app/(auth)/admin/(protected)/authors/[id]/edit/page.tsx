@@ -36,7 +36,7 @@ export async function generateMetadata({
 }
 
 export default async function EditAuthorPage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
