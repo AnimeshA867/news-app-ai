@@ -8601,6 +8601,10 @@ export namespace Prisma {
     description: string | null
     logoUrl: string | null
     faviconUrl: string | null
+    siteUrl: string | null
+    socialImageUrl: string | null
+    twitterImageUrl: string | null
+    facebookImageUrl: string | null
     senderEmail: string | null
     senderName: string | null
     smtpHost: string | null
@@ -8620,6 +8624,10 @@ export namespace Prisma {
     description: string | null
     logoUrl: string | null
     faviconUrl: string | null
+    siteUrl: string | null
+    socialImageUrl: string | null
+    twitterImageUrl: string | null
+    facebookImageUrl: string | null
     senderEmail: string | null
     senderName: string | null
     smtpHost: string | null
@@ -8639,6 +8647,10 @@ export namespace Prisma {
     description: number
     logoUrl: number
     faviconUrl: number
+    siteUrl: number
+    socialImageUrl: number
+    twitterImageUrl: number
+    facebookImageUrl: number
     senderEmail: number
     senderName: number
     smtpHost: number
@@ -8660,6 +8672,10 @@ export namespace Prisma {
     description?: true
     logoUrl?: true
     faviconUrl?: true
+    siteUrl?: true
+    socialImageUrl?: true
+    twitterImageUrl?: true
+    facebookImageUrl?: true
     senderEmail?: true
     senderName?: true
     smtpHost?: true
@@ -8679,6 +8695,10 @@ export namespace Prisma {
     description?: true
     logoUrl?: true
     faviconUrl?: true
+    siteUrl?: true
+    socialImageUrl?: true
+    twitterImageUrl?: true
+    facebookImageUrl?: true
     senderEmail?: true
     senderName?: true
     smtpHost?: true
@@ -8698,6 +8718,10 @@ export namespace Prisma {
     description?: true
     logoUrl?: true
     faviconUrl?: true
+    siteUrl?: true
+    socialImageUrl?: true
+    twitterImageUrl?: true
+    facebookImageUrl?: true
     senderEmail?: true
     senderName?: true
     smtpHost?: true
@@ -8790,6 +8814,10 @@ export namespace Prisma {
     description: string | null
     logoUrl: string | null
     faviconUrl: string | null
+    siteUrl: string | null
+    socialImageUrl: string | null
+    twitterImageUrl: string | null
+    facebookImageUrl: string | null
     senderEmail: string | null
     senderName: string | null
     smtpHost: string | null
@@ -8826,6 +8854,10 @@ export namespace Prisma {
     description?: boolean
     logoUrl?: boolean
     faviconUrl?: boolean
+    siteUrl?: boolean
+    socialImageUrl?: boolean
+    twitterImageUrl?: boolean
+    facebookImageUrl?: boolean
     senderEmail?: boolean
     senderName?: boolean
     smtpHost?: boolean
@@ -8845,6 +8877,10 @@ export namespace Prisma {
     description?: boolean
     logoUrl?: boolean
     faviconUrl?: boolean
+    siteUrl?: boolean
+    socialImageUrl?: boolean
+    twitterImageUrl?: boolean
+    facebookImageUrl?: boolean
     senderEmail?: boolean
     senderName?: boolean
     smtpHost?: boolean
@@ -8864,6 +8900,10 @@ export namespace Prisma {
     description?: boolean
     logoUrl?: boolean
     faviconUrl?: boolean
+    siteUrl?: boolean
+    socialImageUrl?: boolean
+    twitterImageUrl?: boolean
+    facebookImageUrl?: boolean
     senderEmail?: boolean
     senderName?: boolean
     smtpHost?: boolean
@@ -8883,6 +8923,10 @@ export namespace Prisma {
     description?: boolean
     logoUrl?: boolean
     faviconUrl?: boolean
+    siteUrl?: boolean
+    socialImageUrl?: boolean
+    twitterImageUrl?: boolean
+    facebookImageUrl?: boolean
     senderEmail?: boolean
     senderName?: boolean
     smtpHost?: boolean
@@ -8895,7 +8939,7 @@ export namespace Prisma {
     enableRelatedArticles?: boolean
   }
 
-  export type SettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "siteName" | "tagline" | "description" | "logoUrl" | "faviconUrl" | "senderEmail" | "senderName" | "smtpHost" | "smtpPort" | "smtpUsername" | "smtpPassword" | "enableNewsletter" | "enableSearch" | "enableSocialSharing" | "enableRelatedArticles", ExtArgs["result"]["setting"]>
+  export type SettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "siteName" | "tagline" | "description" | "logoUrl" | "faviconUrl" | "siteUrl" | "socialImageUrl" | "twitterImageUrl" | "facebookImageUrl" | "senderEmail" | "senderName" | "smtpHost" | "smtpPort" | "smtpUsername" | "smtpPassword" | "enableNewsletter" | "enableSearch" | "enableSocialSharing" | "enableRelatedArticles", ExtArgs["result"]["setting"]>
 
   export type $SettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Setting"
@@ -8907,6 +8951,10 @@ export namespace Prisma {
       description: string | null
       logoUrl: string | null
       faviconUrl: string | null
+      siteUrl: string | null
+      socialImageUrl: string | null
+      twitterImageUrl: string | null
+      facebookImageUrl: string | null
       senderEmail: string | null
       senderName: string | null
       smtpHost: string | null
@@ -9346,6 +9394,10 @@ export namespace Prisma {
     readonly description: FieldRef<"Setting", 'String'>
     readonly logoUrl: FieldRef<"Setting", 'String'>
     readonly faviconUrl: FieldRef<"Setting", 'String'>
+    readonly siteUrl: FieldRef<"Setting", 'String'>
+    readonly socialImageUrl: FieldRef<"Setting", 'String'>
+    readonly twitterImageUrl: FieldRef<"Setting", 'String'>
+    readonly facebookImageUrl: FieldRef<"Setting", 'String'>
     readonly senderEmail: FieldRef<"Setting", 'String'>
     readonly senderName: FieldRef<"Setting", 'String'>
     readonly smtpHost: FieldRef<"Setting", 'String'>
@@ -12156,6 +12208,10 @@ export namespace Prisma {
     description: 'description',
     logoUrl: 'logoUrl',
     faviconUrl: 'faviconUrl',
+    siteUrl: 'siteUrl',
+    socialImageUrl: 'socialImageUrl',
+    twitterImageUrl: 'twitterImageUrl',
+    facebookImageUrl: 'facebookImageUrl',
     senderEmail: 'senderEmail',
     senderName: 'senderName',
     smtpHost: 'smtpHost',
@@ -12838,6 +12894,10 @@ export namespace Prisma {
     description?: StringNullableFilter<"Setting"> | string | null
     logoUrl?: StringNullableFilter<"Setting"> | string | null
     faviconUrl?: StringNullableFilter<"Setting"> | string | null
+    siteUrl?: StringNullableFilter<"Setting"> | string | null
+    socialImageUrl?: StringNullableFilter<"Setting"> | string | null
+    twitterImageUrl?: StringNullableFilter<"Setting"> | string | null
+    facebookImageUrl?: StringNullableFilter<"Setting"> | string | null
     senderEmail?: StringNullableFilter<"Setting"> | string | null
     senderName?: StringNullableFilter<"Setting"> | string | null
     smtpHost?: StringNullableFilter<"Setting"> | string | null
@@ -12857,6 +12917,10 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
     faviconUrl?: SortOrderInput | SortOrder
+    siteUrl?: SortOrderInput | SortOrder
+    socialImageUrl?: SortOrderInput | SortOrder
+    twitterImageUrl?: SortOrderInput | SortOrder
+    facebookImageUrl?: SortOrderInput | SortOrder
     senderEmail?: SortOrderInput | SortOrder
     senderName?: SortOrderInput | SortOrder
     smtpHost?: SortOrderInput | SortOrder
@@ -12879,6 +12943,10 @@ export namespace Prisma {
     description?: StringNullableFilter<"Setting"> | string | null
     logoUrl?: StringNullableFilter<"Setting"> | string | null
     faviconUrl?: StringNullableFilter<"Setting"> | string | null
+    siteUrl?: StringNullableFilter<"Setting"> | string | null
+    socialImageUrl?: StringNullableFilter<"Setting"> | string | null
+    twitterImageUrl?: StringNullableFilter<"Setting"> | string | null
+    facebookImageUrl?: StringNullableFilter<"Setting"> | string | null
     senderEmail?: StringNullableFilter<"Setting"> | string | null
     senderName?: StringNullableFilter<"Setting"> | string | null
     smtpHost?: StringNullableFilter<"Setting"> | string | null
@@ -12898,6 +12966,10 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
     faviconUrl?: SortOrderInput | SortOrder
+    siteUrl?: SortOrderInput | SortOrder
+    socialImageUrl?: SortOrderInput | SortOrder
+    twitterImageUrl?: SortOrderInput | SortOrder
+    facebookImageUrl?: SortOrderInput | SortOrder
     senderEmail?: SortOrderInput | SortOrder
     senderName?: SortOrderInput | SortOrder
     smtpHost?: SortOrderInput | SortOrder
@@ -12923,6 +12995,10 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Setting"> | string | null
     logoUrl?: StringNullableWithAggregatesFilter<"Setting"> | string | null
     faviconUrl?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    siteUrl?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    socialImageUrl?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    twitterImageUrl?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    facebookImageUrl?: StringNullableWithAggregatesFilter<"Setting"> | string | null
     senderEmail?: StringNullableWithAggregatesFilter<"Setting"> | string | null
     senderName?: StringNullableWithAggregatesFilter<"Setting"> | string | null
     smtpHost?: StringNullableWithAggregatesFilter<"Setting"> | string | null
@@ -13645,6 +13721,10 @@ export namespace Prisma {
     description?: string | null
     logoUrl?: string | null
     faviconUrl?: string | null
+    siteUrl?: string | null
+    socialImageUrl?: string | null
+    twitterImageUrl?: string | null
+    facebookImageUrl?: string | null
     senderEmail?: string | null
     senderName?: string | null
     smtpHost?: string | null
@@ -13664,6 +13744,10 @@ export namespace Prisma {
     description?: string | null
     logoUrl?: string | null
     faviconUrl?: string | null
+    siteUrl?: string | null
+    socialImageUrl?: string | null
+    twitterImageUrl?: string | null
+    facebookImageUrl?: string | null
     senderEmail?: string | null
     senderName?: string | null
     smtpHost?: string | null
@@ -13683,6 +13767,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     faviconUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    siteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    socialImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facebookImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     senderEmail?: NullableStringFieldUpdateOperationsInput | string | null
     senderName?: NullableStringFieldUpdateOperationsInput | string | null
     smtpHost?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13702,6 +13790,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     faviconUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    siteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    socialImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facebookImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     senderEmail?: NullableStringFieldUpdateOperationsInput | string | null
     senderName?: NullableStringFieldUpdateOperationsInput | string | null
     smtpHost?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13721,6 +13813,10 @@ export namespace Prisma {
     description?: string | null
     logoUrl?: string | null
     faviconUrl?: string | null
+    siteUrl?: string | null
+    socialImageUrl?: string | null
+    twitterImageUrl?: string | null
+    facebookImageUrl?: string | null
     senderEmail?: string | null
     senderName?: string | null
     smtpHost?: string | null
@@ -13740,6 +13836,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     faviconUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    siteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    socialImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facebookImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     senderEmail?: NullableStringFieldUpdateOperationsInput | string | null
     senderName?: NullableStringFieldUpdateOperationsInput | string | null
     smtpHost?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13759,6 +13859,10 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     faviconUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    siteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    socialImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    facebookImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     senderEmail?: NullableStringFieldUpdateOperationsInput | string | null
     senderName?: NullableStringFieldUpdateOperationsInput | string | null
     smtpHost?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14519,6 +14623,10 @@ export namespace Prisma {
     description?: SortOrder
     logoUrl?: SortOrder
     faviconUrl?: SortOrder
+    siteUrl?: SortOrder
+    socialImageUrl?: SortOrder
+    twitterImageUrl?: SortOrder
+    facebookImageUrl?: SortOrder
     senderEmail?: SortOrder
     senderName?: SortOrder
     smtpHost?: SortOrder
@@ -14538,6 +14646,10 @@ export namespace Prisma {
     description?: SortOrder
     logoUrl?: SortOrder
     faviconUrl?: SortOrder
+    siteUrl?: SortOrder
+    socialImageUrl?: SortOrder
+    twitterImageUrl?: SortOrder
+    facebookImageUrl?: SortOrder
     senderEmail?: SortOrder
     senderName?: SortOrder
     smtpHost?: SortOrder
@@ -14557,6 +14669,10 @@ export namespace Prisma {
     description?: SortOrder
     logoUrl?: SortOrder
     faviconUrl?: SortOrder
+    siteUrl?: SortOrder
+    socialImageUrl?: SortOrder
+    twitterImageUrl?: SortOrder
+    facebookImageUrl?: SortOrder
     senderEmail?: SortOrder
     senderName?: SortOrder
     smtpHost?: SortOrder

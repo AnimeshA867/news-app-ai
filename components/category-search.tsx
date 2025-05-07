@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import React from "react";
 
 export function CategorySearch({ categories }) {
   const [searchQuery, setSearchQuery] = useState("");

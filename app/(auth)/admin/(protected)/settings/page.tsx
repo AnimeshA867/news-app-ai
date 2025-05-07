@@ -28,13 +28,18 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { SocialImageUpload } from "@/components/settings/social-image-upload";
 
 const generalSettingsSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
+  siteUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   tagline: z.string().optional(),
   description: z.string().optional(),
   logoUrl: z.string().optional(),
   faviconUrl: z.string().optional(),
+  socialImageUrl: z.string().optional(),
+  twitterImageUrl: z.string().optional(),
+  facebookImageUrl: z.string().optional(),
 });
 
 const emailSettingsSchema = z.object({
@@ -77,6 +82,7 @@ export default function SettingsPage() {
     resolver: zodResolver(generalSettingsSchema),
     defaultValues: {
       siteName: "",
+      siteUrl: "",
       tagline: "",
       description: "",
       logoUrl: "",
@@ -122,6 +128,7 @@ export default function SettingsPage() {
         // Set general settings
         generalForm.reset({
           siteName: settings.siteName || "",
+          siteUrl: settings.siteUrl || "",
           tagline: settings.tagline || "",
           description: settings.description || "",
           logoUrl: settings.logoUrl || "",
@@ -309,6 +316,27 @@ export default function SettingsPage() {
 
                   <FormField
                     control={generalForm.control}
+                    name="siteUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Site URL</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="https://news.manasukh.com"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          The full URL of your website (used for sitemap and
+                          social sharing)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={generalForm.control}
                     name="tagline"
                     render={({ field }) => (
                       <FormItem>
@@ -378,6 +406,45 @@ export default function SettingsPage() {
                       </FormItem>
                     )}
                   />
+
+                  <div className="mt-6 border-t pt-4">
+                    <h3 className="text-lg font-medium mb-2">
+                      Social Media Images
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Configure images that appear when your content is shared
+                      on social media platforms
+                    </p>
+
+                    <SocialImageUpload
+                      name="socialImageUrl"
+                      control={generalForm.control}
+                      form={generalForm}
+                      label="Default Social Image"
+                      description="Default image used when content is shared on social media platforms"
+                      recommendedSize="1200×630px"
+                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      <SocialImageUpload
+                        name="twitterImageUrl"
+                        control={generalForm.control}
+                        form={generalForm}
+                        label="Twitter Card Image"
+                        description="Specific image for Twitter"
+                        recommendedSize="1200×600px"
+                      />
+
+                      <SocialImageUpload
+                        name="facebookImageUrl"
+                        control={generalForm.control}
+                        form={generalForm}
+                        label="Facebook/Open Graph Image"
+                        description="Specific image for Facebook"
+                        recommendedSize="1200×630px"
+                      />
+                    </div>
+                  </div>
 
                   <Button type="submit" disabled={isSavingGeneral}>
                     {isSavingGeneral ? (

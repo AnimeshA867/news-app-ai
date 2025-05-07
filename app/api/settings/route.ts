@@ -40,25 +40,50 @@ export async function GET() {
 // PUT (update) settings
 export async function PUT(req: Request) {
   try {
-    const session = await getAuthSession();
+    const session = await getServerSession(authOptions);
 
-    if (!session?.user || session.user.role !== "ADMIN") {
+    // Authentication check
+    if (!session?.user?.role || session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const data = await req.json();
 
-    // Get existing settings or create default
-    const existingSettings = await prisma.setting.findFirst();
-
-    const settings = existingSettings
-      ? await prisma.setting.update({
-          where: { id: existingSettings.id },
-          data,
-        })
-      : await prisma.setting.create({
-          data,
-        });
+    // Update settings - ensuring we include the new fields
+    const settings = await prisma.setting.upsert({
+      where: { id: data.id || "default" },
+      create: {
+        id: data.id || "default",
+        siteName: data.siteName || "News AI",
+        tagline: data.tagline || null,
+        description: data.description || null,
+        logoUrl: data.logoUrl || null,
+        faviconUrl: data.faviconUrl || null,
+        // Add new social image fields
+        socialImageUrl: data.socialImageUrl || null,
+        twitterImageUrl: data.twitterImageUrl || null,
+        facebookImageUrl: data.facebookImageUrl || null,
+        // Rest of your fields
+        senderEmail: data.senderEmail || null,
+        senderName: data.senderName || null,
+        // ... other fields
+      },
+      update: {
+        siteName: data.siteName,
+        tagline: data.tagline,
+        description: data.description,
+        logoUrl: data.logoUrl,
+        faviconUrl: data.faviconUrl,
+        // Add new social image fields
+        socialImageUrl: data.socialImageUrl,
+        twitterImageUrl: data.twitterImageUrl,
+        facebookImageUrl: data.facebookImageUrl,
+        // Rest of your updated fields
+        senderEmail: data.senderEmail,
+        senderName: data.senderName,
+        // ... other fields
+      },
+    });
 
     return NextResponse.json(settings);
   } catch (error) {

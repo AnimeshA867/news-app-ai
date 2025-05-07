@@ -103,6 +103,12 @@ model Setting {
   description           String?
   logoUrl               String?
   faviconUrl            String?
+  siteUrl               String?
+  // Add social media image fields
+  socialImageUrl        String? // Default social image for the site
+  twitterImageUrl       String? // Twitter-specific image (fallback to socialImageUrl)
+  facebookImageUrl      String? // Facebook-specific image (fallback to socialImageUrl)
+  // Existing fields
   senderEmail           String?
   senderName            String?
   smtpHost              String?
