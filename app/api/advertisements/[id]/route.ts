@@ -19,7 +19,6 @@ export async function GET(
     const ad = await prisma.advertisement.findUnique({
       where: { id },
       include: {
-        zones: true,
         pages: true,
       },
     });
@@ -94,7 +93,6 @@ export async function PUT(
         },
       },
       include: {
-        zones: true,
         pages: true,
       },
     });

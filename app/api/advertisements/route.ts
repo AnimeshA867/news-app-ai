@@ -42,9 +42,6 @@ export async function GET(request: Request) {
       orderBy: {
         updatedAt: "desc",
       },
-      include: {
-        zones: true,
-      },
     });
 
     return NextResponse.json(ads);
@@ -105,7 +102,6 @@ export async function POST(request: Request) {
         },
       },
       include: {
-        zones: true,
         pages: true,
       },
     });
