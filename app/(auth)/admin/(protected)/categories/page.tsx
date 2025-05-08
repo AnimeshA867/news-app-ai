@@ -178,7 +178,7 @@ export default function CategoriesPage() {
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/admin/categories/${category.id}`}>
+                      <Link href={`/admin/categories/${category.id}/edit`}>
                         <Pencil className="mr-2 h-4 w-4" />
                         Edit
                       </Link>
