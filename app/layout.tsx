@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await prisma.setting.findFirst();
-
+  console.log(settings);
   // Set dynamic hostname
   const domain = settings?.siteUrl || "https://news.manasukh.com";
 
@@ -88,7 +88,7 @@ export default async function RootLayout({
 }) {
   // Fetch settings from the database
   const settings = (await prisma.setting.findFirst()) || {
-    siteName: "NewsHub",
+    siteName: "Manasukh News",
     tagline: "Breaking News & Latest Headlines",
     description:
       "Get the latest breaking news and top stories from around the world.",

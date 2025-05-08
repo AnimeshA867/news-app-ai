@@ -29,6 +29,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { SocialImageUpload } from "@/components/settings/social-image-upload";
+import { redirect, useRouter } from "next/navigation";
 
 const generalSettingsSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
@@ -77,7 +78,7 @@ export default function SettingsPage() {
   const [isSavingEmail, setIsSavingEmail] = useState(false);
   const [isSavingFeatures, setIsSavingFeatures] = useState(false);
   const [isLoadingSettings, setIsLoadingSettings] = useState(true);
-
+  const router = useRouter();
   const generalForm = useForm<GeneralSettingsValues>({
     resolver: zodResolver(generalSettingsSchema),
     defaultValues: {
@@ -195,6 +196,7 @@ export default function SettingsPage() {
         title: "Success",
         description: "General settings updated successfully",
       });
+      router.replace("/admin");
     } catch (error) {
       toast({
         title: "Error",
