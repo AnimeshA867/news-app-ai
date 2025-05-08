@@ -11,7 +11,7 @@ export function AdminHeader() {
   const { settings } = useSettings();
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur pl-16">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2 md:hidden">
           <Link

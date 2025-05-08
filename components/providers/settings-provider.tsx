@@ -12,6 +12,14 @@ export interface SiteSettings {
   twitterImageUrl: string | null;
   facebookImageUrl: string | null;
   siteUrl: string | null;
+  enableNewsletter: boolean;
+  senderEmail: string | null;
+  senderName: string | null;
+  facebookUrl: string | null;
+  twitterUrl: string | null;
+  instagramUrl: string | null;
+  linkedinUrl: string | null;
+  youtubeUrl: string | null;
 }
 
 interface SettingsContextType {
@@ -35,7 +43,7 @@ export function SettingsProvider({
   settings,
 }: {
   children: ReactNode;
-  settings: SiteSettings;
+  settings: any;
 }) {
   return (
     <SettingsContext.Provider value={{ settings }}>

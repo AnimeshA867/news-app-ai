@@ -21,7 +21,7 @@ model User {
   image         String?
   password      String?
   bio           String?
-  role          Role      @default(AUTHOR)
+  role          Role      @default(EDITOR)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   articles      Article[]
@@ -97,17 +97,23 @@ model Media {
 }
 
 model Setting {
-  id                    String  @id @default(cuid())
-  siteName              String
-  tagline               String?
-  description           String?
-  logoUrl               String?
-  faviconUrl            String?
-  siteUrl               String?
+  id               String  @id @default(cuid())
+  siteName         String
+  tagline          String?
+  description      String?
+  logoUrl          String?
+  faviconUrl       String?
+  siteUrl          String?
   // Add social media image fields
-  socialImageUrl        String? // Default social image for the site
-  twitterImageUrl       String? // Twitter-specific image (fallback to socialImageUrl)
-  facebookImageUrl      String? // Facebook-specific image (fallback to socialImageUrl)
+  socialImageUrl   String? // Default social image for the site
+  twitterImageUrl  String? // Twitter-specific image (fallback to socialImageUrl)
+  facebookImageUrl String? // Facebook-specific image (fallback to socialImageUrl)
+  instagramLink    String?
+  facebookLink     String?
+  linkedinLink     String?
+  youtubeLink      String?
+  twitterLink      String?
+
   // Existing fields
   senderEmail           String?
   senderName            String?
@@ -157,11 +163,74 @@ model AdPagePlacement {
 enum Role {
   ADMIN
   EDITOR
-  AUTHOR
+  OWNER
 }
 
 enum Status {
   DRAFT
   PUBLISHED
   SCHEDULED
+}
+
+// Add this to your schema.prisma file
+model Subscriber {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  verified    Boolean  @default(false)
+  verifyToken String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  preferences Json?
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  subject   String
+  content   String
+  sentAt    DateTime @default(now())
+  sentTo    Int
+  opens     Int      @default(0)
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Add this model to your schema.prisma file
+model Page {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  content     String   @db.Text
+  metaTitle   String?
+  metaDesc    String?
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Add this model to your schema.prisma file
+model Contact {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  subject    String
+  reason     String
+  message    String   @db.Text
+  status     String   @default("NEW") // NEW, READ, RESPONDED, ARCHIVED
+  isResolved Boolean  @default(false)
+  notes      String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model NavigationLink {
+  id        String   @id @default(cuid())
+  name      String
+  href      String
+  group     String // e.g., "Company", "Legal", "Advertising"
+  order     Int // For controlling the display order
+  isEnabled Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

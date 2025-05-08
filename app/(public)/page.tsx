@@ -98,6 +98,8 @@ export default async function HomePage() {
     ],
   })) as BreakingNews[];
 
+  const categories = await prisma.category.findMany({});
+
   return (
     <main className="container mx-auto px-4 py-6">
       <BreakingNewsBar breakingNews={breakingNews} />
@@ -128,11 +130,6 @@ export default async function HomePage() {
 
       <TrendingCarousel articles={trendingArticles} />
 
-      <div className="my-12 grid gap-12 md:grid-cols-2">
-        <CategorySection category="politics" limit={4} />
-        <CategorySection category="business" limit={4} />
-      </div>
-
       {/* Bottom Homepage Ad */}
       {/* <div className="my-10 homepage-featured-ad">
         <AdPosition
@@ -145,11 +142,18 @@ export default async function HomePage() {
           fallback={null}
         />
       </div> */}
-
-      <div className="my-12 grid gap-12 md:grid-cols-2">
-        <CategorySection category="technology" limit={4} />
-        <CategorySection category="entertainment" limit={4} />
-      </div>
+      {categories.length >= 4 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 space-y-8 md:space-x-8">
+          <div className="my-12 grid gap-12 md:grid-spans-1 space-x-8  ">
+            <CategorySection category={categories[0].slug} limit={4} />
+            <CategorySection category={categories[1].slug} limit={4} />
+          </div>
+          <div className="my-12 grid gap-12 md:grid-spans-1 space-x-8">
+            <CategorySection category={categories[3].slug} limit={4} />
+            <CategorySection category={categories[2].slug} limit={4} />
+          </div>
+        </div>
+      )}
 
       <NewsletterSignup />
     </main>

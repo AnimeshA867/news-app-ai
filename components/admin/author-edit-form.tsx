@@ -42,7 +42,7 @@ export default function AuthorEditForm({
     .object({
       name: z.string().min(2, "Name must be at least 2 characters"),
       email: z.string().email("Invalid email address"),
-      role: z.enum(["USER", "ADMIN", "AUTHOR"]),
+      role: z.enum(["ADMIN", "EDITOR"]),
       bio: z.string().optional().nullable(),
       image: z.string().optional(),
       // Add password fields
@@ -86,7 +86,7 @@ export default function AuthorEditForm({
       ? {
           name: "",
           email: "",
-          role: "AUTHOR",
+          role: "EDITOR",
           bio: "",
           image: "",
           password: "",

@@ -4,7 +4,10 @@ import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { Suspense } from "react";
-import { SettingsProvider } from "@/components/providers/settings-provider";
+import {
+  SettingsProvider,
+  SiteSettings,
+} from "@/components/providers/settings-provider";
 import { prisma } from "@/lib/prisma";
 
 import "./globals.css";
@@ -87,18 +90,30 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   // Fetch settings from the database
-  const settings = (await prisma.setting.findFirst()) || {
-    siteName: "Manasukh News",
-    tagline: "Breaking News & Latest Headlines",
-    description:
-      "Get the latest breaking news and top stories from around the world.",
-    logoUrl: null,
-    faviconUrl: null,
-    socialImageUrl: null,
-    twitterImageUrl: null,
-    facebookImageUrl: null,
-    siteUrl: null,
-  };
+  const settings =
+    (await prisma.setting.findFirst()) ||
+    ({
+      siteName: "Manasukh News",
+      tagline: "Breaking News & Latest Headlines",
+      description:
+        "Get the latest breaking news and top stories from around the world.",
+      logoUrl: null,
+      faviconUrl: null,
+      socialImageUrl: null,
+      twitterImageUrl: null,
+      facebookImageUrl: null,
+      siteUrl: null,
+      facebookUrl: null,
+      twitterUrl: null,
+      instagramUrl: null,
+      linkedinUrl: null,
+      youtubeUrl: null,
+      // Add any missing properties required by the SiteSettings type
+      enableNewsletter: true,
+      // Include an empty id if required
+      senderEmail: null,
+      senderName: null,
+    } as SiteSettings);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -113,7 +128,9 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Suspense>{children}</Suspense>
+            <Suspense>
+              <main className="min-w-full">{children}</main>
+            </Suspense>
             <Toaster />
             <Analytics />
           </ThemeProvider>

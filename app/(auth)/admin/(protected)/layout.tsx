@@ -22,13 +22,16 @@ export default function AdminLayout({
 }) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen container mx-auto">
-        <AdminSidebar />
-        <div className="flex-1 mx-auto">
+      <div className="flex flex-col md:flex-row min-h-screen w-full ">
+        <div className="md:block mr-12">
+          <AdminSidebar />
+        </div>
+
+        <div className="flex-1 flex flex-col min-h-screen w-full  ">
           <AdminHeader />
-          <div className="p-6 container mx-auto flex justify-center">
-            {children}
-          </div>
+          <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-auto">
+            <div className="max-w-7xl w-full mx-auto">{children}</div>
+          </main>
         </div>
       </div>
     </SidebarProvider>

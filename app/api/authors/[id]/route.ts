@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
 
 // GET author by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getAuthSession();
 
@@ -43,11 +46,17 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // PUT update author by ID
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getAuthSession();
 
-    if (!session?.user || session.user.role !== "ADMIN") {
+    if (
+      !session?.user ||
+      !["ADMIN", "OWNER"].includes(session.user.role as string)
+    ) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -103,11 +112,17 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 // DELETE author by ID
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getAuthSession();
 
-    if (!session?.user || session.user.role !== "ADMIN") {
+    if (
+      !session?.user ||
+      !["ADMIN", "OWNER"].includes(session.user.role as string)
+    ) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

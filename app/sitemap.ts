@@ -2,11 +2,20 @@ import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Get settings for domain name
-  const settings = await prisma.setting.findFirst();
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL || "https://news.manasukh.com";
 
-  // Use the setting if available, otherwise fall back to hardcoded domain
-  const domain = settings?.siteUrl || "https://news.manasukh.com";
+  // Get all published pages
+  const pages = await prisma.page.findMany({
+    where: { isPublished: true },
+    select: { slug: true, updatedAt: true },
+  });
+
+  // Generate sitemap entries for static pages
+  const pageEntries = pages.map((page) => ({
+    url: `${baseUrl}/${page.slug}`,
+    lastModified: page.updatedAt,
+  }));
 
   // Define static pages
   const staticPages = [
@@ -20,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Initialize sitemap entries with static pages
   const routes: MetadataRoute.Sitemap = staticPages.map((page) => ({
-    url: `${domain}/${page.url}`,
+    url: `${baseUrl}/${page.url}`,
     lastModified: new Date(),
     changeFrequency: page.changeFrequency as
       | "daily"
@@ -48,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Add article URLs
     for (const article of articles) {
       routes.push({
-        url: `${domain}/article/${article.slug}`,
+        url: `${baseUrl}/article/${article.slug}`,
         lastModified: article.updatedAt,
         changeFrequency: "monthly",
         priority: 0.8,
@@ -66,12 +75,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Add category URLs
     for (const category of categories) {
       routes.push({
-        url: `${domain}/category/${category.slug}`,
+        url: `${baseUrl}/category/${category.slug}`,
         lastModified: category.updatedAt,
         changeFrequency: "weekly",
         priority: 0.9,
       });
     }
+
+    // Add page entries
+    routes.push(...pageEntries);
 
     return routes;
   } catch (error) {

@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +20,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import React from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -30,8 +32,13 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
+
+  // Check if we have an error parameter from the URL
+  const errorParam = searchParams.get("error");
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -43,8 +50,11 @@ export default function LoginPage() {
 
   async function onSubmit(data: LoginFormValues) {
     setIsLoading(true);
+    setAuthError(null);
 
     try {
+      const callbackUrl = searchParams.get("callbackUrl") || "/admin";
+
       const response = await signIn("credentials", {
         email: data.email,
         password: data.password,
@@ -52,11 +62,7 @@ export default function LoginPage() {
       });
 
       if (response?.error) {
-        toast({
-          title: "Login failed",
-          description: "Invalid email or password. Please try again.",
-          variant: "destructive",
-        });
+        setAuthError("Invalid email or password. Please try again.");
         return;
       }
 
@@ -65,28 +71,35 @@ export default function LoginPage() {
         description: "Welcome to the admin dashboard.",
       });
 
-      router.push("/admin");
+      router.push(callbackUrl);
       router.refresh();
     } catch (error) {
-      toast({
-        title: "Something went wrong",
-        description: "An error occurred during login. Please try again.",
-        variant: "destructive",
-      });
+      setAuthError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center ">
-      <div className="mx-auto w-4/5 max-w-md space-y-6 rounded-lg border bg-card p-6 shadow-lg">
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="mx-auto w-full max-w-md space-y-6 rounded-lg border bg-card p-6 shadow-lg">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Admin Login</h1>
           <p className="text-muted-foreground">
             Enter your credentials to access the admin dashboard
           </p>
         </div>
+
+        {(authError || errorParam) && (
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertTitle>Authentication Error</AlertTitle>
+            <AlertDescription>
+              {authError || "Please sign in to access this page"}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -96,7 +109,12 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="admin@example.com" {...field} />
+                    <Input
+                      placeholder="you@example.com"
+                      {...field}
+                      autoComplete="email"
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,7 +127,13 @@ export default function LoginPage() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      autoComplete="current-password"
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,15 +142,23 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging
-                  in...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
                 </>
               ) : (
-                "Login"
+                "Sign in"
               )}
             </Button>
           </form>
         </Form>
+
+        <div className="mt-4 text-center text-sm">
+          <p className="text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link href="/admin/signup" className="text-primary hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

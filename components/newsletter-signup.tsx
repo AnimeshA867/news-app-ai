@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, ArrowRight, Check } from "lucide-react";
@@ -12,25 +11,54 @@ import { useSettings } from "./providers/settings-provider";
 
 export function NewsletterSignup() {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { toast } = useToast();
   const { settings } = useSettings();
 
+  // Skip rendering if newsletter is disabled
+  if (settings?.enableNewsletter === false) {
+    return null;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, name: name || undefined }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to subscribe");
+      }
+
       setIsSubscribed(true);
       setEmail("");
+      setName("");
       toast({
-        title: "Successfully subscribed!",
-        description: "You'll now receive our newsletter with the latest news.",
+        title: "Thank you!",
+        description:
+          data.message || "Check your email to confirm your subscription.",
       });
-    }, 1500);
+    } catch (error) {
+      toast({
+        title: "Subscription failed",
+        description:
+          (error as Error).message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -57,6 +85,13 @@ export function NewsletterSignup() {
               onSubmit={handleSubmit}
               className="mx-auto flex max-w-md flex-col gap-2 sm:flex-row"
             >
+              <Input
+                type="text"
+                placeholder="Your name (optional)"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="h-10"
+              />
               <Input
                 type="email"
                 placeholder="Enter your email"

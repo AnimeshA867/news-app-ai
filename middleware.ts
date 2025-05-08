@@ -30,7 +30,8 @@ export default withAuth(
       isAuth &&
       isAdminPage &&
       token.role !== "ADMIN" &&
-      token.role !== "EDITOR"
+      token.role !== "EDITOR" &&
+      token.role !== "OWNER"
     ) {
       return NextResponse.redirect(new URL("/", req.url));
     }

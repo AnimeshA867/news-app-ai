@@ -1,152 +1,99 @@
-"use client";
+import { Suspense } from "react";
+import { prisma } from "@/lib/prisma";
+import { DashboardSkeleton } from "@/components/admin/dashboard-skeleton";
+import { RoleDashboard } from "@/components/admin/role-dashboard";
 
-import { useState, useEffect } from "react";
-import { AdminStats } from "@/components/admin/admin-stats";
-import { AdminRecentArticles } from "@/components/admin/admin-recent-articles";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
+export const metadata = {
+  title: "Admin Dashboard",
+  description: "Admin dashboard for management of the news site",
+};
 
-export default function AdminDashboardPage() {
-  interface Stats {
+interface Stats {
+  counts: {
+    articles: number;
+    publishedArticles: number;
+    categories: number;
+    tags: number;
+    users: number;
+  };
+  recentActivity: { id: string; name: string; email: string; role: string }[];
+  articleStatusCounts: { status: string; count: number }[];
+  categoryStats: { name: string; count: number }[];
+}
+
+async function getStats() {
+  const [
+    articlesCount,
+    publishedArticlesCount,
+    categoriesCount,
+    tagsCount,
+    usersCount,
+    recentUsers,
+    articleStatusData,
+    categoryData,
+  ] = await Promise.all([
+    prisma.article.count(),
+    prisma.article.count({ where: { status: "PUBLISHED" } }),
+    prisma.category.count(),
+    prisma.tag.count(),
+    prisma.user.count(),
+    prisma.user.findMany({
+      take: 5,
+      orderBy: { createdAt: "desc" },
+      select: { id: true, name: true, email: true, role: true },
+    }),
+    prisma.article.groupBy({
+      by: ["status"],
+      _count: { status: true },
+    }),
+    prisma.category.findMany({
+      include: {
+        _count: {
+          select: { articles: true },
+        },
+      },
+    }),
+  ]);
+
+  const articleStatusCounts = articleStatusData.map((item) => ({
+    status: item.status,
+    count: item._count.status,
+  }));
+
+  const categoryStats = categoryData
+    .map((category) => ({
+      name: category.name,
+      count: category._count.articles,
+    }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  return {
     counts: {
-      articles: number;
-      publishedArticles: number;
-      categories: number;
-      tags: number;
-      users: number;
-    };
-    recentActivity: { id: string; name: string; email: string; role: string }[];
-    articleStatusCounts: { status: string; count: number }[];
-    categoryStats: { name: string; count: number }[];
-  }
+      articles: articlesCount,
+      publishedArticles: publishedArticlesCount,
+      categories: categoriesCount,
+      tags: tagsCount,
+      users: usersCount,
+    },
+    recentActivity: recentUsers,
+    articleStatusCounts,
+    categoryStats,
+  } as Stats;
+}
 
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/admin/stats");
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setStats(data);
-      } catch (error) {
-        console.error("Failed to fetch dashboard stats:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load dashboard statistics",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchStats();
-  }, [toast]);
+export default async function AdminDashboardPage() {
+  const stats = await getStats();
 
   return (
-    <div className="space-y-6 container max-w-full">
-      <div className="flex items-center justify-between">
+    <div className="p-6">
+      <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
       </div>
 
-      <AdminStats
-        isLoading={isLoading}
-        stats={
-          stats?.counts || {
-            articles: 0,
-            publishedArticles: 0,
-            categories: 0,
-            tags: 0,
-            users: 0,
-          }
-        }
-      />
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="space-y-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="h-12 w-full" />
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {stats?.recentActivity.slice(0, 5).map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex items-center justify-between border-b pb-2"
-                  >
-                    <div>
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                    <Badge>{user.role}</Badge>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>Article Stats</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-[200px] w-full" />
-            ) : (
-              <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
-                  {stats?.articleStatusCounts.map((statusCount) => (
-                    <Card key={statusCount.status}>
-                      <CardContent className="p-4">
-                        <div className="text-2xl font-bold">
-                          {statusCount.count}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {statusCount.status}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-                <div className="space-y-2">
-                  {stats?.categoryStats.slice(0, 5).map((category) => (
-                    <div
-                      key={category.name}
-                      className="flex items-center justify-between"
-                    >
-                      <div>{category.name}</div>
-                      <div className="text-sm font-medium">
-                        {category.count} articles
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <AdminRecentArticles />
+      <Suspense fallback={<DashboardSkeleton />}>
+        <RoleDashboard stats={stats} isLoading={false} />
+      </Suspense>
     </div>
   );
 }
