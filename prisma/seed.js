@@ -1,3 +1,5 @@
+import { prisma } from "../lib/prisma";
+
 // Add this to your existing seed script
 
 async function seedNavigation() {
@@ -53,3 +55,5 @@ async function main() {
   // Other seed functions
   await seedNavigation();
 }
+
+main();

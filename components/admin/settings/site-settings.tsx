@@ -40,12 +40,7 @@ const siteSettingsSchema = z.object({
   senderEmail: z.string().email("Must be a valid email").optional().nullable(),
   senderName: z.string().optional(),
   smtpHost: z.string().optional(),
-  smtpPort: z
-    .number()
-    .min(1, "Port must be at least 1")
-    .max(65535, "Port must be at most 65535")
-    .optional()
-    .nullable(),
+  smtpPort: z.string().optional(),
   smtpUsername: z.string().optional(),
   smtpPassword: z.string().optional(),
 });
@@ -71,7 +66,7 @@ export default function SiteSettingsTab() {
       senderEmail: "",
       senderName: "",
       smtpHost: "",
-      smtpPort: 587,
+      smtpPort: "587",
       smtpUsername: "",
       smtpPassword: "",
       facebookUrl: "",
@@ -445,16 +440,7 @@ export default function SiteSettingsTab() {
                     <FormItem>
                       <FormLabel>SMTP Port</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          value={field.value || ""}
-                          onChange={(e) =>
-                            field.onChange(
-                              e.target.value ? parseInt(e.target.value) : null
-                            )
-                          }
-                        />
+                        <Input {...field} value={field.value || ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

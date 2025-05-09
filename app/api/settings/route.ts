@@ -86,23 +86,9 @@ export async function PUT(req: Request) {
     };
 
     // Update settings with all fields properly handled
-    const settings = await prisma.setting.upsert({
+    const settings = await prisma.setting.update({
       where: { id: data.id || "default" },
-      create: {
-        id: data.id || "default",
-        siteName: data.siteName || "News AI",
-        siteUrl: data.siteUrl || null,
-        tagline: data.tagline || null,
-        description: data.description || null,
-        logoUrl: data.logoUrl || null,
-        faviconUrl: data.faviconUrl || null,
-        socialImageUrl: data.socialImageUrl || null,
-        twitterImageUrl: data.twitterImageUrl || null,
-        facebookImageUrl: data.facebookImageUrl || null,
-        ...emailSettings,
-        ...featureSettings,
-      },
-      update: {
+      data: {
         siteName: data.siteName,
         siteUrl: data.siteUrl,
         tagline: data.tagline,

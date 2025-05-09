@@ -10,6 +10,8 @@
 !.yarn/releases
 !.yarn/versions
 
+
+
 # testing
 /coverage
 
@@ -39,3 +41,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+seed.js
+prisma/seed.js
