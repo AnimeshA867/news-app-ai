@@ -23,7 +23,7 @@ import { Label } from "@/components/ui/label";
 import React from "react";
 import { TipTapEditor } from "../editor/tiptap-editor";
 import { UploadButton } from "@/utils/uploadthing";
-import { UploadProfilePicture } from "./upload-image";
+import { UploadProfilePicture } from "./upload-profile";
 
 // Create a schema for author form validation
 

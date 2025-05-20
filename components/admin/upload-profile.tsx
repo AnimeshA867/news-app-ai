@@ -10,18 +10,18 @@ import { useToast } from "@/hooks/use-toast";
 import { UploadDropzone } from "../../utils/uploadthing";
 
 interface UploadImageProps {
-  value?: string | null;
+  value: string;
   onChange: (url: string) => void;
 }
 
-export function UploadImage({ value, onChange }: UploadImageProps) {
+export function UploadProfilePicture({ value, onChange }: UploadImageProps) {
   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
 
   return (
     <div className="space-y-4">
       {value && (
-        <div className="relative h-96 aspect-video mx-auto rounded-md overflow-hidden">
+        <div className="relative h-40 w-40 mx-auto rounded-full overflow-hidden">
           <Image
             src={value}
             alt="Uploaded image"

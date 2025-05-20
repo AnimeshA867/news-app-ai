@@ -23,6 +23,7 @@ import { articleSchema } from "@/lib/validations/article";
 import React from "react";
 import { TipTapEditor } from "@/components/editor/tiptap-editor";
 import { UploadDropzone } from "@/utils/uploadthing";
+import { UploadImage } from "./upload-image";
 
 // Schema extension for form
 // Update your schema
@@ -606,8 +607,8 @@ export default function ArticleEditForm({
                       borderColor: state.isFocused
                         ? "#3b82f6"
                         : document.documentElement.classList.contains("dark")
-                        ? "#374151"
-                        : "#d1d5db",
+                          ? "#374151"
+                          : "#d1d5db",
                       color: document.documentElement.classList.contains("dark")
                         ? "#ffffff"
                         : "#000000",
@@ -680,137 +681,40 @@ export default function ArticleEditForm({
         <div>
           <label
             htmlFor="featuredImage"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-gray-700"
           >
             Featured Image
           </label>
-
-          <div
-            className={`mt-1 border-2 border-dashed rounded-lg p-4 text-center ${
-              dragActive ? "border-primary bg-primary/10" : "border-gray-300"
-            } cursor-pointer`}
-            onDragEnter={handleDrag}
-            onDragOver={handleDrag}
-            onDragLeave={handleDrag}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById("file-upload")?.click()}
-          >
-            {featuredImageUrl ? (
-              <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
-                <div className="relative aspect-video w-full max-w-2xl mx-auto rounded-md overflow-hidden">
-                  <Image
-                    src={featuredImageUrl}
-                    alt="Featured image preview"
-                    fill
-                    className="object-cover"
-                  />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-2 right-2 h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setValue("featuredImage", "");
-                    }}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="mt-2">
-                  <label
-                    htmlFor="featuredImageAlt"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Image Alt Text (for accessibility)
-                  </label>
-                  <Controller
-                    name="featuredImageAlt"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        id="featuredImageAlt"
-                        placeholder="Describe the image for screen readers and SEO"
-                        value={field.value || ""}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className="mt-4">
-                  <p className="block text-sm font-medium text-gray-700 mb-2">
-                    Or upload a new image:
-                  </p>
-                  <UploadDropzone
-                    endpoint="imageUploader"
-                    onClientUploadComplete={(res) => {
-                      if (res && res.length > 0) {
-                        setValue("featuredImage", res[0].url);
-                        toast({
-                          title: "Upload complete",
-                          description: "Image has been uploaded successfully",
-                        });
-                      }
-                    }}
-                    onUploadError={(error: Error) => {
-                      toast({
-                        title: "Upload failed",
-                        description:
-                          "Failed to upload image. Please try again.",
-                        variant: "destructive",
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            ) : isUploading ? (
-              <div className="py-8 flex flex-col items-center">
-                <Loader2 className="h-10 w-10 animate-spin text-muted-foreground mb-4" />
-                <p>Uploading image... {uploadProgress}%</p>
-                <div className="w-full max-w-md mt-2 h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary transition-all"
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
-              </div>
-            ) : (
-              <div className="py-8">
-                <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-4 text-sm text-gray-600">
-                  Click or drag and drop an image
-                </p>
-                <p className="text-xs text-muted-foreground mt-2">
-                  PNG, JPG, GIF up to 5MB
-                </p>
-              </div>
-            )}
-
-            <input
-              id="file-upload"
-              name="file-upload"
-              type="file"
-              className="sr-only"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-
-            <Controller
-              name="featuredImage"
-              control={control}
-              render={({ field }) => (
-                <input type="hidden" {...field} value={field.value || ""} />
-              )}
-            />
-          </div>
+          <UploadImage
+            onChange={(url) => {
+              if (url) setValue("featuredImage", url);
+            }}
+            value={featuredImageUrl}
+          />
           {errors.featuredImage && (
             <p className="mt-2 text-sm text-red-600">
               {errors.featuredImage.message}
             </p>
           )}
+        </div>
+        <div>
+          <label
+            htmlFor="featuredImage"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Featured Image Alt
+          </label>
+          <Controller
+            name="featuredImageAlt"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                id="featuredImageAlt"
+                placeholder="Alternative text for the image"
+              />
+            )}
+          />
         </div>
 
         <div className="mt-10 border-t pt-6">
