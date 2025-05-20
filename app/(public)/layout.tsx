@@ -3,6 +3,8 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { AdPositionWrapper } from "@/components/advertisements/ad-position-wrapper";
 
+export const revalidate = 60;
+
 export default function PublicLayout({
   children,
 }: {
