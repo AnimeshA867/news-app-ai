@@ -12,10 +12,10 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      - name: Use Node.js 16
+      - name: Use Node.js 22
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: "22"
 
       - name: 🧶 Install and Build with Yarn
         run: |
