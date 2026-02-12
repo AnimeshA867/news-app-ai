@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main
+      - ["main", "master"]
 
 name: 🚀 Deploy website on push
 jobs:
@@ -12,27 +12,17 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      - name: Use Node.js 22
-        uses: actions/setup-node@v2
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@master
         with:
-          node-version: "22"
-
-      - name: 🧶 Install and Build with Yarn
-        run: |
-          corepack enable
-          yarn install
-          yarn build
-        env:
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
-
-      - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{secrets.FTP_SERVER}}
-          username: ${{secrets.FTP_USERNAME}}
-          password: ${{ secrets.FTP_PASSWORD }}
-
-          # server-dir: /public_html/
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            cd news-app-ai
+            git pull origin main
+            echo ${{ ENV_FILE }} > .env
+            docker compose up -d web_prod
+          env:
+            ENV_FILE: ${{ secrets.ENV_FILE }}

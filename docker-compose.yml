@@ -32,6 +32,8 @@ services:
 
   database:
     image: postgres:18-alpine
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
