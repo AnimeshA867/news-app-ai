@@ -25,6 +25,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME}}
           password: ${{ secrets.DOCKER_PASSWORD}}
 
+      - name: Create Secret File
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Build And push
         uses: docker/build-push-action@v6
         with:
@@ -32,7 +35,7 @@ jobs:
           target: final
           push: true
           secrets: |
-            env_file=${{ secrets.ENV_FILE }}
+            env_file=.env
           tags: ${{secrets.DOCKER_USERNAME}}/news-app-ai:latest
           cache-from: type=gha
           cache-to: type=gha, mode=max
