@@ -17,18 +17,15 @@ services:
   web_prod:
     build:
       context: .
-      target: prod
+      target: final
+      secrets:
+        - env_file
     ports:
       - "3000:3000"
-    env_file:
-      - .env
-    environment:
-      - NODE_ENV=production
-      - DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
     depends_on:
       - database
     secrets:
-      - postgres_password
+      - env_file
 
   database:
     image: postgres:18-alpine
@@ -36,15 +33,17 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - POSTGRES_PASSWORD= {{ POSTGRES_PASSWORD }}
       - POSTGRES_DB=news_app
     volumes:
       - db_data:/var/lib/postgresql/data
-    secrets:
-      - postgres_password
+    # secrets:
+    #   - postgres_password
 volumes:
   db_data:
 
 secrets:
-  postgres_password:
-    file: ./secrets/postgres_password.txt
+  env_file:
+    file: .env
+#   postgres_password:
+#     file: ./secrets/postgres_password.txt
