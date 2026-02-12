@@ -1,28 +1,33 @@
+name: 🚀 Deploy website on push
+
 on:
   push:
     branches:
-      - ["main", "master"]
+      - main
+      - master
 
-name: 🚀 Deploy website on push
 jobs:
   web-deploy:
     name: 🎉 Deploy
     runs-on: self-hosted
+
     steps:
+      # Step 1: This pulls the code into the runner's workspace automatically
+      # (You don't need to manually 'git pull' in a separate folder)
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      - name: SSH Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          script: |
-            cd news-app-ai
-            git pull origin main
-            echo ${{ ENV_FILE }} > .env
-            docker compose up -d web_prod
-          env:
-            ENV_FILE: ${{ secrets.ENV_FILE }}
+      # Step 2: Create the .env file from secrets
+      - name: 🔐 Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
+      # Step 3: Run Docker Compose directly
+      # We use the current directory (.) because checkout put the code here
+      - name: 🐳 Docker Compose Up
+        run: |
+          # Shut down old containers if needed (optional but safer)
+          docker compose down --remove-orphans
+
+          # Start the new build
+          docker compose up -d --build web_prod
