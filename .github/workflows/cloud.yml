@@ -14,31 +14,38 @@ jobs:
       - name: Checkout Latest code
         uses: actions/checkout@v4
 
-        #Initialize BuildX Engine
+      # Initialize BuildX Engine
       - name: Initialize Buildx
         uses: docker/setup-buildx-action@v3
 
-        #Login to Docker Engine
+      # Login to Docker Hub
       - name: Login Credentials
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME}}
-          password: ${{ secrets.DOCKER_PASSWORD}}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # 1. Create the .env file from the GitHub Secret
       - name: Create Secret File
-        run: echo "${{ secrets.ENV_FILE }}" > .env
+        run: echo "$ENV_FILE" > .env
+        env:
+          # FIXED: Was 'secrets.env' (which is empty/wrong)
+          ENV_FILE: ${{ secrets.ENV_FILE }}
 
+      # 2. Build and Push (Mounting the file we just created)
       - name: Build And push
         uses: docker/build-push-action@v6
         with:
           context: .
           target: final
           push: true
+          # FIXED: Point to the file (.env) we created in the previous step
           secrets: |
             env_file=.env
-          tags: ${{secrets.DOCKER_USERNAME}}/news-app-ai:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/news-app-ai:latest
           cache-from: type=gha
           cache-to: type=gha, mode=max
+
   deploy:
     name: Deploy To Server
     needs: build
@@ -50,18 +57,17 @@ jobs:
       - name: Login to Docker
         uses: docker/login-action@v3
         with:
-          username: ${{secrets.DOCKER_USERNAME}}
-          password: ${{secrets.DOCKER_PASSWORD}}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Load Env Var
         run: |
           echo "$ENV_FILE" > .env
         env:
-          ENV_FILE: ${{secrets.ENV_FILE}}
+          ENV_FILE: ${{ secrets.ENV_FILE }}
 
       - name: Deploy New Version
         run: |
           docker compose pull web_prod
-
           docker compose up -d web_prod
-
           docker image prune -f
