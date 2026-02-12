@@ -16,7 +16,7 @@ services:
 
   web_prod:
     image: animesha867/news-app-ai:latest
-    restart:always
+    restart: always
     ports:
       - "3000:3000"
     depends_on:
