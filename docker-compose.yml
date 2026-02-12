@@ -15,7 +15,7 @@ services:
       - database
 
   web_prod:
-    image: animesha867/news-app-ai:latest
+    image: animesh867/news-app-ai:latest
     restart: always
     ports:
       - "3000:3000"
