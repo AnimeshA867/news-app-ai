@@ -29,7 +29,6 @@ jobs:
       - name: Create Secret File
         run: echo "$ENV_FILE" > .env
         env:
-          # FIXED: Was 'secrets.env' (which is empty/wrong)
           ENV_FILE: ${{ secrets.ENV_FILE }}
 
       # 2. Build and Push (Mounting the file we just created)
