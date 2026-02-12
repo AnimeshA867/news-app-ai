@@ -15,17 +15,14 @@ services:
       - database
 
   web_prod:
-    build:
-      image: animesh867/news-app-ai:latest
-      target: final
-      secrets:
-        - env_file
+    image: animesha867/news-app-ai:latest
+    restart:always
     ports:
       - "3000:3000"
     depends_on:
       - database
-    secrets:
-      - env_file
+    env_file:
+      - .env
 
   database:
     image: postgres:18-alpine
