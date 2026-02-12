@@ -16,7 +16,7 @@ services:
 
   web_prod:
     build:
-      context: .
+      image: animesh867/news-app-ai:latest
       target: final
       secrets:
         - env_file
